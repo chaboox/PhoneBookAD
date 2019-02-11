@@ -1,5 +1,6 @@
-package com.example.annuairegsh;
+package com.example.annuairegsh.Activity;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.ThumbnailUtils;
@@ -16,11 +17,16 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.annuairegsh.Activity.Home;
+import com.example.annuairegsh.Activity.HomeActivity;
 import com.example.annuairegsh.Manager.UrlGenerator;
+import com.example.annuairegsh.Model.Constant;
 import com.example.annuairegsh.Model.KeyValuePair;
+import com.example.annuairegsh.R;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
+import org.apache.commons.codec.DecoderException;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -38,13 +44,11 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        //setContentView(R.layout.activity_main);
+        startActivity(new Intent(this, HomeActivity.class));
+        finish();
         imageView = findViewById(R.id.imageView);
-        Log.d(TAG, "onCreate: ");
-        Log.e(TAG, "onCreate: ");
-        System.out.print("OUIDDDDD");
-
-       printUsers();
+     //   printUsers();
 
     }
 
@@ -53,26 +57,35 @@ public class MainActivity extends AppCompatActivity {
         List<KeyValuePair> params = new ArrayList<>();
         params.add(new KeyValuePair("name","Adel"));
         params.add(new KeyValuePair("number","3"));
-        String url = "http://192.168.137.1:8080/contactsByName";
+        String url = Constant.API_URL+ "/contactsByName";
 
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.POST, UrlGenerator.generateUrl(url, params), null, new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray response) {
                 Log.d(TAG, "onResponse: " + response.toString());
+                byte[] b4 = null;
                 try {
                     JSONObject jsonObject = (JSONObject) response.get(0);
                     String name = jsonObject.getString("name");
-                    String picture = jsonObject.getString("picture");
-                    byte[] b = picture.getBytes();
-                    Bitmap b2 = decodeSampleBitmap(b, 60, 60);
-                    Bitmap bitmap = BitmapFactory.decodeByteArray(b, 0, b.length);
-                    byte[] decodedString = Base64.decode(picture,Base64.NO_WRAP);
-                    InputStream inputStream  = new ByteArrayInputStream(decodedString);
-                    Bitmap bitmap2  = BitmapFactory.decodeStream(inputStream);
-                    imageView.setImageResource(R.drawable.ic_launcher_foreground);
+                    String s = (String) jsonObject.get("picture");
+                    String s2 = (String) jsonObject.get("pictureC");
+                    Log.e(TAG, "onResponse: " + s2);
+                   // byte[] base64Decoded = DatatypeConverter.parseBase64Binary(s2);
+
+                    b4 = Base64.decode(s2, Base64.DEFAULT);
+                    byte[] b = s.getBytes();
+                    Bitmap b2 = decodeSampleBitmap(b4, 60, 60);
+                   // Bitmap bitmap = BitmapFactory.decodeByteArray(b, 0, b.length);
+                 //   byte[] decodedString = Base64.decode(picture,Base64.NO_WRAP);
+                   // InputStream inputStream  = new ByteArrayInputStream(decodedString);
+                   // Bitmap bitmap2  = BitmapFactory.decodeStream(inputStream);
+                   // imageView.setImageResource(R.drawable.ic_launcher_foreground);
                     imageView.setImageBitmap(b2);
-                    Log.e(TAG, "onResponse: " + name );
-                    Log.e(TAG, "onResponse: " + picture );
+                    Log.e(TAG, "onResponse: DD" + b.toString());
+                    //Log.e(TAG, "onResponse: " + picture );
+                 //   byte[] b3 = convertBitmapToByteArray(decodeSampleBitmap(b, 60, 60));
+                    //byte[] b = ConnectionServer.convertBitmapToByteArray(ConnectionServer.decodeSampleBitmap(this.detailInfosCollaboratorObj.getPhoto(), 60, 60));
+                   // imageView.setImageBitmap((BitmapFactory.decodeByteArray(b, 0, b.length)));
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }

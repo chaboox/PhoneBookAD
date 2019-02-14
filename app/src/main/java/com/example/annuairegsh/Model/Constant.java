@@ -6,4 +6,6 @@ public class Constant {
     public static final int CITY = 100;
     public static final int GET_CITY = 101;
     public static final int DEPARTMENT = 102;
+    public static final int CONTACT = 103;
+    public static final int CONTACT_FETCH = 104;
 }

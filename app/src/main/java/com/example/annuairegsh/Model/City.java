@@ -3,7 +3,9 @@ package com.example.annuairegsh.Model;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class City {
+import java.io.Serializable;
+
+public class City implements Serializable {
     private String name, code;
 
     public City(String name, String code) {

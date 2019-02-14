@@ -3,7 +3,6 @@ package com.example.annuairegsh.Manager;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v7.widget.GridLayoutManager;
 import android.util.Log;
 
 import com.android.volley.Request;
@@ -12,11 +11,9 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
-import com.example.annuairegsh.Activity.HomeActivity;
-import com.example.annuairegsh.Adapter.GridViewAdapter;
 import com.example.annuairegsh.Model.City;
-import com.example.annuairegsh.Model.Company;
 import com.example.annuairegsh.Model.Constant;
+import com.example.annuairegsh.Model.Contact;
 import com.example.annuairegsh.Model.Department;
 import com.example.annuairegsh.Model.KeyValuePair;
 
@@ -31,6 +28,7 @@ import java.util.List;
 public class API_Manager {
     private static ArrayList<City> cities;
     private static ArrayList<Department> departments;
+    private static ArrayList<Contact> contacts;
     public static HashMap<String, String> directionDescription;
 
     public static void getCity(String company, Context context,  final  Handler handler){
@@ -123,6 +121,54 @@ public class API_Manager {
         requestQueue.add(jsonArrayRequest);
     }
 
+    public static void getContactsByDepartment(String company, String city, String department, Context context,  final  Handler handler){
+        directionDescription= new HashMap<>();
+        getDescriptionDirection();
+        RequestQueue requestQueue = Volley.newRequestQueue(context);
+        contacts = new ArrayList<>();
+        List<KeyValuePair> params = new ArrayList<>();
+        params.add(new KeyValuePair("company", company));
+        params.add(new KeyValuePair("city", city));
+        params.add(new KeyValuePair("department", department));
+        String url = Constant.API_URL + "/contactsByDepartment";
+
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.POST, UrlGenerator.generateUrl(url, params), null, new Response.Listener<JSONArray>() {
+            @Override
+            public void onResponse(JSONArray response) {
+                try {
+
+                    for(int i = 0; i < response.length(); i++){
+                        JSONObject jsonObject = (JSONObject) response.get(i);
+                        Contact contact = new Contact(jsonObject);
+
+                        contacts.add(contact);
+
+                        //String name = jsonObject.getString("name");
+                    }
+                    //CSVManager.CreateRootFolder();
+                    //CSVManager.saveInCSV(companies);
+                    // myrv.getRecycledViewPool().setMaxRecycledViews(R.id.cardview_id,0);
+                    Message message = new Message();
+                    message.obj = contacts;
+                    message.what = Constant.CONTACT;
+
+                    handler.sendMessage(message);
+
+
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.d("ERROR API", "onErrorResponse: " + error.toString()  );
+            }
+        });
+        requestQueue.add(jsonArrayRequest);
+    }
+
     private static void getDescriptionDirection(){
         directionDescription.put("APP", "Approvisionnements");
         directionDescription.put("CDF", "Centre De Formation");
@@ -161,6 +207,7 @@ public class API_Manager {
         directionDescription.put("SEC", "Sécurité");
         directionDescription.put("SECU", "Sécurité");
         directionDescription.put("ARBO", "Département Arboricole");
+        directionDescription.put("DMK", "Direction Marketing");
     }
 
 

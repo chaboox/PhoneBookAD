@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Activity.ListContactActivity">
+    <com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView
+        android:id="@+id/recycler"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:fastScrollAutoHide="true"
+        app:fastScrollAutoHideDelay="1500"
+        app:fastScrollEnableThumbInactiveColor="true"
+        app:fastScrollPopupBackgroundSize="88dp"
+        app:fastScrollPopupBgColor="@color/colorAccent"
+        app:fastScrollPopupPosition="adjacent"
+        app:fastScrollPopupTextColor="@android:color/primary_text_dark"
+        app:fastScrollPopupTextSize="56sp"
+        app:fastScrollPopupTextVerticalAlignmentMode="font_metrics"
+        app:fastScrollThumbColor="@color/colorAccent"
+        app:fastScrollThumbEnabled="true"
+        tools:listitem="@layout/list_item_header" />
+</LinearLayout>

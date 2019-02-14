@@ -3,7 +3,9 @@ package com.example.annuairegsh.Model;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class Contact {
+import java.io.Serializable;
+
+public class Contact implements Serializable {
     private String name, company, description, city, number, voip, department, mail, pictureC;
     private byte[]  picture;
 
@@ -30,6 +32,13 @@ public class Contact {
         try {
             this.name = jsonObject.getString("name");
             this.description = jsonObject.getString("description");
+            this.company = jsonObject.getString("company");
+            this.city = jsonObject.getString("city");
+            this.number = jsonObject.getString("description");
+            this.voip = jsonObject.getString("voip");
+            this.department = jsonObject.getString("description");
+            this.mail = jsonObject.getString("mail");
+            this.pictureC = jsonObject.getString("pictureC");
         }catch (JSONException e){
             e.printStackTrace();
         }
@@ -177,4 +186,6 @@ public class Contact {
         return "Contact [name=" + name + ", company=" + company + ", description=" + description + ", city=" + city
                 + ", number=" + number + ", voip=" + voip + ", department=" + department + ", mail=" + mail + "]";
     }
+
+
 }

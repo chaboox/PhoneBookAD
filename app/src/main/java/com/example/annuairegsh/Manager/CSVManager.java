@@ -12,11 +12,10 @@ import com.opencsv.CSVReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import static android.support.constraint.Constraints.TAG;
+
 
 public class  CSVManager {
         CSVReader csvReader;
@@ -133,11 +132,11 @@ public class  CSVManager {
     public static void CreateRootFolder(){
         File folder = new File(Environment.getExternalStorageDirectory() +
                 File.separator + Constant.DOWNLOAD_DIRECTORY);
-        Log.d(TAG, "CreateKiloutouFolder:  FOLDER EXISTE" );
+
         boolean success = true;
         if (!folder.exists()) {
             success = folder.mkdirs();
-            Log.d(TAG, "CreateKiloutouFolder:  CREATED FOLDER" + success );
+
         }
     }
 

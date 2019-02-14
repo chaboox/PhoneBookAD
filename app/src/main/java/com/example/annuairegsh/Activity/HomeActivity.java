@@ -1,18 +1,15 @@
 package com.example.annuairegsh.Activity;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.CardView;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.util.Base64;
+
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import android.util.Log;
-import android.view.View;
-import android.widget.ListView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -24,13 +21,12 @@ import com.android.volley.toolbox.Volley;
 import com.example.annuairegsh.Adapter.GridViewAdapter;
 import com.example.annuairegsh.Manager.API_Manager;
 import com.example.annuairegsh.Manager.CSVManager;
-import com.example.annuairegsh.Manager.UrlGenerator;
 import com.example.annuairegsh.Model.City;
 import com.example.annuairegsh.Model.Company;
 import com.example.annuairegsh.Model.Constant;
 import com.example.annuairegsh.Model.Contact;
 import com.example.annuairegsh.Model.Department;
-import com.example.annuairegsh.Model.KeyValuePair;
+import com.example.annuairegsh.Model.ListCity;
 import com.example.annuairegsh.Model.ListDepartment;
 import com.example.annuairegsh.R;
 
@@ -39,7 +35,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class HomeActivity extends AppCompatActivity {
     ArrayList<Company> companies;
@@ -48,6 +43,7 @@ public class HomeActivity extends AppCompatActivity {
     private RecyclerView myrv;
     public static Handler handler;
     private String company;
+    private String city;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -171,9 +167,12 @@ public class HomeActivity extends AppCompatActivity {
                     ArrayList<City> cities = (ArrayList<City>)msg.obj;
                     if(cities.size() > 1){
                         Intent intent = new Intent(HomeActivity.this, CityActivity.class);
-                        intent.putExtra("cities", cities);
+                        intent.putExtra("cities",new ListCity(cities));
+                        intent.putExtra("company", company);
+                        startActivity(intent);
                     }
                     else if(cities.size() == 1){
+                        city = cities.get(0).getCode();
                       API_Manager.getDepartement(company, cities.get(0).getCode(), getApplicationContext(), handler);
 
                     }
@@ -188,6 +187,8 @@ public class HomeActivity extends AppCompatActivity {
                     Intent intent = new Intent(HomeActivity.this, DepartmentActivity.class);
                     ListDepartment listDepartment = new ListDepartment(departments);
                     intent.putExtra("departments", listDepartment);
+                    intent.putExtra("company", company);
+                    intent.putExtra("city", city);
                     startActivity(intent);
                     break;
             }

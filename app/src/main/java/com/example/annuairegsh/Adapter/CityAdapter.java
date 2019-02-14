@@ -111,10 +111,10 @@ public class CityAdapter extends ArrayAdapter<City> implements View.OnClickListe
             viewHolder = new CityAdapter.ViewHolder();
             LayoutInflater inflater = LayoutInflater.from(getContext());
             convertView = inflater.inflate(R.layout.city_item, parent, false);
-          //  viewHolder.name = (TextView) convertView.findViewById(R.id.name_city);
+           viewHolder.name = (TextView) convertView.findViewById(R.id.name_city);
             viewHolder.image = (ImageView) convertView.findViewById(R.id.image);
             viewHolder.cardView = convertView.findViewById(R.id.cardview);
-           // viewHolder.linearLayout = convertView.findViewById(R.id.linear);
+            viewHolder.linearLayout = convertView.findViewById(R.id.linear);
             result=convertView;
 
             convertView.setTag(viewHolder);
@@ -122,15 +122,19 @@ public class CityAdapter extends ArrayAdapter<City> implements View.OnClickListe
             viewHolder = (CityAdapter.ViewHolder) convertView.getTag();
             result=convertView;
         }
-        Log.d("VVIEW", "getView: " + CityActivity.listView.getHeight());
+     //
+        //  Log.d("VVIEW", "getView: " + CityActivity.listView.getHeight());
         //Animation animation = AnimationUtils.loadAnimation(mContext, (position > lastPosition) ? R.anim.up_from_bottom : R.anim.down_from_top);
         //result.startAnimation(animation);
         lastPosition = position;
 
-        viewHolder.cardView.setMinimumHeight(CityActivity.listView.getHeight()/CityActivity.cities.getCities().size());
+       // viewHolder.cardView.setMinimumHeight(CityActivity.listView.getHeight()/CityActivity.cities.getCities().size());
+
+
+
        // viewHolder.linearLayout.setMinimumHeight(CityActivity.listView.getHeight()/CityActivity.cities.getCities().size());
 
-        //viewHolder.name.setText(userModel.getName());
+        viewHolder.name.setText(userModel.getName());
         // Glide.with(getContext()).load(userModel.getImageUrl()).into(viewHolder.image);
        // viewHolder.cardView.setBackgroundResource(R.drawable.sba);
         int picId = mContext.getResources().getIdentifier(userModel.getCode().toLowerCase(), "drawable", mContext.getPackageName());

@@ -104,7 +104,7 @@ public class HomeActivity extends AppCompatActivity {
                     CSVManager.saveInCSV(companies);
                    // myrv.getRecycledViewPool().setMaxRecycledViews(R.id.cardview_id,0);
                     GridViewAdapter myAdapter = new GridViewAdapter(HomeActivity.this,companies);
-                    myrv.setLayoutManager(new GridLayoutManager(HomeActivity.this,3));
+                    myrv.setLayoutManager(new GridLayoutManager(HomeActivity.this,4));
                    // myAdapter.setHasStableIds(true);
                     myrv.setAdapter(myAdapter);
 

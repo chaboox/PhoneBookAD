@@ -6,10 +6,20 @@ import android.os.Message;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import io.realm.Realm;
+import io.realm.RealmList;
+import io.realm.RealmResults;
 
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -18,77 +28,179 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.annuairegsh.Adapter.ContactAdapter;
 import com.example.annuairegsh.Adapter.GridViewAdapter;
 import com.example.annuairegsh.Manager.API_Manager;
+import com.example.annuairegsh.Manager.AnimationManager;
 import com.example.annuairegsh.Manager.CSVManager;
+import com.example.annuairegsh.Manager.RealmManager;
 import com.example.annuairegsh.Model.City;
 import com.example.annuairegsh.Model.Company;
 import com.example.annuairegsh.Model.Constant;
 import com.example.annuairegsh.Model.Contact;
 import com.example.annuairegsh.Model.Department;
 import com.example.annuairegsh.Model.ListCity;
+import com.example.annuairegsh.Model.ListContact;
 import com.example.annuairegsh.Model.ListDepartment;
 import com.example.annuairegsh.R;
+import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 public class HomeActivity extends AppCompatActivity {
-    ArrayList<Company> companies;
-    ArrayList<Contact> contacts;
+    RealmResults<Company> companies;
+    RealmResults<Contact> contacts;
     private String TAG = "HOME";
     private RecyclerView myrv;
+    private RecyclerView contactsView;
     public static Handler handler;
     private String company;
     private String city;
+    private EditText search;
+    private ContactAdapter adapter;
+    private ArrayList<String> picsHome ;
+    private ImageView picHome;
+    private FastScrollRecyclerView recyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home2);
+        Realm.init(getApplicationContext());
         initView();
-        populateCompany();
+        populateImageHome();
+        initContactAdapter();
+        //populateCompany();
         populateFromAd();
-        populateContact();
+        //populateContact();
+    }
+
+    private void initContactAdapter() {
+
+        EditText editText = findViewById(R.id.search);
+       // ListContact listContact = (ListContact) getIntent().getSerializableExtra("contacts");
+         recyclerView = findViewById(R.id.recycler);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getApplicationContext());
+        adapter = new ContactAdapter(getApplicationContext(), contacts);
+        recyclerView.setAdapter(adapter);
+        DividerItemDecoration itemDecoration = new DividerItemDecoration(getApplicationContext(), DividerItemDecoration.VERTICAL);
+        itemDecoration.setDrawable(getResources().getDrawable(R.drawable.list_divider));
+        recyclerView.addItemDecoration(itemDecoration);
+
+
     }
 
     private void initView(){
+      //  contacts = new ArrayList<>();
+
+        contacts = RealmManager.getContactsByName("A");
         myrv = findViewById(R.id.recyclerview_id);
         handler = new HandlerHome();
+        search = findViewById(R.id.search);
+        contactsView = findViewById(R.id.recycler);
+        picHome = findViewById(R.id.up);
+
+        search.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if(s.toString().length() == 0 && myrv.getVisibility() == View.GONE){
+                    AnimationManager.SetToVisibleLeft(myrv);
+                    AnimationManager.setToInvisibleRight(contactsView);
+                }
+                else if(s.toString().length() >  0 && myrv.getVisibility() == View.VISIBLE){
+                    AnimationManager.setToInvisibleLeft(myrv);
+                    AnimationManager.SetToVisibleRight(contactsView);
+                }
+
+                if(s.toString().length() == 0) {
+                   contacts = null;
+                }
+                else {
+                    contacts = RealmManager.getContactsByName(s.toString());
+                    //API_Manager.getPicById(contacts.get(0).getId(), getApplicationContext());
+                    adapter = new ContactAdapter(getApplicationContext(), contacts);
+                    adapter.notifyDataSetChanged();
+                    recyclerView.setAdapter(adapter);
+
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
       //  myrv.setNestedScrollingEnabled(false);
     }
     private void populateCompany(){
-        companies = new ArrayList<>();
-        contacts = new ArrayList<>();
+        //companies = new ArrayList<>();
+     //   contacts = new ArrayList<>();
 
-      //  companies.add(new Company("GSHA", "GSH", R.drawable.gsh));
-       /* companies.add(new Company("ALUX", "GSH", R.drawable.gsh));
-        companies.add(new Company("GSHA", "GSH", R.drawable.gsh));
-        companies.add(new Company("GSHA", "GSH", R.drawable.gsh));
-        companies.add(new Company("GSHA", "GSH", R.drawable.gsh));
-        companies.add(new Company("GSHA", "GSH", R.drawable.gsh));
-        companies.add(new Company("GSHA", "GSH", R.drawable.gsh));
-        companies.add(new Company("GSHA", "GSH", R.drawable.gsh));
-        companies.add(new Company("GSHA", "GSH", R.drawable.gsh));
-        companies.add(new Company("GSHA", "GSH", R.drawable.gsh));
-        companies.add(new Company("GSHA", "GSH", R.drawable.gsh));
-        companies.add(new Company("GSHA", "GSH", R.drawable.gsh));*/
-      //  GridViewAdapter myAdapter = new GridViewAdapter(HomeActivity.this,companies);
-       // myrv.setLayoutManager(new GridLayoutManager(HomeActivity.this,3));
-      //  myrv.setAdapter(myAdapter);
+      //  companies.add(new Company("GSHA", "GSH", R.drawable.gsha));
+        companies.add(new Company("ALUX", "Alux", R.drawable.gsha));
+        companies.add(new Company("BTPH", "btph", R.drawable.gsha));
+        companies.add(new Company("GSHA", "sodea", R.drawable.gsha));
+        companies.add(new Company("GSHA", "GSH", R.drawable.gsha));
+        companies.add(new Company("GSHA", "GSH", R.drawable.gsha));
+        companies.add(new Company("GSHA", "GSH", R.drawable.gsha));
+        companies.add(new Company("GSHA", "GSH", R.drawable.gsha));
+        companies.add(new Company("GSHA", "GSH", R.drawable.gsha));
+        companies.add(new Company("GSHA", "GSH", R.drawable.gsha));
+        companies.add(new Company("GSHA", "GSH", R.drawable.gsha));
+        companies.add(new Company("GSHA", "GSH", R.drawable.gsha));
+        companies.add(new Company("GSHA", "GSH", R.drawable.gsha));
+        companies.add(new Company("GSHA", "GSH", R.drawable.gsha));
+        companies.add(new Company("GSHA", "GSH", R.drawable.gsha));
+        companies.add(new Company("GSHA", "GSH", R.drawable.gsha));
+        companies.add(new Company("GSHA", "GSH", R.drawable.gsha));
+        companies.add(new Company("GSHA", "GSH", R.drawable.gsha));
+        companies.add(new Company("GSHA", "GSH", R.drawable.gsha));
+        companies.add(new Company("GSHA", "GSH", R.drawable.gsha));
+        companies.add(new Company("GSHA", "GSH", R.drawable.gsha));
+        companies.add(new Company("GSHA", "GSH", R.drawable.gsha));
+        companies.add(new Company("GSHA", "GSH", R.drawable.gsha));
+        companies.add(new Company("GSHA", "GSH", R.drawable.gsha));
+        companies.add(new Company("GSHA", "GSH", R.drawable.gsha));
+        companies.add(new Company("GSHA", "GSH", R.drawable.gsha));
+        companies.add(new Company("GSHA", "GSH", R.drawable.gsha));
+        companies.add(new Company("GSHA", "GSH", R.drawable.gsha));
+        companies.add(new Company("GSHA", "GSH", R.drawable.gsha));
+        companies.add(new Company("GSHA", "GSH", R.drawable.gsha));
+        companies.add(new Company("GSHA", "GSH", R.drawable.gsha));
+        companies.add(new Company("GSHA", "GSH", R.drawable.gsha));
+        companies.add(new Company("GSHA", "GSH", R.drawable.gsha));
+       GridViewAdapter myAdapter = new GridViewAdapter(HomeActivity.this,companies);
+        myrv.setLayoutManager(new GridLayoutManager(HomeActivity.this,4));
+      myrv.setAdapter(myAdapter);
 
 
     }
 
     public void populateFromAd(){
-        RequestQueue requestQueue = Volley.newRequestQueue(this);
+       // companies = new ArrayList<>();
+
+        companies = RealmManager.getCompanies();
+        GridViewAdapter myAdapter = new GridViewAdapter(HomeActivity.this,companies);
+        myrv.setLayoutManager(new GridLayoutManager(HomeActivity.this,4));
+        // myAdapter.setHasStableIds(true);
+        myrv.setAdapter(myAdapter);
+
+        /*RequestQueue requestQueue = Volley.newRequestQueue(this);
        /* List<KeyValuePair> params = new ArrayList<>();
         params.add(new KeyValuePair("name","Adel"));
         params.add(new KeyValuePair("number","3"));*/
-        String url = Constant.API_URL + "/company";
+      /*  String url = Constant.API_URL + "/company";
 
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
             @Override
@@ -119,7 +231,7 @@ public class HomeActivity extends AppCompatActivity {
                 Log.d(TAG, "onErrorResponse: " + error.toString()  );
             }
         });
-        requestQueue.add(jsonArrayRequest);
+        requestQueue.add(jsonArrayRequest);*/
     }
 
     public void populateContact(){
@@ -140,7 +252,7 @@ public class HomeActivity extends AppCompatActivity {
                     String name = jsonObject.getString("name");
                     contacts.add(new Contact(jsonObject));
                     }
-                    CSVManager.saveContactsInCSV(contacts);
+                   // CSVManager.saveContactsInCSV(contacts);
 
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -193,5 +305,29 @@ public class HomeActivity extends AppCompatActivity {
                     break;
             }
         }
+    }
+
+    private void populateImageHome(){
+        picsHome = new ArrayList<>();
+        picsHome.add("home_alpostone");
+        picsHome.add("home_btph");
+        picsHome.add("home_giryad");
+        picsHome.add("home_hta");
+        picsHome.add("home_htf");
+        picsHome.add("home_htf2");
+        picsHome.add("home_logistique");
+        picsHome.add("home_mdm");
+        picsHome.add("home_puma");
+        picsHome.add("home_sech");
+        picsHome.add("home_sodea");
+
+        int picId = getResources().getIdentifier(picsHome.get(new Random().nextInt(11)), "drawable", getPackageName());
+
+        if (picId != 0) {
+            picHome.setImageResource(picId);
+            //Glide.with(mContext).load(picId).into(holder.imageC);
+
+        }
+
     }
 }

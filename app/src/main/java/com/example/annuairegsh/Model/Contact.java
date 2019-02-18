@@ -5,16 +5,34 @@ import org.json.JSONObject;
 
 import java.io.Serializable;
 
-public class Contact implements Serializable {
-    private String name, company, description, city, number, voip, department, mail, pictureC;
+import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
+
+public class Contact extends RealmObject implements Serializable {
+    @PrimaryKey
+    private String id;
+    private String name;
+            private String  company, description, city, number, voip, department, mail, pictureC;
     private byte[]  picture;
 
-    public Contact(String name, String firstname) {
+    public Contact(String name) {
         this.name = name;
+        this.id = name;
+        this.pictureC = "null";
+        this.company = "null";
+        this.description = "null";
+        this.city = "null";
+        this.number = "null";
+        this.voip = "null";
+        this.department = "null";
+        this.mail = "null";
+
+
     }
 
 
-
+    public Contact() {
+    }
 
     public Contact(String name, String company, String description, String city, String number,
                    String voip, String department, String mail, byte[] picture) {
@@ -30,15 +48,17 @@ public class Contact implements Serializable {
 
     public Contact(JSONObject jsonObject) {
         try {
+            this.id = jsonObject.getString("id");
             this.name = jsonObject.getString("name");
             this.description = jsonObject.getString("description");
             this.company = jsonObject.getString("company");
             this.city = jsonObject.getString("city");
-            this.number = jsonObject.getString("description");
+            this.number = jsonObject.getString("number");
             this.voip = jsonObject.getString("voip");
-            this.department = jsonObject.getString("description");
+            this.department = jsonObject.getString("department");
             this.mail = jsonObject.getString("mail");
-            this.pictureC = jsonObject.getString("pictureC");
+            this.pictureC = "null";
+           // this.pictureC = jsonObject.getString("pictureC");
         }catch (JSONException e){
             e.printStackTrace();
         }
@@ -179,13 +199,17 @@ public class Contact implements Serializable {
     }
 
 
+    public String getId() {
+        return id;
+    }
 
+    public void setId(String id) {
+        this.id = id;
+    }
 
     @Override
     public String toString() {
         return "Contact [name=" + name + ", company=" + company + ", description=" + description + ", city=" + city
                 + ", number=" + number + ", voip=" + voip + ", department=" + department + ", mail=" + mail + "]";
     }
-
-
 }

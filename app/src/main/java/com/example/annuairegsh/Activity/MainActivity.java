@@ -5,6 +5,8 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
 import androidx.appcompat.app.AppCompatActivity;
+import io.realm.Realm;
+
 import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
@@ -16,11 +18,15 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.annuairegsh.Manager.API_Manager;
+import com.example.annuairegsh.Manager.RealmManager;
 import com.example.annuairegsh.Manager.UrlGenerator;
 import com.example.annuairegsh.Model.City;
 import com.example.annuairegsh.Model.Constant;
+import com.example.annuairegsh.Model.Contact;
 import com.example.annuairegsh.Model.KeyValuePair;
 import com.example.annuairegsh.Model.ListCity;
+import com.example.annuairegsh.Model.ListContact;
 import com.example.annuairegsh.R;
 
 import org.json.JSONArray;
@@ -40,7 +46,45 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         //setContentView(R.layout.activity_main);
         //GotoCityAcitvity();
-        startActivity(new Intent(this, HomeActivity.class));
+       // GOtoContactListActivity();
+        Realm.init(getApplicationContext());
+        //RealmManager.test();
+        //RealmManager.showTest();
+
+       // API_Manager.Syncro(getApplicationContext());
+
+        RealmManager.showTest();
+
+        ArrayList<Contact> contacts = new ArrayList<>();
+        contacts.add(new Contact("adam debboosere"));
+        contacts.add(new Contact("adel achour"));
+        contacts.add(new Contact("Roua marouf"));
+        contacts.add(new Contact("Souheil hadj habib"));
+        contacts.add(new Contact("Asla"));
+        contacts.add(new Contact("adel"));
+        contacts.add(new Contact("adel"));
+        contacts.add(new Contact("adel"));
+        contacts.add(new Contact("adel"));
+        contacts.add(new Contact("adel"));
+        contacts.add(new Contact("adel"));
+        contacts.add(new Contact("adel"));
+        contacts.add(new Contact("adel"));
+        contacts.add(new Contact("adel"));
+        contacts.add(new Contact("adel"));
+        contacts.add(new Contact("adel"));
+        contacts.add(new Contact("adel"));
+        contacts.add(new Contact("adel"));
+        contacts.add(new Contact("adel"));
+        contacts.add(new Contact("adel"));
+        contacts.add(new Contact("adel"));
+        contacts.add(new Contact("adel"));
+        contacts.add(new Contact("adel"));
+        contacts.add(new Contact("adel"));
+        contacts.add(new Contact("adel"));
+        contacts.add(new Contact("adel"));
+        Intent intent = new Intent(this, HomeActivity.class);
+        intent.putExtra("contacts", new ListContact(contacts));
+        startActivity(intent);
         finish();
         imageView = findViewById(R.id.imageView);
      //   printUsers();
@@ -51,14 +95,55 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(MainActivity.this, CityActivity.class);
         ArrayList<City> cities = new ArrayList<>();
         cities.add(new City("Sidi bel abbes", "SBA"));
-        cities.add(new City("Sidi bel abbes", "SBA"));
+        cities.add(new City("Tamanrasset", "TMR"));
         cities.add(new City("Oran", "ORN"));
-        cities.add(new City("Oran", "ORN"));
+        cities.add(new City("Tlemcen", "TLM"));
         //cities.add(new City("Sidi bel abbes", "SBA"));
+        //RealmManager.saveCity(cities);
+       // Log.d(TAG, "GotoCityAcitvity:DDD " + RealmManager.showCity());
+        RealmManager.showCity();
         intent.putExtra("cities",new ListCity(cities));
         intent.putExtra("company", "GSHA");
         startActivity(intent);
         finish();
+    }
+
+    private void GOtoContactListActivity(){
+        Intent intent = new Intent(MainActivity.this, ListContactActivity.class);
+        ArrayList<Contact> contacts = new ArrayList<>();
+        contacts.add(new Contact("adam debboosere"));
+        contacts.add(new Contact("adel achour"));
+        contacts.add(new Contact("Roua marouf"));
+        contacts.add(new Contact("Souheil hadj habib"));
+        contacts.add(new Contact("Asla"));
+        contacts.add(new Contact("adel"));
+        contacts.add(new Contact("adel"));
+        contacts.add(new Contact("adel"));
+        contacts.add(new Contact("adel"));
+        contacts.add(new Contact("adel"));
+        contacts.add(new Contact("adel"));
+        contacts.add(new Contact("adel"));
+        contacts.add(new Contact("adel"));
+        contacts.add(new Contact("adel"));
+        contacts.add(new Contact("adel"));
+        contacts.add(new Contact("adel"));
+        contacts.add(new Contact("adel"));
+        contacts.add(new Contact("adel"));
+        contacts.add(new Contact("adel"));
+        contacts.add(new Contact("adel"));
+        contacts.add(new Contact("adel"));
+        contacts.add(new Contact("adel"));
+        contacts.add(new Contact("adel"));
+        contacts.add(new Contact("adel"));
+        contacts.add(new Contact("adel"));
+        contacts.add(new Contact("adel"));
+
+        intent.putExtra("contacts", new ListContact(contacts));
+        //RealmManager.saveContacts(contacts);
+        startActivity(intent);
+        finish();
+
+
     }
 
     public void printUsers(){

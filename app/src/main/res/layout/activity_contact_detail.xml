@@ -1,0 +1,285 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/drawer_layout"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+  >
+
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <LinearLayout
+                android:id="@+id/greenbglayout"
+                android:layout_width="match_parent"
+                android:layout_height="250dp"
+                android:orientation="vertical"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/degrade"
+
+                >
+                <androidx.cardview.widget.CardView
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:layout_marginTop="70dp"
+                    app:cardElevation="8dp"
+                    android:shadowDx="4"
+                    android:shadowDy="4"
+                    android:shadowRadius="12"
+                    app:cardCornerRadius="50dp"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="10dp">
+                    <de.hdodenhof.circleimageview.CircleImageView
+                        xmlns:app="http://schemas.android.com/apk/res-auto"
+                        android:id="@+id/image"
+
+                        android:layout_gravity="center"
+                        android:layout_width="100dp"
+                        android:layout_height="100dp"
+
+                        app:civ_border_color="@color/colorAccent"
+                        android:src="@drawable/user"
+                        />
+                </androidx.cardview.widget.CardView>
+
+                <TextView
+                    android:id="@+id/name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Adam Deboosere"
+                    android:layout_gravity="center"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/white"/>
+                <TextView
+                    android:id="@+id/job"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Dev mobile"
+                    android:layout_gravity="center"
+                    android:textSize="13sp"
+                    android:textColor="@color/grayclair"
+                    />
+            </LinearLayout>
+
+
+
+            <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:orientation="vertical" android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="30dp"
+                android:layout_marginRight="30dp"
+                android:layout_marginTop="15dp"
+
+                >
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:id="@+id/icon_mail"
+                    android:layout_centerVertical="true"
+                    android:src="@drawable/mail"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toEndOf="@+id/icon_mail"
+                    android:layout_marginStart="20dp"
+                    android:id="@+id/mail"
+                    android:layout_centerInParent="true"
+                    android:text="adam.deboosere@groupe-hasnaoui.com" />
+
+                <View
+                    android:layout_marginTop="30dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="2px"
+                    android:layout_toEndOf="@+id/icon_mail"
+                    android:layout_marginStart="20dp"
+                    android:background="@color/grayline"
+                    android:layout_below="@+id/mail"/>
+
+
+            </RelativeLayout>
+
+            <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:orientation="vertical" android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="30dp"
+                android:layout_marginRight="30dp">
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:id="@+id/icon"
+                    android:src="@drawable/call"
+                    android:layout_centerVertical="true"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toEndOf="@+id/icon"
+                    android:layout_marginStart="20dp"
+                    android:id="@+id/number"
+                    android:layout_centerInParent="true"
+                    android:text="0532548845" />
+
+                <View
+                    android:layout_marginTop="30dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="2px"
+                    android:layout_toEndOf="@+id/icon"
+                    android:layout_marginStart="20dp"
+
+                    android:background="@color/grayline"
+                    android:layout_below="@+id/number"/>
+
+
+            </RelativeLayout>
+            <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:orientation="vertical" android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="30dp"
+                android:layout_marginRight="30dp">
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:id="@+id/voip"
+                    android:src="@drawable/homephone"
+                    android:layout_centerVertical="true"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toEndOf="@+id/voip"
+                    android:layout_marginStart="20dp"
+                    android:id="@+id/fix"
+                    android:layout_centerInParent="true"
+                    android:text="4187" />
+
+                <View
+                    android:layout_marginTop="30dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="2px"
+                    android:layout_toEndOf="@+id/voip"
+                    android:layout_marginStart="20dp"
+
+                    android:background="@color/grayline"
+                    android:layout_below="@+id/fix"/>
+
+
+            </RelativeLayout>
+
+            <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:orientation="vertical" android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="30dp"
+                android:layout_marginRight="30dp">
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:id="@+id/icon_location"
+                    android:src="@drawable/location"
+                    android:layout_centerVertical="true"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toEndOf="@+id/icon_location"
+                    android:layout_marginStart="20dp"
+                    android:id="@+id/location"
+                    android:layout_centerInParent="true"
+                    android:text="SBA" />
+
+                <View
+                    android:layout_marginTop="30dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="2px"
+                    android:layout_toEndOf="@+id/icon_location"
+                    android:layout_marginStart="20dp"
+
+                    android:background="@color/grayline"
+                    android:layout_below="@+id/location"/>
+
+
+            </RelativeLayout>
+
+            <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:orientation="vertical" android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="30dp"
+                android:layout_marginRight="30dp">
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:id="@+id/icon_company"
+                    android:src="@drawable/company"
+                    android:layout_centerVertical="true"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toEndOf="@+id/icon_company"
+                    android:layout_marginStart="20dp"
+                    android:id="@+id/company"
+                    android:layout_centerInParent="true"
+                    android:text="GSHA" />
+
+                <View
+                    android:layout_marginTop="30dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="2px"
+                    android:layout_toEndOf="@+id/icon_company"
+                    android:layout_marginStart="20dp"
+
+                    android:background="@color/grayline"
+                    android:layout_below="@+id/company"/>
+
+
+            </RelativeLayout>
+
+            <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:orientation="vertical" android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="30dp"
+                android:layout_marginRight="30dp">
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:id="@+id/icon_department"
+                    android:src="@drawable/department"
+                    android:layout_centerVertical="true"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toEndOf="@+id/icon_department"
+                    android:layout_marginStart="20dp"
+                    android:id="@+id/department"
+                    android:layout_centerInParent="true"
+                    android:text="DSI" />
+
+                <View
+                    android:layout_marginTop="30dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="2px"
+                    android:layout_toEndOf="@+id/icon_department"
+                    android:layout_marginStart="20dp"
+
+                    android:background="@color/grayline"
+                    android:layout_below="@+id/department"/>
+
+
+            </RelativeLayout>
+        </LinearLayout>
+    </ScrollView>
+
+
+
+
+
+
+</LinearLayout>

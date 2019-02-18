@@ -5,9 +5,24 @@ import com.google.gson.JsonIOException;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class Company {
-    private String nameAD, name, description, pole;
+import java.util.ArrayList;
+import java.util.HashMap;
+
+import io.realm.RealmList;
+import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
+
+public class Company extends RealmObject {
+
+    @PrimaryKey
+    private String nameAD;
+    private String name, description, pole;
     private int image ;
+    private RealmList<City> cities;
+   // private RealmList<Department> departments;
+
+    public Company() {
+    }
 
     public Company(String nameAD, String name, int image) {
         this.nameAD = nameAD;
@@ -80,4 +95,14 @@ public class Company {
     public void setPole(String pole) {
         this.pole = pole;
     }
+
+    public RealmList<City> getCities() {
+        return cities;
+    }
+
+    public void setCities(RealmList<City> cities) {
+        this.cities = cities;
+    }
+
+
 }

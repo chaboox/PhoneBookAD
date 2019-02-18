@@ -3,6 +3,7 @@ package com.example.annuairegsh.Adapter;
 import android.content.Context;
 import android.os.Message;
 import androidx.cardview.widget.CardView;
+import io.realm.RealmList;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,7 +21,7 @@ import java.util.ArrayList;
 
 public class DepartmentAdapter extends ArrayAdapter<Department> implements View.OnClickListener{
 
-    private ArrayList<Department> dataSet;
+    private RealmList<Department> dataSet;
     Context mContext;
 
     // View lookup cache
@@ -32,7 +33,7 @@ public class DepartmentAdapter extends ArrayAdapter<Department> implements View.
 
 
 
-    public DepartmentAdapter(ArrayList<Department> data, Context context) {
+    public DepartmentAdapter(RealmList<Department> data, Context context) {
         super(context, R.layout.item_department, data);
         this.dataSet = data;
         this.mContext=context;

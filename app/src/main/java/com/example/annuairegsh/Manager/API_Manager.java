@@ -1,21 +1,30 @@
 package com.example.annuairegsh.Manager;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Base64;
 import android.util.Log;
+import android.widget.ImageView;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.bumptech.glide.Glide;
+import com.example.annuairegsh.Activity.HomeActivity;
+import com.example.annuairegsh.Adapter.GridViewAdapter;
 import com.example.annuairegsh.Model.City;
+import com.example.annuairegsh.Model.Company;
 import com.example.annuairegsh.Model.Constant;
 import com.example.annuairegsh.Model.Contact;
 import com.example.annuairegsh.Model.Department;
 import com.example.annuairegsh.Model.KeyValuePair;
+import com.google.gson.JsonObject;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -25,11 +34,25 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import androidx.recyclerview.widget.GridLayoutManager;
+
+import static com.example.annuairegsh.Manager.PictureDecodeManager.decodeSampleBitmap;
+
 public class API_Manager {
     private static ArrayList<City> cities;
     private static ArrayList<Department> departments;
     private static ArrayList<Contact> contacts;
     public static HashMap<String, String> directionDescription;
+    public static ArrayList<Company> companies;
+    private static Context context;
+
+
+    public static void SyncBdd(Context contextP){
+        context = contextP;
+        //First phase getting the companies
+
+
+    }
 
     public static void getCity(String company, Context context,  final  Handler handler){
         RequestQueue requestQueue = Volley.newRequestQueue(context);
@@ -45,11 +68,8 @@ public class API_Manager {
                     for(int i = 0; i < response.length(); i++){
                         JSONObject jsonObject = (JSONObject) response.get(i);
                         cities.add(new City(jsonObject));
-                        //String name = jsonObject.getString("name");
                     }
-                    //CSVManager.CreateRootFolder();
-                    //CSVManager.saveInCSV(companies);
-                    // myrv.getRecycledViewPool().setMaxRecycledViews(R.id.cardview_id,0);
+
                     Message message = new Message();
                     message.obj = cities;
                     message.what = Constant.CITY;
@@ -57,6 +77,43 @@ public class API_Manager {
                     handler.sendMessage(message);
 
 
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.d("ERROR API", "onErrorResponse: " + error.toString()  );
+            }
+        });
+        requestQueue.add(jsonArrayRequest);
+    }
+
+    public static void getCity2(final String company, final Context context, final Company cp){
+        RequestQueue requestQueue = Volley.newRequestQueue(context);
+        cities = new ArrayList<>();
+        List<KeyValuePair> params = new ArrayList<>();
+        params.add(new KeyValuePair("company", company));
+        String url = Constant.API_URL + "/CitiesByCompany";
+
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.POST, UrlGenerator.generateUrl(url, params), null, new Response.Listener<JSONArray>() {
+            @Override
+            public void onResponse(JSONArray response) {
+                try {
+                    cities.clear();
+                    for(int i = 0; i < response.length(); i++){
+                        JSONObject jsonObject = (JSONObject) response.get(i);
+                        cities.add(new City(jsonObject));
+
+
+                    }
+                    RealmManager.saveCity(cities, cp);
+
+                    for (City c : cities){
+                        getDepartement2(company,c, context );
+                    }
 
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -121,6 +178,53 @@ public class API_Manager {
         requestQueue.add(jsonArrayRequest);
     }
 
+    public static void getDepartement2(final String company, final City city, final Context context){
+        directionDescription= new HashMap<>();
+        getDescriptionDirection();
+        RequestQueue requestQueue = Volley.newRequestQueue(context);
+        departments = new ArrayList<>();
+        List<KeyValuePair> params = new ArrayList<>();
+        params.add(new KeyValuePair("company", company));
+        params.add(new KeyValuePair("city", city.getCode()));
+        String url = Constant.API_URL + "/DirectionByCompany";
+
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.POST, UrlGenerator.generateUrl(url, params), null, new Response.Listener<JSONArray>() {
+            @Override
+            public void onResponse(JSONArray response) {
+                try {
+                    departments.clear();
+                    for(int i = 0; i < response.length(); i++){
+                        JSONObject jsonObject = (JSONObject) response.get(i);
+                        Department department = new Department(jsonObject);
+                        String desc = directionDescription.get(jsonObject.getString("name"));
+                        if(desc == null)
+                            department.setDescription("");
+                        else department.setDescription(desc);
+                        departments.add(department);
+
+                        //String name = jsonObject.getString("name");
+                    }
+
+                    RealmManager.saveDepartment(departments, company, city);
+                    for(Department d :departments){
+                    getContactsByDepartment2(company, city.getCode(), d.getCode(), context);}
+                    //CSVManager.CreateRootFolder();
+                    //CSVManager.saveInCSV(companies);
+                    // myrv.getRecycledViewPool().setMaxRecycledViews(R.id.cardview_id,0);
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.d("ERROR API", "onErrorResponse: " + error.toString()  );
+            }
+        });
+        requestQueue.add(jsonArrayRequest);
+    }
+
     public static void getContactsByDepartment(String company, String city, String department, Context context,  final  Handler handler){
         directionDescription= new HashMap<>();
         getDescriptionDirection();
@@ -169,6 +273,83 @@ public class API_Manager {
         requestQueue.add(jsonArrayRequest);
     }
 
+    public static void getContactsByDepartment2(String company, String city, String department, final Context context){
+        directionDescription= new HashMap<>();
+        getDescriptionDirection();
+        RequestQueue requestQueue = Volley.newRequestQueue(context);
+        contacts = new ArrayList<>();
+        List<KeyValuePair> params = new ArrayList<>();
+        params.add(new KeyValuePair("company", company));
+        params.add(new KeyValuePair("city", city));
+        params.add(new KeyValuePair("department", department));
+        String url = Constant.API_URL + "/contactsByDepartment";
+
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.POST, UrlGenerator.generateUrl(url, params), null, new Response.Listener<JSONArray>() {
+            @Override
+            public void onResponse(JSONArray response) {
+                try {
+
+                    for(int i = 0; i < response.length(); i++){
+                        JSONObject jsonObject = (JSONObject) response.get(i);
+                        Contact contact = new Contact(jsonObject);
+
+                        contacts.add(contact);
+                        Log.d("APII", "onResponse: " + contact.getName());
+                        //String name = jsonObject.getString("name");
+                    }
+                    //CSVManager.CreateRootFolder();
+                    //CSVManager.saveInCSV(companies);
+                    // myrv.getRecycledViewPool().setMaxRecycledViews(R.id.cardview_id,0);
+                    RealmManager.saveContacts(contacts);
+
+
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.d("ERROR API", "onErrorResponse: " + error.toString()  );
+            }
+        });
+        requestQueue.add(jsonArrayRequest);
+    }
+
+    public static void getPicById(String id, final Context context, final ImageView imageView, final Contact contact){
+
+        RequestQueue requestQueue = Volley.newRequestQueue(context);
+
+        List<KeyValuePair> params = new ArrayList<>();
+        params.add(new KeyValuePair("id", id));
+        String url = Constant.API_URL + "/getPicById";
+
+        JsonObjectRequest object = new JsonObjectRequest(Request.Method.POST, UrlGenerator.generateUrl(url, params), null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                try {
+                    Log.d("RESPP", "onResponse: " + response.getString("picture"));
+                    if( response.getString("picture") != null && response.getString("picture")!= "null"){
+                        Bitmap bitmap = decodeSampleBitmap(Base64.decode(response.getString("picture"), Base64.DEFAULT), 60, 60);
+                    Glide.with(context).load(bitmap).into(imageView);
+                   // contact.setPictureC(response.getString("picture"));
+                        RealmManager.savePic(contact, response.getString("picture"));
+
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.d("RESPPERROR", "onResponse: " + error.toString());
+            }
+        });
+        requestQueue.add(object);
+    }
+
     private static void getDescriptionDirection(){
         directionDescription.put("APP", "Approvisionnements");
         directionDescription.put("CDF", "Centre De Formation");
@@ -208,6 +389,45 @@ public class API_Manager {
         directionDescription.put("SECU", "Sécurité");
         directionDescription.put("ARBO", "Département Arboricole");
         directionDescription.put("DMK", "Direction Marketing");
+    }
+
+    public static void Syncro(final Context context){
+        companies = new ArrayList<>();
+        RequestQueue requestQueue = Volley.newRequestQueue(context);
+       /* List<KeyValuePair> params = new ArrayList<>();
+        params.add(new KeyValuePair("name","Adel"));
+        params.add(new KeyValuePair("number","3"));*/
+        String url = Constant.API_URL + "/company";
+
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
+            @Override
+            public void onResponse(JSONArray response) {
+                byte[] b4 = null;
+                try {
+                    for(int i = 0; i < response.length(); i++){
+                        JSONObject jsonObject = (JSONObject) response.get(i);
+                        companies.add(new Company(jsonObject));
+                        //String name = jsonObject.getString("name");
+                    }
+                    RealmManager.saveCompany(companies);
+
+                    for(Company company: companies){
+                    getCity2(company.getNameAD(), context, company);
+                    }
+
+                    // myrv.getRecycledViewPool().setMaxRecycledViews(R.id.cardview_id,0);
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.d("ERROR", "onErrorResponse: " + error.toString()  );
+            }
+        });
+        requestQueue.add(jsonArrayRequest);
     }
 
 

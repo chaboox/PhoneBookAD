@@ -1,39 +1,42 @@
 package com.example.annuairegsh.Adapter;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.media.Image;
-import android.os.Message;
 
 import android.util.Base64;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.annuairegsh.Activity.HomeActivity;
-import com.example.annuairegsh.Model.Constant;
+import com.example.annuairegsh.Activity.ContactDetailActivity;
+import com.example.annuairegsh.Manager.API_Manager;
 import com.example.annuairegsh.Model.Contact;
 import com.example.annuairegsh.R;
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
-public class SimpleRecyclerAdapter extends RecyclerView.Adapter<SimpleRecyclerAdapter.ViewHolder>
+import static com.example.annuairegsh.Manager.PictureDecodeManager.decodeSampleBitmap;
+
+public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ViewHolder>
         implements FastScrollRecyclerView.SectionedAdapter {
     private Context mContext ;
     private List<Contact> mData ;
+    private ArrayList<Contact> saveData ;
 
-    public SimpleRecyclerAdapter(Context mContext, List<Contact> mData) {
+    public ContactAdapter(Context mContext, List<Contact> mData) {
         this.mContext = mContext;
         this.mData = mData;
+        this.saveData = new ArrayList<>(mData);
     }
 
     @Override
@@ -56,11 +59,26 @@ public class SimpleRecyclerAdapter extends RecyclerView.Adapter<SimpleRecyclerAd
        // Log.d("PIC", "onBindViewHolder: " + mData.get(position).getName() + "     LL:" + );
 
         String pic =  mData.get(position).getPictureC();
+        if (pic == null) pic = "null";
+
         if(!pic.equals("null")) {
             Bitmap bitmap = decodeSampleBitmap(Base64.decode(pic, Base64.DEFAULT), 60, 60);
             holder.imageView.setImageBitmap(bitmap);
+        } else
+          {holder.imageView.setImageResource(R.drawable.user);
+            API_Manager.getPicById(mData.get(position).getId(), mContext, holder.imageView, (mData.get(position)));
         }
 
+
+        holder.cardView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(mContext, ContactDetailActivity.class);
+                //intent.putExtra("contact", mData.get(position));
+                intent.putExtra("id", mData.get(position).getId());
+                mContext.startActivity(intent);
+            }
+        });
         //holder.job.setImageResource(mData.get(position).getImage());
 
 
@@ -82,34 +100,31 @@ public class SimpleRecyclerAdapter extends RecyclerView.Adapter<SimpleRecyclerAd
     static class ViewHolder extends RecyclerView.ViewHolder {
         public TextView name, job;
         public ImageView imageView;
+        public CardView cardView;
 
         ViewHolder(View itemView) {
             super(itemView);
             name = itemView.findViewById(R.id.text);
             job = itemView.findViewById(R.id.job);
             imageView = itemView.findViewById(R.id.image);
+            cardView = itemView.findViewById(R.id.cardview2);
         }
     }
-    public static Bitmap decodeSampleBitmap(byte[] bitmap, int reqHeight, int reqWidth) {
-        BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inJustDecodeBounds = true;
-        BitmapFactory.decodeByteArray(bitmap, 0, bitmap.length);
-        options.inSampleSize = calculateInSampleSize(options, reqHeight, reqWidth);
-        options.inJustDecodeBounds = false;
-        return BitmapFactory.decodeByteArray(bitmap, 0, bitmap.length);
-    }
+    public void filter(String charText) {
 
-    public static int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
-        int height = options.outHeight;
-        int width = options.outWidth;
-        int inSampleSize = 1;
-        if (height > reqHeight || width > reqWidth) {
-            int halfHeight = height / 2;
-            int halfWidth = width / 2;
-            while (halfHeight / inSampleSize >= reqHeight && halfWidth / inSampleSize >= reqWidth) {
-                inSampleSize *= 2;
+        charText = charText.toLowerCase();
+        mData.clear();
+        if (charText.length() == 0) {
+            mData = new ArrayList<>(saveData);
+        } else {
+            for (Contact contact : saveData) {
+                if (contact.getName().toLowerCase()
+                        .contains(charText)) {
+                    mData.add(contact);
+                }
             }
         }
-        return inSampleSize;
+        notifyDataSetChanged();
     }
+
 }

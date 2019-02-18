@@ -9,6 +9,8 @@ import android.widget.ListView;
 
 import com.example.annuairegsh.Adapter.DepartmentAdapter;
 import com.example.annuairegsh.Manager.API_Manager;
+import com.example.annuairegsh.Manager.RealmManager;
+import com.example.annuairegsh.Model.City;
 import com.example.annuairegsh.Model.Constant;
 import com.example.annuairegsh.Model.Contact;
 import com.example.annuairegsh.Model.ListContact;
@@ -19,7 +21,9 @@ import java.util.ArrayList;
 
 public class DepartmentActivity extends AppCompatActivity {
     private ListView listView;
-    private String company, city;
+    private String company;
+    private City city;
+    private String idCity;
     public static Handler handler;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,9 +31,11 @@ public class DepartmentActivity extends AppCompatActivity {
         setContentView(R.layout.activity_department);
         initView();
         company = getIntent().getStringExtra("company");
-        city = getIntent().getStringExtra("city");
-        ListDepartment departments = (ListDepartment) getIntent().getSerializableExtra("departments");
-        DepartmentAdapter adapter = new DepartmentAdapter(departments.getDepartments(), getApplicationContext());
+        idCity = getIntent().getStringExtra("id");
+        city = RealmManager.getCityById(idCity);
+        //city = getIntent().getStringExtra("city");
+       // ListDepartment departments = (ListDepartment) getIntent().getSerializableExtra("departments");
+        DepartmentAdapter adapter = new DepartmentAdapter(city.getDepartments(), getApplicationContext());
 
         listView.setAdapter(adapter);
       //  listView.setFastScrollEnabled(true);
@@ -37,10 +43,10 @@ public class DepartmentActivity extends AppCompatActivity {
 
     private void initView(){
         listView = findViewById(R.id.listview);
-        handler = new HandlerDepartment();
+       // handler = new HandlerDepartment();
     }
 
-    public class HandlerDepartment extends Handler {
+   /* public class HandlerDepartment extends Handler {
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
@@ -57,5 +63,5 @@ public class DepartmentActivity extends AppCompatActivity {
                     startActivity(intent);
                     break;
             }
-        }}
+        }}*/
 }

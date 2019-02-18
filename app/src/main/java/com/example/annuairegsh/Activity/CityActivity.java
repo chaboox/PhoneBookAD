@@ -9,6 +9,8 @@ import android.widget.ListView;
 
 import com.example.annuairegsh.Adapter.CityAdapter;
 import com.example.annuairegsh.Manager.API_Manager;
+import com.example.annuairegsh.Manager.RealmManager;
+import com.example.annuairegsh.Model.Company;
 import com.example.annuairegsh.Model.Constant;
 import com.example.annuairegsh.Model.Department;
 import com.example.annuairegsh.Model.ListCity;
@@ -19,19 +21,20 @@ import java.util.ArrayList;
 
 public class CityActivity extends AppCompatActivity {
     public static ListView listView;
-    private String company;
+    private Company company;
+    public static String companyName;
     private String city;
-    public static   ListCity cities;
+    //public static   ListCity cities;
     public static Handler handler;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_city);
         initView();
-        cities = (ListCity) getIntent().getSerializableExtra("cities");
-        company = getIntent().getStringExtra("company");
-
-        CityAdapter adapter = new CityAdapter(cities.getCities(), getApplicationContext());
+        //cities = (ListCity) getIntent().getSerializableExtra("cities");
+       companyName = getIntent().getStringExtra("company");
+        company = RealmManager.getCompanyByCode(companyName);
+        CityAdapter adapter = new CityAdapter(company.getCities(), getApplicationContext());
         listView.setAdapter(adapter);
         //ItemHeighManger.setListViewHeightBasedOnChildren(listView);
         //listView.setFillViewport(true);
@@ -39,10 +42,10 @@ public class CityActivity extends AppCompatActivity {
 
     private void initView(){
         listView = findViewById(R.id.listview);
-        handler = new HandlerCity();
+        //handler = new HandlerCity();
     }
 
-    public class HandlerCity extends Handler {
+    /*public class HandlerCity extends Handler {
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
@@ -61,5 +64,5 @@ public class CityActivity extends AppCompatActivity {
                     startActivity(intent);
                     break;
             }
-        }}
+        }}*/
     }

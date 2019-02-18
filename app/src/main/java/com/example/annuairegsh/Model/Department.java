@@ -5,18 +5,28 @@ import org.json.JSONObject;
 
 import java.io.Serializable;
 
-public class Department implements Serializable {
+import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
 
-    private String code, description;
+public class Department extends RealmObject implements Serializable {
+
+    @PrimaryKey
+    private String id;
+    private String code;
+    private String description;
 
     public Department(String code, String description) {
         this.code = code;
         this.description = description;
     }
 
+    public Department() {
+    }
+
     public Department(JSONObject jsonObject) {
         try {
             this.code = jsonObject.getString("name");
+            this.id = jsonObject.getString("id");
         }catch (JSONException e){
             e.printStackTrace();
         }

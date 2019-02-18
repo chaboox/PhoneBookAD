@@ -1,10 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Activity.ListContactActivity">
+    tools:context=".Activity.ListContactActivity"
+   >
+
+        <ImageView
+            android:id="@+id/up"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:scaleType="centerCrop"
+            android:background="@drawable/degrade"/>
+        <androidx.cardview.widget.CardView
+            android:id="@+id/innerProductCard"
+            android:layout_width="match_parent"
+            app:cardBackgroundColor="@color/white"
+            android:layout_height="70dp"
+            app:cardCornerRadius="24dp"
+
+            android:layout_marginTop="66dp"
+            app:cardUseCompatPadding="true">
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:shadowColor="@color/white"
+                android:textColor="@color/gray"
+                android:padding="10dp"
+                android:drawableStart="@drawable/ic_search_gray_24dp"
+                android:maxLines="1"
+                android:hint="Rechercher un contact"
+                android:drawablePadding="13dp"
+
+
+                android:background="@null"
+                android:textCursorDrawable="@drawable/cursor"
+                android:id="@+id/search"/>
+            </RelativeLayout>
+
+        </androidx.cardview.widget.CardView>
+
+
+
+
+
+
     <com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView
         android:id="@+id/recycler"
         android:layout_width="match_parent"
@@ -20,5 +65,8 @@
         app:fastScrollPopupTextVerticalAlignmentMode="font_metrics"
         app:fastScrollThumbColor="@color/colorAccent"
         app:fastScrollThumbEnabled="true"
-        tools:listitem="@layout/list_item_header" />
-</LinearLayout>
+        android:layout_below="@id/up"
+        android:clipToPadding="false"
+        android:paddingTop="35dp"
+       />
+</RelativeLayout>

@@ -1,6 +1,7 @@
 package com.example.annuairegsh.Adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Message;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
@@ -12,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 
+import com.example.annuairegsh.Activity.CityActivity;
 import com.example.annuairegsh.Activity.HomeActivity;
 import com.example.annuairegsh.Model.Company;
 import com.example.annuairegsh.Model.Constant;
@@ -61,11 +63,16 @@ public class GridViewAdapter extends RecyclerView.Adapter<GridViewAdapter.MyView
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Message message = new Message();
+                /*Message message = new Message();
                 message.what = Constant.GET_CITY;
                 message.obj = mData.get(position).getNameAD();
-                Log.d("ADD", "onClick: " + (String)  message.obj);
-                HomeActivity.handler.sendMessage(message);
+                Log.d("ADD", "onClick: " + (String)  message.obj);*/
+
+                Intent intent = new Intent(mContext, CityActivity.class);
+                intent.putExtra("company",mData.get(position).getNameAD());
+                mContext.startActivity(intent);
+
+               // HomeActivity.handler.sendMessage(message);
 
               /*  Intent intent = new Intent(mContext,Book_Activity.class);
 

@@ -1,8 +1,10 @@
 package com.example.annuairegsh.Adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Message;
 import androidx.cardview.widget.CardView;
+import io.realm.RealmList;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -14,6 +16,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.annuairegsh.Activity.CityActivity;
+import com.example.annuairegsh.Activity.DepartmentActivity;
 import com.example.annuairegsh.Model.City;
 import com.example.annuairegsh.Model.Constant;
 import com.example.annuairegsh.R;
@@ -22,8 +25,8 @@ import java.util.ArrayList;
 
 public class CityAdapter extends ArrayAdapter<City> implements View.OnClickListener{
 
-    private ArrayList<City> dataSet;
-    Context mContext;
+    private RealmList<City> dataSet;
+    private Context mContext;
 
     // View lookup cache
     private static class ViewHolder {
@@ -35,7 +38,7 @@ public class CityAdapter extends ArrayAdapter<City> implements View.OnClickListe
 
 
 
-    public CityAdapter(ArrayList<City> data, Context context) {
+    public CityAdapter(RealmList<City> data, Context context) {
         super(context, R.layout.item_department, data);
         this.dataSet = data;
         this.mContext=context;
@@ -150,10 +153,15 @@ public class CityAdapter extends ArrayAdapter<City> implements View.OnClickListe
         viewHolder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Message message = new Message();
+              /*  Message message = new Message();
                 message.what = Constant.GET_CITY;
                 message.obj = userModel.getCode();
-                CityActivity.handler.sendMessage(message);
+                CityActivity.handler.sendMessage(message);*/
+
+                Intent intent = new Intent(mContext, DepartmentActivity.class);
+                intent.putExtra("id", userModel.getId());
+                intent.putExtra("company", CityActivity.companyName);
+                mContext.startActivity(intent);
             }
         });
 

@@ -11,19 +11,18 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="horizontal"
-        android:id="@+id/linear"
-        >
+        android:id="@+id/linear">
+
         <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
+
         <ImageView
             xmlns:app="http://schemas.android.com/apk/res-auto"
             android:id="@+id/image"
             android:scaleType="centerCrop"
             android:layout_width="match_parent"
-            android:layout_height="160dp"
-
-            />
+            android:layout_height="160dp" />
 
             <TextView
                 android:id="@+id/name_city"
@@ -37,9 +36,8 @@
                 android:layout_centerHorizontal="true"
                 android:layout_centerVertical="true"
                 android:text="City"
-                android:textStyle="bold"
                 android:textColor="@color/white"
-                android:textSize="17sp"/>
+                android:textSize="18sp"/>
         </RelativeLayout>
     </LinearLayout>
 </androidx.cardview.widget.CardView>

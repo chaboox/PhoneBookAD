@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="30dp">
+<ImageView
+    android:layout_width="30dp"
+    android:layout_height="40dp"
+    android:id="@+id/icon"
+    android:src="@drawable/mail"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@+id/icon"
+        android:layout_marginStart="20dp"
+        android:id="@+id/mail"
+        android:layout_centerInParent="true"
+        android:text="Chaboox@groupe-hasnaoui.com" />
+
+    <View
+        android:layout_marginTop="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:layout_toEndOf="@+id/icon"
+
+        android:background="@color/gray2"
+        android:layout_below="@+id/mail"/>
+
+
+</RelativeLayout>

@@ -1,6 +1,7 @@
 package com.example.annuairegsh.Adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Message;
 import androidx.cardview.widget.CardView;
 import io.realm.RealmList;
@@ -13,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.annuairegsh.Activity.DepartmentActivity;
+import com.example.annuairegsh.Activity.ListContactActivity;
 import com.example.annuairegsh.Model.Constant;
 import com.example.annuairegsh.Model.Department;
 import com.example.annuairegsh.R;
@@ -141,10 +143,16 @@ public class DepartmentAdapter extends ArrayAdapter<Department> implements View.
         viewHolder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Message message = new Message();
+               /* Message message = new Message();
                 message.what = Constant.CONTACT_FETCH;
                 message.obj = userModel.getCode();
-                DepartmentActivity.handler.sendMessage(message);
+                DepartmentActivity.handler.sendMessage(message);*/
+
+                Intent intent = new Intent(mContext, ListContactActivity.class);
+                intent.putExtra("department", userModel.getCode());
+                intent.putExtra("company", DepartmentActivity.company);
+                intent.putExtra("city", DepartmentActivity.city.getCode());
+                mContext.startActivity(intent);
             }
         });
 

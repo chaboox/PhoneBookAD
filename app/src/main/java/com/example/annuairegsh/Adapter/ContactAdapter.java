@@ -113,7 +113,8 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ViewHold
     public void filter(String charText) {
 
         charText = charText.toLowerCase();
-        mData.clear();
+        mData = null;
+        mData = new ArrayList<>();
         if (charText.length() == 0) {
             mData = new ArrayList<>(saveData);
         } else {

@@ -21,8 +21,8 @@ import java.util.ArrayList;
 
 public class DepartmentActivity extends AppCompatActivity {
     private ListView listView;
-    private String company;
-    private City city;
+    public static String company;
+    public static City city;
     private String idCity;
     public static Handler handler;
     @Override

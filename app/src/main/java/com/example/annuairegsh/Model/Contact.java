@@ -49,10 +49,10 @@ public class Contact extends RealmObject implements Serializable {
     public Contact(JSONObject jsonObject) {
         try {
             this.id = jsonObject.getString("id");
-            this.name = jsonObject.getString("name");
+            this.name = (id).split(",")[0].substring(3);
             this.description = jsonObject.getString("description");
-            this.company = jsonObject.getString("company");
-            this.city = jsonObject.getString("city");
+            this.company = (id).split(",")[3].substring(3);
+            this.city =(id).split(",")[2].substring(3);
             this.number = jsonObject.getString("number");
             this.voip = jsonObject.getString("voip");
             this.department = jsonObject.getString("department");
@@ -63,6 +63,8 @@ public class Contact extends RealmObject implements Serializable {
             e.printStackTrace();
         }
     }
+    //CN=Imene AZZOUN,OU=Users,OU=SBA,OU=HTAS,DC=groupe-hasnaoui,DC=local
+
 
 
     public String getName() {

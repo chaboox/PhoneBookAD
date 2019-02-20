@@ -5,11 +5,14 @@ package com.example.annuairegsh.Activity;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.widget.EditText;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.annuairegsh.Adapter.ContactAdapter;
+import com.example.annuairegsh.Manager.RealmManager;
+import com.example.annuairegsh.Model.Contact;
 import com.example.annuairegsh.Model.ListContact;
 import com.example.annuairegsh.R;
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView;
@@ -17,22 +20,31 @@ import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView;
 
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import io.realm.RealmList;
+import io.realm.RealmResults;
 
 
 public class ListContactActivity extends AppCompatActivity {
     private ContactAdapter adapter;
+    private RealmResults<Contact> contacts;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_test_alpha);
-        ListContact listContact = (ListContact) getIntent().getSerializableExtra("contacts");
+       // ListContact listContact = (ListContact) getIntent().getSerializableExtra("contacts");
         EditText editText = findViewById(R.id.search);
 
+        String company = getIntent().getStringExtra("company");
+        String city= getIntent().getStringExtra("city");
+        String department = getIntent().getStringExtra("department");
+
+        Log.d("RESULTT", "onCreate: " + company + "   " +  city + "  " + department );
+        contacts = RealmManager.getContactByDeparmtment(department, company, city);
         FastScrollRecyclerView recyclerView = findViewById(R.id.recycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getApplicationContext());
-        adapter = new ContactAdapter(getApplicationContext(), listContact.getContacts());
+        adapter = new ContactAdapter(getApplicationContext(), contacts);
         recyclerView.setAdapter(adapter);
         DividerItemDecoration itemDecoration = new DividerItemDecoration(getApplicationContext(), DividerItemDecoration.VERTICAL);
         itemDecoration.setDrawable(getResources().getDrawable(R.drawable.list_divider));

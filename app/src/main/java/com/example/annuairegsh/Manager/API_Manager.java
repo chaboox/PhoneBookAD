@@ -7,6 +7,7 @@ import android.os.Message;
 import android.util.Base64;
 import android.util.Log;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -109,7 +110,7 @@ public class API_Manager {
 
 
                     }
-                    RealmManager.saveCity(cities, cp);
+                    new RealmManager().saveCity(cities, cp);
 
                     for (City c : cities){
                         getDepartement2(company,c, context );
@@ -205,7 +206,7 @@ public class API_Manager {
                         //String name = jsonObject.getString("name");
                     }
 
-                    RealmManager.saveDepartment(departments, company, city);
+                 // new RealmManager().saveDepartment(departments, company, city);
                     for(Department d :departments){
                     getContactsByDepartment2(company, city.getCode(), d.getCode(), context);}
                     //CSVManager.CreateRootFolder();
@@ -300,7 +301,7 @@ public class API_Manager {
                     //CSVManager.CreateRootFolder();
                     //CSVManager.saveInCSV(companies);
                     // myrv.getRecycledViewPool().setMaxRecycledViews(R.id.cardview_id,0);
-                    RealmManager.saveContacts(contacts);
+                   //new RealmManager().saveContacts(contacts);
 
 
 
@@ -317,8 +318,94 @@ public class API_Manager {
         requestQueue.add(jsonArrayRequest);
     }
 
-    public static void getPicById(String id, final Context context, final ImageView imageView, final Contact contact){
 
+    public static void getAllContacts(final Context context, final Handler handler, final int what){
+        directionDescription= new HashMap<>();
+        getDescriptionDirection();
+        RequestQueue requestQueue = Volley.newRequestQueue(context);
+        contacts = new ArrayList<>();
+
+        String url = Constant.API_URL + "/allContacts";
+
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
+            @Override
+            public void onResponse(JSONArray response) {
+                try {
+
+                    for(int i = 0; i < response.length(); i++){
+                        JSONObject jsonObject = (JSONObject) response.get(i);
+                        Contact contact = new Contact(jsonObject);
+
+                        contacts.add(contact);
+                        Log.d("APII", "onResponse: " + contact.getName());
+                        //String name = jsonObject.getString("name");
+                    }
+                    //CSVManager.CreateRootFolder();
+                    //CSVManager.saveInCSV(companies);
+                    // myrv.getRecycledViewPool().setMaxRecycledViews(R.id.cardview_id,0);
+                    new RealmManager().saveContacts(contacts);
+
+                    handler.sendEmptyMessage(what);
+
+
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.d("ERROR API", "onErrorResponse: " + error.toString()  );
+            }
+        });
+        requestQueue.add(jsonArrayRequest);
+    }
+
+    public static void getContactsByNullDepartment( final Context context){
+        directionDescription= new HashMap<>();
+        getDescriptionDirection();
+        RequestQueue requestQueue = Volley.newRequestQueue(context);
+        contacts = new ArrayList<>();
+        List<KeyValuePair> params = new ArrayList<>();
+
+        params.add(new KeyValuePair("number", "200"));
+        String url = Constant.API_URL + "/contactsWithNullDepartment";
+
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.POST, UrlGenerator.generateUrl(url, params), null, new Response.Listener<JSONArray>() {
+            @Override
+            public void onResponse(JSONArray response){
+                try {
+
+                    for(int i = 0; i < response.length(); i++){
+                        JSONObject jsonObject = (JSONObject) response.get(i);
+                        Contact contact = new Contact(jsonObject);
+
+                        contacts.add(contact);
+                        Log.d("APII", "onResponse: " + contact.getName());
+                        //String name = jsonObject.getString("name");
+                    }
+                    //CSVManager.CreateRootFolder();
+                    //CSVManager.saveInCSV(companies);
+                    // myrv.getRecycledViewPool().setMaxRecycledViews(R.id.cardview_id,0);
+                   new RealmManager().saveContacts(contacts);
+
+
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.d("ERROR API", "onErrorResponse: " + error.toString());
+            }
+        });
+        requestQueue.add(jsonArrayRequest);
+    }
+
+    public static void getPicById(String id, final Context context, final ImageView imageView, final Contact contact){
         RequestQueue requestQueue = Volley.newRequestQueue(context);
 
         List<KeyValuePair> params = new ArrayList<>();
@@ -335,7 +422,6 @@ public class API_Manager {
                     Glide.with(context).load(bitmap).into(imageView);
                    // contact.setPictureC(response.getString("picture"));
                         RealmManager.savePic(contact, response.getString("picture"));
-
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -391,7 +477,7 @@ public class API_Manager {
         directionDescription.put("DMK", "Direction Marketing");
     }
 
-    public static void Syncro(final Context context){
+    public static void Syncro(final Context context, final Handler handler, final int what){
         companies = new ArrayList<>();
         RequestQueue requestQueue = Volley.newRequestQueue(context);
        /* List<KeyValuePair> params = new ArrayList<>();
@@ -406,15 +492,17 @@ public class API_Manager {
                 try {
                     for(int i = 0; i < response.length(); i++){
                         JSONObject jsonObject = (JSONObject) response.get(i);
-                        companies.add(new Company(jsonObject));
+                        Company company = new Company(jsonObject);
+                        Log.d("APCC", "onResponse: " + company.getName());
+                        companies.add(company);
                         //String name = jsonObject.getString("name");
                     }
                     RealmManager.saveCompany(companies);
-
-                    for(Company company: companies){
+                    handler.sendEmptyMessage(what);
+                   /* for(Company company: companies){
                     getCity2(company.getNameAD(), context, company);
                     }
-
+*/
                     // myrv.getRecycledViewPool().setMaxRecycledViews(R.id.cardview_id,0);
 
                 } catch (JSONException e) {
@@ -424,7 +512,8 @@ public class API_Manager {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.d("ERROR", "onErrorResponse: " + error.toString()  );
+                Log.d("ERROR", "onErrorResponse: " + error.toString());
+                Toast.makeText(context, "ERREUR !", Toast.LENGTH_SHORT).show();
             }
         });
         requestQueue.add(jsonArrayRequest);

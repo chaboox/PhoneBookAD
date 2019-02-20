@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".Activity.ListContactActivity"
+    android:focusable="true" android:focusableInTouchMode="true"
    >
 
         <ImageView
@@ -30,7 +31,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:shadowColor="@color/white"
-                android:textColor="@color/gray"
+                android:textColor="@color/gray2"
                 android:padding="10dp"
                 android:drawableStart="@drawable/ic_search_gray_24dp"
                 android:maxLines="1"

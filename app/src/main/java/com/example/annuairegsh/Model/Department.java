@@ -10,9 +10,11 @@ import io.realm.annotations.PrimaryKey;
 
 public class Department extends RealmObject implements Serializable {
 
+
+
     @PrimaryKey
-    private String id;
     private String code;
+    private String id;
     private String description;
 
     public Department(String code, String description) {

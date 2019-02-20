@@ -26,7 +26,6 @@ public class AnimationManager {
         TranslateAnimation animate = new TranslateAnimation(view.getWidth(),0, 0,0);
         animate.setDuration(250);
         animate.setFillAfter(true);
-
         view.startAnimation(animate);
     }
 

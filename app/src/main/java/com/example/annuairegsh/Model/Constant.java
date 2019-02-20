@@ -8,4 +8,5 @@ public class Constant {
     public static final int DEPARTMENT = 102;
     public static final int CONTACT = 103;
     public static final int CONTACT_FETCH = 104;
+    public static final int COMPANY = 105;
 }

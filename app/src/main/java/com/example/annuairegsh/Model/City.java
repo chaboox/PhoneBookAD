@@ -20,9 +20,10 @@ public class City extends RealmObject implements Serializable {
     public City() {
     }
 
-    public City(String name, String code) {
+    public City(String name, String code, String id) {
         this.name = name;
         this.code = code;
+        this.id = id;
     }
 
     public City(JSONObject jsonObject) {

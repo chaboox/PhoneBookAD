@@ -8,6 +8,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import io.realm.Realm;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Base64;
 import android.util.Log;
 import android.widget.ImageView;
@@ -41,23 +43,33 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
     public static String TAG = "TEST_MAIN";
     public ImageView imageView;
+    private Handler handler;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        handler = new MainHandler();
         //setContentView(R.layout.activity_main);
         //GotoCityAcitvity();
        // GOtoContactListActivity();
+       /* String split = "CN=Imene AZZOUN,OU=Users,OU=SBA,OU=HTAS,DC=groupe-hasnaoui,DC=local";
+        String[] sp = split.split(",");
+
+        Log.d(TAG, "onCreate: POPO" +  sp[5]);*/
         Realm.init(getApplicationContext());
         //RealmManager.test();
         //RealmManager.showTest();
-
+        handler.sendEmptyMessage(Constant.COMPANY);
        // API_Manager.Syncro(getApplicationContext());
+       // API_Manager.getAllContacts(getApplicationContext());
+      //  Log.d(TAG, "onCreate:PPPL " + new RealmManager.getCityByCompany("GSHA"));
 
+        //API_Manager.getContactsByNullDepartment(getApplicationContext());
         RealmManager.showTest();
 
-        ArrayList<Contact> contacts = new ArrayList<>();
-        contacts.add(new Contact("adam debboosere"));
-        contacts.add(new Contact("adel achour"));
+        /*ArrayList<Contact> contacts = new ArrayList<>();
+        contacts.add(new Contact("Adam debboosere"));
+        contacts.add(new Contact("Adel achour"));
         contacts.add(new Contact("Roua marouf"));
         contacts.add(new Contact("Souheil hadj habib"));
         contacts.add(new Contact("Asla"));
@@ -81,11 +93,11 @@ public class MainActivity extends AppCompatActivity {
         contacts.add(new Contact("adel"));
         contacts.add(new Contact("adel"));
         contacts.add(new Contact("adel"));
-        contacts.add(new Contact("adel"));
+        contacts.add(new Contact("adel"));*/
         Intent intent = new Intent(this, HomeActivity.class);
-        intent.putExtra("contacts", new ListContact(contacts));
+       // intent.putExtra("contacts", new ListContact(contacts));
         startActivity(intent);
-        finish();
+       finish();
         imageView = findViewById(R.id.imageView);
      //   printUsers();
 
@@ -94,10 +106,10 @@ public class MainActivity extends AppCompatActivity {
     private void GotoCityAcitvity(){
         Intent intent = new Intent(MainActivity.this, CityActivity.class);
         ArrayList<City> cities = new ArrayList<>();
-        cities.add(new City("Sidi bel abbes", "SBA"));
+       /* cities.add(new City("Sidi bel abbes", "SBA"));
         cities.add(new City("Tamanrasset", "TMR"));
         cities.add(new City("Oran", "ORN"));
-        cities.add(new City("Tlemcen", "TLM"));
+        cities.add(new City("Tlemcen", "TLM"));*/
         //cities.add(new City("Sidi bel abbes", "SBA"));
         //RealmManager.saveCity(cities);
        // Log.d(TAG, "GotoCityAcitvity:DDD " + RealmManager.showCity());
@@ -220,4 +232,29 @@ public class MainActivity extends AppCompatActivity {
         }
         return inSampleSize;
     }
+
+
+    public class MainHandler extends Handler {
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case Constant.COMPANY:
+                    API_Manager.Syncro(getApplicationContext(), handler, Constant.CONTACT);
+                    break;
+                case Constant.CONTACT:
+                    API_Manager.getAllContacts(getApplicationContext(), handler, Constant.CITY);
+                    break;
+
+                    case Constant.CITY:
+                        new RealmManager().PopulateCityIntoCompany(handler, Constant.DEPARTMENT);
+                        break;
+
+                case Constant.DEPARTMENT:
+                    new RealmManager().populateDepartmentIntoCity(handler, Constant.CONTACT_FETCH);
+                    break;
+            }
+        }
+    }
+
+
 }

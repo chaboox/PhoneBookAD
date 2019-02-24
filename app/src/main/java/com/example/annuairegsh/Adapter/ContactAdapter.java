@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
 import android.util.Base64;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +19,7 @@ import com.example.annuairegsh.Model.Contact;
 import com.example.annuairegsh.R;
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -54,21 +56,33 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ViewHold
 
         holder.name.setText(mData.get(position).getName());
         holder.job.setText(mData.get(position).getDescription());
+        //holder.imageView.setImageResource(R.drawable.user);
 
         // byte[] b = s.getBytes();
        // Log.d("PIC", "onBindViewHolder: " + mData.get(position).getName() + "     LL:" + );
 
         String pic =  mData.get(position).getPictureC();
         if (pic == null) pic = "null";
-
-        if(!pic.equals("null")) {
-            Bitmap bitmap = decodeSampleBitmap(Base64.decode(pic, Base64.DEFAULT), 60, 60);
-            holder.imageView.setImageBitmap(bitmap);
-        } else
-          {holder.imageView.setImageResource(R.drawable.user);
-            API_Manager.getPicById(mData.get(position).getId(), mContext, holder.imageView, (mData.get(position)));
+        if(pic .equals("none")){
+            holder.imageView.setImageResource(R.drawable.user);
+            Log.d("NONE", "onBindViewHolder: " + mData.get(position).getName() );
         }
+        else {
 
+
+            if (!pic.equals("null")) {
+                Bitmap bitmap = decodeSampleBitmap(Base64.decode(pic, Base64.DEFAULT), 60, 60);
+                holder.imageView.setImageBitmap(bitmap);
+            } else {
+                Log.d("DKHALE", "onBindViewHolder: " + pic);
+                holder.imageView.setImageResource(R.drawable.user);
+                try {
+                    API_Manager.getPicById(mData.get(position).getId(), mContext, holder.imageView, (mData.get(position)));
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
 
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -76,6 +90,7 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ViewHold
                 Intent intent = new Intent(mContext, ContactDetailActivity.class);
                 //intent.putExtra("contact", mData.get(position));
                 intent.putExtra("id", mData.get(position).getId());
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 mContext.startActivity(intent);
             }
         });

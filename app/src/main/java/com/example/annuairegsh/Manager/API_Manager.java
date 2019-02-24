@@ -25,12 +25,16 @@ import com.example.annuairegsh.Model.Constant;
 import com.example.annuairegsh.Model.Contact;
 import com.example.annuairegsh.Model.Department;
 import com.example.annuairegsh.Model.KeyValuePair;
+import com.example.annuairegsh.R;
 import com.google.gson.JsonObject;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URL;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -130,8 +134,8 @@ public class API_Manager {
     }
 
     public static void getDepartement(String company, String city, Context context,  final  Handler handler){
-        directionDescription= new HashMap<>();
-        getDescriptionDirection();
+      //  directionDescription = new HashMap<>();
+        //getDescriptionDirection();
         RequestQueue requestQueue = Volley.newRequestQueue(context);
         departments = new ArrayList<>();
         List<KeyValuePair> params = new ArrayList<>();
@@ -180,8 +184,8 @@ public class API_Manager {
     }
 
     public static void getDepartement2(final String company, final City city, final Context context){
-        directionDescription= new HashMap<>();
-        getDescriptionDirection();
+       // directionDescription= new HashMap<>();
+        //getDescriptionDirection();
         RequestQueue requestQueue = Volley.newRequestQueue(context);
         departments = new ArrayList<>();
         List<KeyValuePair> params = new ArrayList<>();
@@ -228,7 +232,7 @@ public class API_Manager {
 
     public static void getContactsByDepartment(String company, String city, String department, Context context,  final  Handler handler){
         directionDescription= new HashMap<>();
-        getDescriptionDirection();
+       // getDescriptionDirection();
         RequestQueue requestQueue = Volley.newRequestQueue(context);
         contacts = new ArrayList<>();
         List<KeyValuePair> params = new ArrayList<>();
@@ -276,7 +280,7 @@ public class API_Manager {
 
     public static void getContactsByDepartment2(String company, String city, String department, final Context context){
         directionDescription= new HashMap<>();
-        getDescriptionDirection();
+        //getDescriptionDirection();
         RequestQueue requestQueue = Volley.newRequestQueue(context);
         contacts = new ArrayList<>();
         List<KeyValuePair> params = new ArrayList<>();
@@ -320,8 +324,8 @@ public class API_Manager {
 
 
     public static void getAllContacts(final Context context, final Handler handler, final int what){
-        directionDescription= new HashMap<>();
-        getDescriptionDirection();
+       // directionDescription= new HashMap<>();
+        //getDescriptionDirection();
         RequestQueue requestQueue = Volley.newRequestQueue(context);
         contacts = new ArrayList<>();
 
@@ -334,7 +338,12 @@ public class API_Manager {
 
                     for(int i = 0; i < response.length(); i++){
                         JSONObject jsonObject = (JSONObject) response.get(i);
+
+
                         Contact contact = new Contact(jsonObject);
+                        Contact preContact = RealmManager.getContactbyId(contact.getId());
+                        if(preContact != null)
+                        contact.setPictureC(preContact.getPictureC());
 
                         contacts.add(contact);
                         Log.d("APII", "onResponse: " + contact.getName());
@@ -344,10 +353,7 @@ public class API_Manager {
                     //CSVManager.saveInCSV(companies);
                     // myrv.getRecycledViewPool().setMaxRecycledViews(R.id.cardview_id,0);
                     new RealmManager().saveContacts(contacts);
-
                     handler.sendEmptyMessage(what);
-
-
 
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -364,7 +370,7 @@ public class API_Manager {
 
     public static void getContactsByNullDepartment( final Context context){
         directionDescription= new HashMap<>();
-        getDescriptionDirection();
+        //getDescriptionDirection();
         RequestQueue requestQueue = Volley.newRequestQueue(context);
         contacts = new ArrayList<>();
         List<KeyValuePair> params = new ArrayList<>();
@@ -405,23 +411,30 @@ public class API_Manager {
         requestQueue.add(jsonArrayRequest);
     }
 
-    public static void getPicById(String id, final Context context, final ImageView imageView, final Contact contact){
+    public static void getPicById(final String id, final Context context, final ImageView imageView, final Contact contact) throws UnsupportedEncodingException {
         RequestQueue requestQueue = Volley.newRequestQueue(context);
 
         List<KeyValuePair> params = new ArrayList<>();
-        params.add(new KeyValuePair("id", id));
+
+        params.add(new KeyValuePair("id", URLEncoder.encode(id, "UTF-8")));
         String url = Constant.API_URL + "/getPicById";
 
         JsonObjectRequest object = new JsonObjectRequest(Request.Method.POST, UrlGenerator.generateUrl(url, params), null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 try {
-                    Log.d("RESPP", "onResponse: " + response.getString("picture"));
+                    Log.d("RESPP", "onResponse: " + id + response.getString("picture"));
                     if( response.getString("picture") != null && response.getString("picture")!= "null"){
                         Bitmap bitmap = decodeSampleBitmap(Base64.decode(response.getString("picture"), Base64.DEFAULT), 60, 60);
                     Glide.with(context).load(bitmap).into(imageView);
                    // contact.setPictureC(response.getString("picture"));
                         RealmManager.savePic(contact, response.getString("picture"));
+                    }
+
+                    else {
+                        Log.d("DKHALE2", "onResponse: ");
+                       imageView.setImageResource(R.drawable.user);
+                        RealmManager.savePic(contact, "none");
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -436,7 +449,7 @@ public class API_Manager {
         requestQueue.add(object);
     }
 
-    private static void getDescriptionDirection(){
+  /*  private static void getDescriptionDirection(){
         directionDescription.put("APP", "Approvisionnements");
         directionDescription.put("CDF", "Centre De Formation");
         directionDescription.put("CDG", "Contrôle De Gestion");
@@ -475,7 +488,7 @@ public class API_Manager {
         directionDescription.put("SECU", "Sécurité");
         directionDescription.put("ARBO", "Département Arboricole");
         directionDescription.put("DMK", "Direction Marketing");
-    }
+    }*/
 
     public static void Syncro(final Context context, final Handler handler, final int what){
         companies = new ArrayList<>();
@@ -513,7 +526,7 @@ public class API_Manager {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.d("ERROR", "onErrorResponse: " + error.toString());
-                Toast.makeText(context, "ERREUR !", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "Mode offline !", Toast.LENGTH_SHORT).show();
             }
         });
         requestQueue.add(jsonArrayRequest);

@@ -54,7 +54,7 @@ import java.util.Random;
 
 public class HomeActivity extends AppCompatActivity {
     RealmResults<Company> companies;
-    RealmResults<Contact> contacts;
+    ArrayList<Contact> contacts;
     private String TAG = "HOME";
     private RecyclerView myrv;
     private RecyclerView contactsView;
@@ -97,9 +97,9 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     private void initView(){
-      //  contacts = new ArrayList<>();
+        //contacts = new ArrayList<>();
 
-        contacts = RealmManager.getContactsByName("A");
+        contacts = RealmManager.getContactsByName("Adam");
         myrv = findViewById(R.id.recyclerview_id);
         handler = new HandlerHome();
         search = findViewById(R.id.search);
@@ -115,16 +115,21 @@ public class HomeActivity extends AppCompatActivity {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if(s.toString().length() == 0 && myrv.getVisibility() == View.GONE){
-                    AnimationManager.SetToVisibleLeft(myrv);
+
                     AnimationManager.setToInvisibleRight(contactsView);
+                    AnimationManager.SetToVisibleLeft(myrv);
                 }
                 else if(s.toString().length() >  0 && myrv.getVisibility() == View.VISIBLE){
-                    AnimationManager.setToInvisibleLeft(myrv);
+
                     AnimationManager.SetToVisibleRight(contactsView);
+                    AnimationManager.setToInvisibleLeft(myrv);
                 }
 
                 if(s.toString().length() == 0) {
                    contacts = null;
+                    adapter = new ContactAdapter(getApplicationContext(), new ArrayList<Contact>());
+                    adapter.notifyDataSetChanged();
+                    recyclerView.setAdapter(adapter);
                 }
                 else {
                     contacts = RealmManager.getContactsByName(s.toString());
@@ -285,7 +290,7 @@ public class HomeActivity extends AppCompatActivity {
                     }
                     else if(cities.size() == 1){
                         city = cities.get(0).getCode();
-                      API_Manager.getDepartement(company, cities.get(0).getCode(), getApplicationContext(), handler);
+                  //    API_Manager.getDepartement(company, cities.get(0).getCode(), getApplicationContext(), handler);
 
                     }
                     else {
@@ -328,6 +333,33 @@ public class HomeActivity extends AppCompatActivity {
             //Glide.with(mContext).load(picId).into(holder.imageC);
 
         }
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        picsHome = new ArrayList<>();
+        picsHome.add("home_alpostone");
+        picsHome.add("home_btph");
+        picsHome.add("home_giryad");
+        picsHome.add("home_hta");
+        picsHome.add("home_htf");
+        picsHome.add("home_htf2");
+        picsHome.add("home_logistique");
+        picsHome.add("home_mdm");
+        picsHome.add("home_puma");
+        picsHome.add("home_sech");
+        picsHome.add("home_sodea");
+
+        int picId = getResources().getIdentifier(picsHome.get(new Random().nextInt(11)), "drawable", getPackageName());
+
+        if (picId != 0) {
+            picHome.setImageResource(picId);
+            //Glide.with(mContext).load(picId).into(holder.imageC);
+
+        }
+
 
     }
 }

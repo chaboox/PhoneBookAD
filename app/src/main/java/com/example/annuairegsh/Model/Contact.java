@@ -8,7 +8,8 @@ import java.io.Serializable;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
-public class Contact extends RealmObject implements Serializable {
+public class
+Contact extends RealmObject implements Serializable {
     @PrimaryKey
     private String id;
     private String name;
@@ -44,21 +45,29 @@ public class Contact extends RealmObject implements Serializable {
         this.voip = voip;
         this.department = department;
         this.mail = mail;
-        this.picture = picture;	}
+        this.picture = picture;
+
+
+    }
 
     public Contact(JSONObject jsonObject) {
         try {
             this.id = jsonObject.getString("id");
             this.name = (id).split(",")[0].substring(3);
+
+            this.name = name.substring(0,1).toUpperCase() + name.substring(1);
             this.description = jsonObject.getString("description");
             this.company = (id).split(",")[3].substring(3);
             this.city =(id).split(",")[2].substring(3);
-            this.number = jsonObject.getString("number");
+            if(jsonObject.getString("number").length() == 10 ) {
+                this.number = jsonObject.getString("number");
+            }
+            else  this.number = "null";
             this.voip = jsonObject.getString("voip");
             this.department = jsonObject.getString("department");
             this.mail = jsonObject.getString("mail");
-            this.pictureC = "null";
-           // this.pictureC = jsonObject.getString("pictureC");
+            //this.pictureC = "null";
+           //this.pictureC = jsonObject.getString("pictureC");
         }catch (JSONException e){
             e.printStackTrace();
         }

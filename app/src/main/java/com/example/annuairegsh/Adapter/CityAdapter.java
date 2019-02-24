@@ -161,6 +161,7 @@ public class CityAdapter extends ArrayAdapter<City> implements View.OnClickListe
                 Intent intent = new Intent(mContext, DepartmentActivity.class);
                 intent.putExtra("id", userModel.getId());
                 intent.putExtra("company", CityActivity.companyName);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 mContext.startActivity(intent);
             }
         });
@@ -170,8 +171,6 @@ public class CityAdapter extends ArrayAdapter<City> implements View.OnClickListe
         // Return the completed view to render on screen
         return convertView;
     }
-
-
 }
 
 

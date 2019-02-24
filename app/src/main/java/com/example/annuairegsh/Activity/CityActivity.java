@@ -5,7 +5,9 @@ import android.os.Handler;
 import android.os.Message;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.example.annuairegsh.Adapter.CityAdapter;
 import com.example.annuairegsh.Manager.API_Manager;
@@ -32,10 +34,25 @@ public class CityActivity extends AppCompatActivity {
         setContentView(R.layout.activity_city);
         initView();
         //cities = (ListCity) getIntent().getSerializableExtra("cities");
-       companyName = getIntent().getStringExtra("company");
+        companyName = getIntent().getStringExtra("company");
         company = RealmManager.getCompanyByCode(companyName);
-        CityAdapter adapter = new CityAdapter(company.getCities(), getApplicationContext());
-        listView.setAdapter(adapter);
+
+        if(company.getCities().size()==1) {
+            Intent intent = new Intent(CityActivity.this, DepartmentActivity.class);
+            intent.putExtra("id", company.getCities().get(0).getId());
+            intent.putExtra("company", CityActivity.companyName);
+            startActivity(intent);
+            finish();
+        }
+        else if(company.getCities().size() == 0){
+            Toast.makeText(getApplicationContext(), "Empty !", Toast.LENGTH_SHORT).show();
+            finish();
+        }else {
+
+            Log.d("CITYY", "onCreate: " + company.getCities().size() + company.getCities());
+            CityAdapter adapter = new CityAdapter(company.getCities(), getApplicationContext());
+            listView.setAdapter(adapter);
+        }
         //ItemHeighManger.setListViewHeightBasedOnChildren(listView);
         //listView.setFillViewport(true);
     }

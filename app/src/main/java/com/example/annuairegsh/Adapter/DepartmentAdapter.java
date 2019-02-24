@@ -128,7 +128,7 @@ public class DepartmentAdapter extends ArrayAdapter<Department> implements View.
         lastPosition = position;
 
 
-        viewHolder.code.setText(userModel.getCode());
+        viewHolder.code.setText(userModel.getCode().toUpperCase());
         viewHolder.description.setText(userModel.getDescription());
        // Glide.with(getContext()).load(userModel.getImageUrl()).into(viewHolder.image);
         int picId = mContext.getResources().getIdentifier(userModel.getCode().toLowerCase(), "drawable", mContext.getPackageName());
@@ -152,6 +152,7 @@ public class DepartmentAdapter extends ArrayAdapter<Department> implements View.
                 intent.putExtra("department", userModel.getCode());
                 intent.putExtra("company", DepartmentActivity.company);
                 intent.putExtra("city", DepartmentActivity.city.getCode());
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 mContext.startActivity(intent);
             }
         });

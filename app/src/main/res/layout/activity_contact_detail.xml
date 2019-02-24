@@ -24,10 +24,27 @@
                 android:background="@drawable/degrade"
 
                 >
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="70dp">
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/close"
+                        android:layout_margin="23dp"
+                        android:id="@+id/close"
+                        android:layout_alignParentStart="true"/>
+                    <ImageView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:src="@drawable/export"
+                        android:layout_margin="20dp"
+                        android:id="@+id/export"
+                        android:layout_alignParentEnd="true"/>
+                </RelativeLayout>
                 <androidx.cardview.widget.CardView
                     android:layout_width="100dp"
                     android:layout_height="100dp"
-                    android:layout_marginTop="70dp"
                     app:cardElevation="8dp"
                     android:shadowDx="4"
                     android:shadowDy="4"
@@ -76,6 +93,7 @@
                 android:layout_marginLeft="30dp"
                 android:layout_marginRight="30dp"
                 android:layout_marginTop="15dp"
+                android:id="@+id/mail_layout"
 
                 >
                 <ImageView
@@ -110,7 +128,8 @@
                 android:orientation="vertical" android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="30dp"
-                android:layout_marginRight="30dp">
+                android:layout_marginRight="30dp"
+                android:id="@+id/number_layout">
                 <ImageView
                     android:layout_width="20dp"
                     android:layout_height="20dp"
@@ -143,7 +162,8 @@
                 android:orientation="vertical" android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="30dp"
-                android:layout_marginRight="30dp">
+                android:layout_marginRight="30dp"
+                android:id="@+id/voip_layout">
                 <ImageView
                     android:layout_width="20dp"
                     android:layout_height="20dp"
@@ -177,7 +197,8 @@
                 android:orientation="vertical" android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="30dp"
-                android:layout_marginRight="30dp">
+                android:layout_marginRight="30dp"
+                android:id="@+id/location_layout">
                 <ImageView
                     android:layout_width="20dp"
                     android:layout_height="20dp"
@@ -211,7 +232,8 @@
                 android:orientation="vertical" android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="30dp"
-                android:layout_marginRight="30dp">
+                android:layout_marginRight="30dp"
+                android:id="@+id/company_layout">
                 <ImageView
                     android:layout_width="20dp"
                     android:layout_height="20dp"
@@ -245,7 +267,8 @@
                 android:orientation="vertical" android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="30dp"
-                android:layout_marginRight="30dp">
+                android:layout_marginRight="30dp"
+                android:id="@+id/department_layout">
                 <ImageView
                     android:layout_width="20dp"
                     android:layout_height="20dp"

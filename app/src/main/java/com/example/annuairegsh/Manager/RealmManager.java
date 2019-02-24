@@ -19,6 +19,8 @@ import com.example.annuairegsh.Model.ListDepartment;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 
 import io.realm.Case;
 import io.realm.Realm;
@@ -195,11 +197,39 @@ public class RealmManager {
     }
 
 
-    public static RealmResults<Contact> getContactsByName(String search) {
+    public static ArrayList<Contact> getContactsByName(String search) {
         Realm realm = Realm.getDefaultInstance();
-        RealmResults<Contact> conta =realm.where(Contact.class).contains("name", search, Case.INSENSITIVE).limit(20).findAll();
-      //  realm.close();
-        return conta;
+
+        ArrayList<Contact> contactArray = new ArrayList<>();
+        RealmResults<Contact> conta = realm.where(Contact.class).beginsWith("name", search, Case.INSENSITIVE).sort("name").limit(20).findAll();
+
+        for(Contact c : conta){
+            contactArray.add(c);
+        }
+        //Object[] contacts = conta.toArray();
+        if(conta.size() < 20) {
+          conta = realm.where(Contact.class).contains("name", search, Case.INSENSITIVE).not().beginGroup()
+            .beginsWith("name", search, Case.INSENSITIVE)
+                    .endGroup().sort("name").limit(20 - conta.size()).findAll();
+
+            for(Contact c : conta){
+                contactArray.add(c);
+            }
+
+
+        }
+
+        if(contactArray.size() < 20){
+            conta = realm.where(Contact.class).contains("description", search, Case.INSENSITIVE).not().beginGroup()
+                    .beginsWith("name", search, Case.INSENSITIVE).or()
+                    .contains("name", search, Case.INSENSITIVE)
+                    .endGroup().sort("name").limit(20 - conta.size()).findAll();
+            for(Contact c : conta){
+                contactArray.add(c);
+            }
+        }
+
+        return  contactArray;
 
 
     }
@@ -208,7 +238,7 @@ public class RealmManager {
         Realm realm = Realm.getDefaultInstance();
         RealmResults<Contact> conta;
 
-             conta = realm.where(Contact.class).equalTo("company", company).equalTo("city", city).equalTo("department", department).findAll();
+             conta = realm.where(Contact.class).equalTo("company", company).equalTo("city", city).equalTo("department", department).sort("name").findAll();
 
         //  realm.close();
         return conta;
@@ -226,7 +256,7 @@ public class RealmManager {
     public static RealmResults<Company> getCompanies() {
         Realm realm = Realm.getDefaultInstance();
         //CHABOOX is too avoid company with no contact
-       // RealmResults<Company> companies = realm.where(Company.class).notEqualTo("cities.departments.code", "CHABOOX").findAll();
+       // RealmResults<Company> companies = realm.where(Company.class).notEqualTo("cities.code", "CHABOOX").findAll();
        RealmResults<Company> companies = realm.where(Company.class).findAll();
         realm.close();
         return companies;
@@ -265,13 +295,61 @@ public class RealmManager {
         RealmResults<Contact> contacts = realm.where(Contact.class).equalTo("company", city.getId().split("_")[0]).equalTo("city", city.getCode()).distinct("department").findAll();
         ArrayList<Department> departments = new ArrayList<>();
         Log.d("OUO", "getDepartmentByCity: " + contacts.size());
+
+        HashMap<String, String> departmentDescription = getDescriptionDepartment();
         for(Contact c : contacts){
-            departments.add(new Department(c.getDepartment(), c.getDepartment()));
+            departments.add(new Department(c.getDepartment(),departmentDescription.get(c.getDepartment())));
         }
         //  realm.close();
 
         return  departments;
     }
+
+    private HashMap<String, String> getDescriptionDepartment() {
+        HashMap<String, String> directionDescription = new HashMap<>();
+        directionDescription.put("APP", "Approvisionnements");
+        directionDescription.put("CDF", "Centre De Formation");
+        directionDescription.put("CDG", "Contrôle De Gestion");
+        directionDescription.put("DAA", "Direction/Département Achats Approvisionnements");
+        directionDescription.put("DAC", "Direction Assistance Clientèle");
+        directionDescription.put("DAG", "Direction/Département Administration Générale");
+        directionDescription.put("DCC", "Direction Commerciale Centre");//
+        directionDescription.put("DCE", "Direction/Département Commerce Externe");//
+        directionDescription.put("DCG", "Direction/Département Contrôle de gestion");//
+        directionDescription.put("DCO", "Direction Commerciale Ouest");//
+        directionDescription.put("DFC", "Direction/Département Finance Comptabilité");//
+        directionDescription.put("DGR", "Direction Générale");//
+        directionDescription.put("DIM", "Direction/Département Importations");//
+        directionDescription.put("DMC", "Direction/Département Marketing et Commerciale");//
+        directionDescription.put("DQH", "Direction Qualité");//
+        directionDescription.put("DQC", "Direction/Département Contrôle Qualité");//
+        directionDescription.put("DRE", "Direction/Département Réalisation");//
+        directionDescription.put("DRH", "Direction Ressources Humaines");//
+        directionDescription.put("DSD", "Direction Stratégie et Développement");//
+        directionDescription.put("DSI", "Direction/Département Systèmes d'Information");//
+        directionDescription.put("DTQ", "Direction/Département Technique");//
+        directionDescription.put("GDS", "Gestion des Stocks");//
+        directionDescription.put("GRH", "Gestion des Ressources Humaines");//
+        directionDescription.put("HSE", "Hygiène Securité Environnement");//
+        directionDescription.put("LAB", "Laboratoire");//
+        directionDescription.put("LOG", "Logistique");//
+        directionDescription.put("MNT", "Maintenance");//
+        directionDescription.put("PRM", "Production et Maintenance");//
+        directionDescription.put("PRO", "Production");//
+        directionDescription.put("SMQ", "Systèmes Management Qualité");//
+        directionDescription.put("CIM", "Cimenterie");//
+        directionDescription.put("DPR", "Directeur de Projet");//
+        directionDescription.put("TRS", "Trésorerie");
+        directionDescription.put("DAF", "Direction/Département Administration & Finances");
+        directionDescription.put("SEC", "Sécurité");
+        directionDescription.put("SECU", "Sécurité");
+        directionDescription.put("ARBO", "Département Arboricole");
+        directionDescription.put("DMK", "Direction Marketing");
+        directionDescription.put("NR", "Non renseigné");
+
+        return directionDescription;
+    }
+
     public void PopulateCityIntoCompany(Handler handler, int what){
         Realm realm = Realm.getDefaultInstance();
 

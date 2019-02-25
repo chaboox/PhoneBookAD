@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.example.annuairegsh">
 
     <uses-permission android:name="android.permission.INTERNET" />
@@ -8,21 +9,31 @@
     <uses-permission android:name="android.permission.WRITE_CONTACTS" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
     <uses-permission android:name="android.permission.CALL_PHONE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
 
     <application
+        android:name=".Activity.RealmInitializer"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-        android:name=".Activity.RealmInitializer">
-        <activity android:name=".Activity.ContactDetailActivity"></activity>
+        tools:ignore="GoogleAppIndexingWarning">
+        <activity android:name=".Activity.ContactDetailActivity" />
+        <activity
+            android:name=".ViewCaller.MyCustomDialog"
+            android:noHistory="true"
+            android:theme="@android:style/Theme.Dialog" />
         <activity android:name=".Activity.ListContactActivity" />
         <activity android:name=".Activity.DepartmentActivity" />
         <activity android:name=".Activity.CityActivity" />
         <activity android:name=".Activity.HomeActivity" />
         <activity android:name=".Activity.Home" />
+
+
+
         <activity android:name=".Activity.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -30,6 +41,16 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <receiver android:name=".ViewCaller.CallReceiver"
+            android:enabled="true"
+            android:exported="true"
+            >
+            <intent-filter>
+                <action android:name="android.intent.action.PHONE_STATE" />
+            </intent-filter>
+        </receiver>
+
     </application>
 
 </manifest>

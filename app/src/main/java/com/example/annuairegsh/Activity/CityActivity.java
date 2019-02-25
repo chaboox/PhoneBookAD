@@ -6,6 +6,8 @@ import android.os.Message;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -28,6 +30,7 @@ public class CityActivity extends AppCompatActivity {
     private String city;
     //public static   ListCity cities;
     public static Handler handler;
+    private ImageView back;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,6 +62,15 @@ public class CityActivity extends AppCompatActivity {
 
     private void initView(){
         listView = findViewById(R.id.listview);
+        back = findViewById(R.id.back);
+
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+               //overridePendingTransition(0, 0);
+            }
+        });
         //handler = new HandlerCity();
     }
 

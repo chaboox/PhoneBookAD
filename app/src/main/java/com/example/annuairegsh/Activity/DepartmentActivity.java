@@ -5,6 +5,8 @@ import android.os.Handler;
 import android.os.Message;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.ImageView;
 import android.widget.ListView;
 
 import com.example.annuairegsh.Adapter.DepartmentAdapter;
@@ -25,6 +27,7 @@ public class DepartmentActivity extends AppCompatActivity {
     public static City city;
     private String idCity;
     public static Handler handler;
+    private ImageView back;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,6 +46,14 @@ public class DepartmentActivity extends AppCompatActivity {
 
     private void initView(){
         listView = findViewById(R.id.listview);
+        back = findViewById(R.id.back);
+
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
        // handler = new HandlerDepartment();
     }
 

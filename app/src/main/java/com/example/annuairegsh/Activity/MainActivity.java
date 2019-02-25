@@ -1,10 +1,14 @@
 package com.example.annuairegsh.Activity;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import io.realm.Realm;
 
 import android.os.Bundle;
@@ -56,6 +60,7 @@ public class MainActivity extends AppCompatActivity {
         String[] sp = split.split(",");
 
         Log.d(TAG, "onCreate: POPO" +  sp[5]);*/
+
         Realm.init(getApplicationContext());
         //RealmManager.test();
         //RealmManager.showTest();
@@ -94,6 +99,11 @@ public class MainActivity extends AppCompatActivity {
         contacts.add(new Contact("adel"));
         contacts.add(new Contact("adel"));
         contacts.add(new Contact("adel"));*/
+        if(ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE)
+                != PackageManager.PERMISSION_GRANTED){
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.READ_PHONE_STATE},1);
+        }
         Intent intent = new Intent(this, HomeActivity.class);
        // intent.putExtra("contacts", new ListContact(contacts));
         startActivity(intent);

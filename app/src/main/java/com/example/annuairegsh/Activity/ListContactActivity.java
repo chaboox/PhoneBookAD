@@ -6,7 +6,10 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -27,6 +30,9 @@ import io.realm.RealmResults;
 public class ListContactActivity extends AppCompatActivity {
     private ContactAdapter adapter;
     private RealmResults<Contact> contacts;
+    private ImageView back;
+
+    private TextView dep;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,10 +40,19 @@ public class ListContactActivity extends AppCompatActivity {
         setContentView(R.layout.activity_test_alpha);
        // ListContact listContact = (ListContact) getIntent().getSerializableExtra("contacts");
         EditText editText = findViewById(R.id.search);
+        dep= findViewById(R.id.dep);
+        back = findViewById(R.id.back);
 
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
         String company = getIntent().getStringExtra("company");
         String city= getIntent().getStringExtra("city");
         String department = getIntent().getStringExtra("department");
+        dep.setText(department);
 
         Log.d("RESULTT", "onCreate: " + company + "   " +  city + "  " + department );
         contacts = RealmManager.getContactByDeparmtment(department, company, city);

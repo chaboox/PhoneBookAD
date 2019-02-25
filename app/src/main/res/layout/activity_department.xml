@@ -1,16 +1,72 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".Activity.DepartmentActivity">
+
+    <ImageView
+        android:id="@+id/up"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:scaleType="centerCrop"
+        android:background="@drawable/degrade"/>
+    <ImageView
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+
+        android:padding="15dp"
+        android:src="@drawable/left"
+        android:layout_marginLeft="3dp"
+        android:id="@+id/back"
+        android:layout_alignParentStart="true"/>
+
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/innerProductCard"
+        android:layout_width="match_parent"
+        app:cardBackgroundColor="@color/white"
+        android:layout_height="70dp"
+        app:cardCornerRadius="24dp"
+
+        android:layout_marginTop="46dp"
+        app:cardUseCompatPadding="true">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:shadowColor="@color/white"
+                android:textColor="@color/gray2"
+                android:padding="10dp"
+                android:gravity="center"
+                android:maxLines="1"
+                android:text="Departements"
+                android:drawablePadding="13dp"
+
+
+                android:background="@null"
+                android:textCursorDrawable="@drawable/cursor"
+                android:id="@+id/search"/>
+        </RelativeLayout>
+
+    </androidx.cardview.widget.CardView>
+
+
+
+
     <ListView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/listview"
         android:divider="@null"
         android:dividerHeight="0dp"
+        android:layout_below="@id/up"
+        android:clipToPadding="false"
+        android:paddingTop="35dp"
        />
 
-</LinearLayout>
+</RelativeLayout>

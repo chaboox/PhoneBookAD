@@ -245,6 +245,14 @@ public class RealmManager {
 
     }
 
+    public static Contact getContactByNumber(String number){
+     //   Realm.init(getApplicationContext());
+        Realm realm = Realm.getDefaultInstance();
+
+        return realm.where(Contact.class).equalTo("number", number).findFirst();
+
+    }
+
     public static Contact getContactbyId(String id) {
         Realm realm = Realm.getDefaultInstance();
         Contact contact = realm.where(Contact.class).equalTo("id", id).findFirst();

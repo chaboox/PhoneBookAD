@@ -449,6 +449,45 @@ public class API_Manager {
         requestQueue.add(object);
     }
 
+
+    public static void getPicById(final String id, final Context context, final ImageView imageView) throws UnsupportedEncodingException {
+        RequestQueue requestQueue = Volley.newRequestQueue(context);
+
+        final Contact contact2 = RealmManager.getContactbyId(id);
+        List<KeyValuePair> params = new ArrayList<>();
+
+        params.add(new KeyValuePair("id", URLEncoder.encode(id, "UTF-8")));
+        String url = Constant.API_URL + "/getPicById";
+
+        JsonObjectRequest object = new JsonObjectRequest(Request.Method.POST, UrlGenerator.generateUrl(url, params), null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                try {
+                    Log.d("RESPP", "onResponse: " + id + response.getString("picture"));
+                    if( response.getString("picture") != null && response.getString("picture")!= "null"){
+                        Bitmap bitmap = decodeSampleBitmap(Base64.decode(response.getString("picture"), Base64.DEFAULT), 60, 60);
+                        Glide.with(context).load(bitmap).into(imageView);
+                       //  contact2.setPictureC(response.getString("picture"));
+                      RealmManager.savePic(contact2, response.getString("picture"));
+                    }
+
+                    else {
+                        Log.d("DKHALE2", "onResponse: ");
+                        imageView.setImageResource(R.drawable.user);
+                        RealmManager.savePic(contact2, "none");
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.d("RESPPERROR", "onResponse: " + error.toString());
+            }
+        });
+        requestQueue.add(object);
+    }
   /*  private static void getDescriptionDirection(){
         directionDescription.put("APP", "Approvisionnements");
         directionDescription.put("CDF", "Centre De Formation");

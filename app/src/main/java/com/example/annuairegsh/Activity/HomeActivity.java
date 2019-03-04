@@ -37,6 +37,7 @@ import com.example.annuairegsh.Adapter.GridViewAdapter;
 import com.example.annuairegsh.Manager.API_Manager;
 import com.example.annuairegsh.Manager.AnimationManager;
 import com.example.annuairegsh.Manager.CSVManager;
+import com.example.annuairegsh.Manager.MyPreferences;
 import com.example.annuairegsh.Manager.RealmManager;
 import com.example.annuairegsh.Model.City;
 import com.example.annuairegsh.Model.Company;
@@ -70,6 +71,7 @@ public class HomeActivity extends AppCompatActivity {
     private ArrayList<String> picsHome ;
     private ImageView picHome;
     private FastScrollRecyclerView recyclerView;
+    private ImageView settingButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,6 +83,9 @@ public class HomeActivity extends AppCompatActivity {
         initContactAdapter();
         //populateCompany();
         populateFromAd();
+
+        //Intent intent = new Intent(HomeActivity.this, LoginActivity.class);
+        //startActivity(intent);
         //populateContact();
     }
 
@@ -107,13 +112,22 @@ public class HomeActivity extends AppCompatActivity {
 
     private void initView(){
         //contacts = new ArrayList<>();
-
         contacts = RealmManager.getContactsByName("Adam");
         myrv = findViewById(R.id.recyclerview_id);
+        settingButton = findViewById(R.id.setting_ics);
         handler = new HandlerHome();
         search = findViewById(R.id.search);
         contactsView = findViewById(R.id.recycler);
         picHome = findViewById(R.id.up);
+
+        settingButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                MyPreferences.deletePreference(Constant.SECRET);
+                startActivity(new Intent(HomeActivity.this, LoginActivity.class));
+                finish();
+            }
+        });
 
         search.addTextChangedListener(new TextWatcher() {
             @Override
@@ -135,7 +149,7 @@ public class HomeActivity extends AppCompatActivity {
                 }
 
                 if(s.toString().length() == 0) {
-                   contacts = null;
+                    contacts = null;
                     adapter = new ContactAdapter(getApplicationContext(), new ArrayList<Contact>());
                     adapter.notifyDataSetChanged();
                     recyclerView.setAdapter(adapter);

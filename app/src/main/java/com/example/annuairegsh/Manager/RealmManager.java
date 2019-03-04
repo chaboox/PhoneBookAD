@@ -25,6 +25,7 @@ import java.util.HashMap;
 import io.realm.Case;
 import io.realm.Realm;
 import io.realm.RealmList;
+import io.realm.RealmObject;
 import io.realm.RealmResults;
 
 public class RealmManager {
@@ -193,7 +194,7 @@ public class RealmManager {
 
         final RealmResults<Contact> contacts2 = realm.where(Contact.class).equalTo("company", "PHAR").findAll();
         Log.d("POP6", "showCity: " + contacts2);
-        realm.close();
+       // realm.close();
     }
 
 
@@ -261,6 +262,19 @@ public class RealmManager {
         return contact;
     }
 
+    public static void DeleteById(String id){
+        Realm realm = Realm.getDefaultInstance();
+        realm.beginTransaction();
+         RealmObject c = realm.where(Contact.class).equalTo("id", id).findFirst();
+
+         if(c != null)
+             c.deleteFromRealm();
+
+        realm.commitTransaction();
+        realm.close();
+
+    }
+
     public static RealmResults<Company> getCompanies() {
         Realm realm = Realm.getDefaultInstance();
         //CHABOOX is too avoid company with no contact
@@ -290,8 +304,9 @@ public class RealmManager {
         Realm realm = Realm.getDefaultInstance();
         RealmResults<Contact> contacts = realm.where(Contact.class).equalTo("company", company).distinct("city").findAll();
         ArrayList<City> cities = new ArrayList<>();
+        HashMap<String, String> cityDesc = getCityCompleteName();
         for(Contact c : contacts){
-            cities.add(new City(c.getCity(), c.getCity(), company + "_" + c.getCity()));
+            cities.add(new City(cityDesc.get(c.getCity()), c.getCity(), company + "_" + c.getCity()));
         }
       //  realm.close();
 
@@ -324,7 +339,7 @@ public class RealmManager {
         directionDescription.put("DCC", "Direction Commerciale Centre");//
         directionDescription.put("DCE", "Direction/Département Commerce Externe");//
         directionDescription.put("DCG", "Direction/Département Contrôle de gestion");//
-        directionDescription.put("DCO", "Direction Commerciale Ouest");//
+        directionDescription.put("DCO", "Direction Commerciale");//
         directionDescription.put("DFC", "Direction/Département Finance Comptabilité");//
         directionDescription.put("DGR", "Direction Générale");//
         directionDescription.put("DIM", "Direction/Département Importations");//
@@ -356,6 +371,22 @@ public class RealmManager {
         directionDescription.put("NR", "Non renseigné");
 
         return directionDescription;
+    }
+
+
+    private HashMap<String, String> getCityCompleteName() {
+        HashMap<String, String> cityDesc = new HashMap<>();
+        cityDesc.put("SBA", "Sidi Bel Abbes");
+        cityDesc.put("ORN", "Oran");
+        cityDesc.put("MOS", "Mostaganem");
+        cityDesc.put("TMR", "Tamanrasset");
+        cityDesc.put("TLM", "Tlemcen");
+        cityDesc.put("STF", "Sétif");
+        cityDesc.put("CST", "Constantine");//
+        cityDesc.put("ALG", "Alger");//
+
+
+        return cityDesc;
     }
 
     public void PopulateCityIntoCompany(Handler handler, int what){
@@ -412,7 +443,7 @@ public class RealmManager {
         }
         realm.commitTransaction();
         realm.close();
-      //  handler.sendEmptyMessage(what);
+       handler.sendEmptyMessage(what);
     }
 
 

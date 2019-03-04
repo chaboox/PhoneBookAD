@@ -48,7 +48,7 @@ public class CityActivity extends AppCompatActivity {
             finish();
         }
         else if(company.getCities().size() == 0){
-            Toast.makeText(getApplicationContext(), "Empty !", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "Filiale vide", Toast.LENGTH_SHORT).show();
             finish();
         }else {
 

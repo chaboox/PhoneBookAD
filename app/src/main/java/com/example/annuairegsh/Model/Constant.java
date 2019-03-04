@@ -9,4 +9,9 @@ public class Constant {
     public static final int CONTACT = 103;
     public static final int CONTACT_FETCH = 104;
     public static final int COMPANY = 105;
+    public static final int DELETE_CONTACT = 106;
+    public static final int SHOW_LOADING = 107;
+    public static final int DISMISS_LOADING = 108;
+    public static final String SECRET =  "SECRET";
+    public static final int FINISH = 109;
 }

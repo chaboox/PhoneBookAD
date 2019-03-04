@@ -25,6 +25,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.annuairegsh.Manager.API_Manager;
+import com.example.annuairegsh.Manager.MyPreferences;
 import com.example.annuairegsh.Manager.RealmManager;
 import com.example.annuairegsh.Manager.UrlGenerator;
 import com.example.annuairegsh.Model.City;
@@ -53,6 +54,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         handler = new MainHandler();
+        String secret = MyPreferences.getMyString(getApplicationContext(), Constant.SECRET, "0");
+
         //setContentView(R.layout.activity_main);
         //GotoCityAcitvity();
        // GOtoContactListActivity();
@@ -72,43 +75,23 @@ public class MainActivity extends AppCompatActivity {
         //API_Manager.getContactsByNullDepartment(getApplicationContext());
         RealmManager.showTest();
 
-        /*ArrayList<Contact> contacts = new ArrayList<>();
-        contacts.add(new Contact("Adam debboosere"));
-        contacts.add(new Contact("Adel achour"));
-        contacts.add(new Contact("Roua marouf"));
-        contacts.add(new Contact("Souheil hadj habib"));
-        contacts.add(new Contact("Asla"));
-        contacts.add(new Contact("adel"));
-        contacts.add(new Contact("adel"));
-        contacts.add(new Contact("adel"));
-        contacts.add(new Contact("adel"));
-        contacts.add(new Contact("adel"));
-        contacts.add(new Contact("adel"));
-        contacts.add(new Contact("adel"));
-        contacts.add(new Contact("adel"));
-        contacts.add(new Contact("adel"));
-        contacts.add(new Contact("adel"));
-        contacts.add(new Contact("adel"));
-        contacts.add(new Contact("adel"));
-        contacts.add(new Contact("adel"));
-        contacts.add(new Contact("adel"));
-        contacts.add(new Contact("adel"));
-        contacts.add(new Contact("adel"));
-        contacts.add(new Contact("adel"));
-        contacts.add(new Contact("adel"));
-        contacts.add(new Contact("adel"));
-        contacts.add(new Contact("adel"));
-        contacts.add(new Contact("adel"));*/
+
         if(ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE)
                 != PackageManager.PERMISSION_GRANTED){
             ActivityCompat.requestPermissions(this,
                     new String[]{Manifest.permission.READ_PHONE_STATE},1);
         }
-        Intent intent = new Intent(this, HomeActivity.class);
+      //  Intent intent = new Intent(this, HomeActivity.class);
+        Intent intent;
+        if (secret.length() > 1){
+            intent = new Intent(this, HomeActivity.class);
+        }
+        else
+            intent = new Intent(this, LoginActivity.class);
        // intent.putExtra("contacts", new ListContact(contacts));
         startActivity(intent);
        finish();
-        imageView = findViewById(R.id.imageView);
+  //      imageView = findViewById(R.id.imageView);
      //   printUsers();
 
     }
@@ -260,7 +243,11 @@ public class MainActivity extends AppCompatActivity {
                         break;
 
                 case Constant.DEPARTMENT:
-                    new RealmManager().populateDepartmentIntoCity(handler, Constant.CONTACT_FETCH);
+                    new RealmManager().populateDepartmentIntoCity(handler, Constant.DELETE_CONTACT);
+                    break;
+
+                case Constant.DELETE_CONTACT:
+                    API_Manager.deleteContact(getApplicationContext(), handler, Constant.CONTACT_FETCH);
                     break;
             }
         }

@@ -1,6 +1,7 @@
 package com.example.annuairegsh.Manager;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Handler;
 import android.os.Message;
@@ -15,9 +16,11 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
 import com.example.annuairegsh.Activity.HomeActivity;
+import com.example.annuairegsh.Activity.LoginActivity;
 import com.example.annuairegsh.Adapter.GridViewAdapter;
 import com.example.annuairegsh.Model.City;
 import com.example.annuairegsh.Model.Company;
@@ -323,6 +326,46 @@ public class API_Manager {
     }
 
 
+    public static void login(String username, String password, final Context context, final Handler handler, final int what){
+        directionDescription= new HashMap<>();
+        //getDescriptionDirection();
+        RequestQueue requestQueue = Volley.newRequestQueue(context);
+        byte[] encodedPass = Base64.encode(password.getBytes(), Base64.DEFAULT);
+        contacts = new ArrayList<>();
+        List<KeyValuePair> params = new ArrayList<>();
+        params.add(new KeyValuePair("username", username));
+        params.add(new KeyValuePair("password", new String(encodedPass)));
+        String url = Constant.API_URL + "/login";
+
+        StringRequest jsonString = new StringRequest(Request.Method.POST, UrlGenerator.generateUrl(url, params), new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                Log.d("RESS", "onResponse: " + response);
+
+                if(response.length() > 1) {
+                    MyPreferences.saveString(Constant.SECRET, response, context);
+                    context.startActivity(new Intent(context, HomeActivity.class));//adam.deboosere@groupe-hasnaoui.com
+                   // handler.sendEmptyMessage(what);
+                    handler.sendEmptyMessage(Constant.FINISH);
+                }
+                else {
+                    handler.sendEmptyMessage(what);
+                    Toast.makeText(context, "Identifiant ou mot de passe invalide", Toast.LENGTH_SHORT).show();
+                }
+
+            }
+
+
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                handler.sendEmptyMessage(what);
+                Toast.makeText(context, "Vérifiez votre connexion internet", Toast.LENGTH_SHORT).show();
+            }
+        });
+        requestQueue.add(jsonString);
+    }
+
     public static void getAllContacts(final Context context, final Handler handler, final int what){
        // directionDescription= new HashMap<>();
         //getDescriptionDirection();
@@ -353,6 +396,46 @@ public class API_Manager {
                     //CSVManager.saveInCSV(companies);
                     // myrv.getRecycledViewPool().setMaxRecycledViews(R.id.cardview_id,0);
                     new RealmManager().saveContacts(contacts);
+                    handler.sendEmptyMessage(what);
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.d("ERROR API", "onErrorResponse: " + error.toString()  );
+            }
+        });
+        requestQueue.add(jsonArrayRequest);
+    }
+
+    public static void deleteContact(final Context context, final Handler handler, final int what){
+        // directionDescription= new HashMap<>();
+        //getDescriptionDirection();
+        RequestQueue requestQueue = Volley.newRequestQueue(context);
+        contacts = new ArrayList<>();
+
+        String url = Constant.API_URL + "/allDisabledContact";
+
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
+            @Override
+            public void onResponse(JSONArray response) {
+                try {
+
+                    for(int i = 0; i < response.length(); i++){
+                        JSONObject jsonObject = (JSONObject) response.get(i);
+                        Log.d("DEL", "onResponse: " + jsonObject.getString("id") );
+
+                         RealmManager.DeleteById(jsonObject.getString("id"));
+
+                        //String name = jsonObject.getString("name");
+                    }
+                    //CSVManager.CreateRootFolder();
+                    //CSVManager.saveInCSV(companies);
+                    // myrv.getRecycledViewPool().setMaxRecycledViews(R.id.cardview_id,0);
+
                     handler.sendEmptyMessage(what);
 
                 } catch (JSONException e) {

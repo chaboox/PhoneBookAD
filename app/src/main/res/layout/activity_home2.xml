@@ -5,14 +5,23 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".Activity.HomeActivity"
-    android:focusable="true" android:focusableInTouchMode="true"
-    >
+    android:focusable="true" android:focusableInTouchMode="true">
+
     <ImageView
         android:id="@+id/up"
         android:layout_width="match_parent"
         android:layout_height="110dp"
         android:scaleType="centerCrop"
         />
+    <ImageView
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:padding="9dp"
+        android:id="@+id/setting_ics"
+        android:src="@drawable/setting_tr_"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="10dp"
+        android:layout_marginTop="10dp"/>
     <androidx.cardview.widget.CardView
         android:id="@+id/innerProductCard"
         android:layout_width="match_parent"

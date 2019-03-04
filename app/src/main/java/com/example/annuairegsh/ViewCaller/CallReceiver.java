@@ -18,11 +18,6 @@ public class CallReceiver extends BroadcastReceiver {
 
 
         if(intent.getStringExtra(TelephonyManager.EXTRA_STATE).equals(TelephonyManager.EXTRA_STATE_OFFHOOK)){
-
-
-
-
-
             //showToast(context,"Call started...");
         }
         else if(intent.getStringExtra(TelephonyManager.EXTRA_STATE).equals(TelephonyManager.EXTRA_STATE_IDLE)){
@@ -34,9 +29,7 @@ public class CallReceiver extends BroadcastReceiver {
                 @Override
                 public void onCallStateChanged(int state, String incomingNumber) {
                     super.onCallStateChanged(state, incomingNumber);
-                    //System.out.println("incomingNumber : "+incomingNumber);
-                    //     showToast(context,"Numero calling you     " + incomingNumber);
-                    // new DialogIng().showDialog(context, "Adam", "", "");
+
                     Contact contact = RealmManager.getContactByNumber(incomingNumber);
 
                     if(contact != null){
@@ -44,11 +37,9 @@ public class CallReceiver extends BroadcastReceiver {
                         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                         intent.putExtra("phone_no", contact.getDescription());
-
                         intent.putExtra("name", contact.getName());
                         intent.putExtra("id", contact.getId());
                         intent.putExtra("picture", contact.getPictureC());
-
                         new Handler().postDelayed(new Runnable()
                         {
                             @Override

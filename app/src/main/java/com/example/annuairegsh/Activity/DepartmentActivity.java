@@ -37,11 +37,11 @@ public class DepartmentActivity extends AppCompatActivity {
         idCity = getIntent().getStringExtra("id");
         city = RealmManager.getCityById(idCity);
         //city = getIntent().getStringExtra("city");
-       // ListDepartment departments = (ListDepartment) getIntent().getSerializableExtra("departments");
+        // ListDepartment departments = (ListDepartment) getIntent().getSerializableExtra("departments");
         DepartmentAdapter adapter = new DepartmentAdapter(city.getDepartments(), getApplicationContext());
 
         listView.setAdapter(adapter);
-      //  listView.setFastScrollEnabled(true);
+        //  listView.setFastScrollEnabled(true);
     }
 
     private void initView(){

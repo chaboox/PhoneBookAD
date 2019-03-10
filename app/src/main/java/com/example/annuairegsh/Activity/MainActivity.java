@@ -11,6 +11,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import io.realm.Realm;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -26,6 +27,7 @@ import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.annuairegsh.Manager.API_Manager;
 import com.example.annuairegsh.Manager.MyPreferences;
+import com.example.annuairegsh.Manager.NukeSSLCerts;
 import com.example.annuairegsh.Manager.RealmManager;
 import com.example.annuairegsh.Manager.UrlGenerator;
 import com.example.annuairegsh.Model.City;
@@ -52,7 +54,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        if (Build.VERSION.SDK_INT < 24){
+            NukeSSLCerts.nuke();
+        }
         handler = new MainHandler();
         String secret = MyPreferences.getMyString(getApplicationContext(), Constant.SECRET, "0");
 
@@ -67,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
         Realm.init(getApplicationContext());
         //RealmManager.test();
         //RealmManager.showTest();
-        handler.sendEmptyMessage(Constant.COMPANY);
+        //handler.sendEmptyMessage(Constant.COMPANY);
        // API_Manager.Syncro(getApplicationContext());
        // API_Manager.getAllContacts(getApplicationContext());
       //  Log.d(TAG, "onCreate:PPPL " + new RealmManager.getCityByCompany("GSHA"));

@@ -1,21 +1,31 @@
 package com.example.annuairegsh.Activity;
 
 import android.Manifest;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.media.RingtoneManager;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import io.realm.Realm;
-import io.realm.RealmList;
 import io.realm.RealmResults;
 
 import android.text.Editable;
@@ -24,7 +34,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -36,17 +45,10 @@ import com.example.annuairegsh.Adapter.ContactAdapter;
 import com.example.annuairegsh.Adapter.GridViewAdapter;
 import com.example.annuairegsh.Manager.API_Manager;
 import com.example.annuairegsh.Manager.AnimationManager;
-import com.example.annuairegsh.Manager.CSVManager;
-import com.example.annuairegsh.Manager.MyPreferences;
 import com.example.annuairegsh.Manager.RealmManager;
-import com.example.annuairegsh.Model.City;
 import com.example.annuairegsh.Model.Company;
 import com.example.annuairegsh.Model.Constant;
 import com.example.annuairegsh.Model.Contact;
-import com.example.annuairegsh.Model.Department;
-import com.example.annuairegsh.Model.ListCity;
-import com.example.annuairegsh.Model.ListContact;
-import com.example.annuairegsh.Model.ListDepartment;
 import com.example.annuairegsh.R;
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView;
 
@@ -54,6 +56,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -72,24 +75,37 @@ public class HomeActivity extends AppCompatActivity {
     private ImageView picHome;
     private FastScrollRecyclerView recyclerView;
     private ImageView settingButton;
+    private ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_home2);
+
         Realm.init(getApplicationContext());
         initView();
         populateImageHome();
-        initContactAdapter();
+
+
+        try {
+            initContactAdapter();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
         //populateCompany();
         populateFromAd();
 
+        if(!RealmManager.areContactsInCache()){
+            progressDialog.show();
+            handler.sendEmptyMessage(Constant.COMPANY);
+        }
         //Intent intent = new Intent(HomeActivity.this, LoginActivity.class);
         //startActivity(intent);
         //populateContact();
     }
 
-    private void initContactAdapter() {
+    private void initContactAdapter() throws UnsupportedEncodingException {
 
         EditText editText = findViewById(R.id.search);
        // ListContact listContact = (ListContact) getIntent().getSerializableExtra("contacts");
@@ -110,22 +126,58 @@ public class HomeActivity extends AppCompatActivity {
 
     }
 
+    private void NotifyUser(String title, String content, int idNotif) {
+        Uri uriSoundNotif = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+        Random random = new Random();
+        int ID_NOTIF = idNotif;
+        String CHANNEL_ID = "my_channel_01";// The id of the channel.
+        CharSequence name =CHANNEL_ID;// The user-visible name of the channel.
+        int importance = NotificationManager.IMPORTANCE_HIGH;
+        NotificationChannel mChannel = new NotificationChannel(CHANNEL_ID, name, importance);
+        NotificationManager mNotificationManager =
+                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            mNotificationManager.createNotificationChannel(mChannel);
+        }
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this,CHANNEL_ID)
+                .setSmallIcon(R.drawable.ic_close_black_24dp)
+                .setContentTitle(title)
+                .setChannelId(CHANNEL_ID)
+                .setContentText(content).setStyle(new NotificationCompat.BigTextStyle()
+                        .bigText(content))
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+
+        //Vibration
+        mBuilder.setVibrate(new long[] { 0, 1000, 1000, 1000, 1000 });
+
+        //LED
+        mBuilder.setLights(Color.RED, 3000, 3000);
+
+        //Ton
+        mBuilder.setSound(uriSoundNotif);
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
+
+        notificationManager.notify(ID_NOTIF, mBuilder.build());
+    }
     private void initView(){
         //contacts = new ArrayList<>();
-        contacts = RealmManager.getContactsByName("Adam");
+        contacts = RealmManager.getContactsByName("Adam2");
         myrv = findViewById(R.id.recyclerview_id);
         settingButton = findViewById(R.id.setting_ics);
         handler = new HandlerHome();
         search = findViewById(R.id.search);
         contactsView = findViewById(R.id.recycler);
         picHome = findViewById(R.id.up);
-
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setTitle("Importation des contacts");
+        progressDialog.setMessage("Patientez un instant...");
         settingButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                MyPreferences.deletePreference(Constant.SECRET);
-                startActivity(new Intent(HomeActivity.this, LoginActivity.class));
-                finish();
+                //  NotifyUser("YO", "Message Bla bla bla", 32)
+               // MyPreferences.deletePreference(Constant.SECRET);
+                startActivity(new Intent(HomeActivity.this, SettingsActivity.class));
+              //  finish();
             }
         });
 
@@ -150,14 +202,22 @@ public class HomeActivity extends AppCompatActivity {
 
                 if(s.toString().length() == 0) {
                     contacts = null;
-                    adapter = new ContactAdapter(getApplicationContext(), new ArrayList<Contact>());
+                    try {
+                        adapter = new ContactAdapter(getApplicationContext(), new ArrayList<Contact>());
+                    } catch (UnsupportedEncodingException e) {
+                        e.printStackTrace();
+                    }
                     adapter.notifyDataSetChanged();
                     recyclerView.setAdapter(adapter);
                 }
                 else {
                     contacts = RealmManager.getContactsByName(s.toString());
                     //API_Manager.getPicById(contacts.get(0).getId(), getApplicationContext());
-                    adapter = new ContactAdapter(getApplicationContext(), contacts);
+                    try {
+                        adapter = new ContactAdapter(getApplicationContext(), contacts);
+                    } catch (UnsupportedEncodingException e) {
+                        e.printStackTrace();
+                    }
                     adapter.notifyDataSetChanged();
                     recyclerView.setAdapter(adapter);
 
@@ -171,49 +231,7 @@ public class HomeActivity extends AppCompatActivity {
         });
       //  myrv.setNestedScrollingEnabled(false);
     }
-    private void populateCompany(){
-        //companies = new ArrayList<>();
-     //   contacts = new ArrayList<>();
 
-      //  companies.add(new Company("GSHA", "GSH", R.drawable.gsha));
-        companies.add(new Company("ALUX", "Alux", R.drawable.gsha));
-        companies.add(new Company("BTPH", "btph", R.drawable.gsha));
-        companies.add(new Company("GSHA", "sodea", R.drawable.gsha));
-        companies.add(new Company("GSHA", "GSH", R.drawable.gsha));
-        companies.add(new Company("GSHA", "GSH", R.drawable.gsha));
-        companies.add(new Company("GSHA", "GSH", R.drawable.gsha));
-        companies.add(new Company("GSHA", "GSH", R.drawable.gsha));
-        companies.add(new Company("GSHA", "GSH", R.drawable.gsha));
-        companies.add(new Company("GSHA", "GSH", R.drawable.gsha));
-        companies.add(new Company("GSHA", "GSH", R.drawable.gsha));
-        companies.add(new Company("GSHA", "GSH", R.drawable.gsha));
-        companies.add(new Company("GSHA", "GSH", R.drawable.gsha));
-        companies.add(new Company("GSHA", "GSH", R.drawable.gsha));
-        companies.add(new Company("GSHA", "GSH", R.drawable.gsha));
-        companies.add(new Company("GSHA", "GSH", R.drawable.gsha));
-        companies.add(new Company("GSHA", "GSH", R.drawable.gsha));
-        companies.add(new Company("GSHA", "GSH", R.drawable.gsha));
-        companies.add(new Company("GSHA", "GSH", R.drawable.gsha));
-        companies.add(new Company("GSHA", "GSH", R.drawable.gsha));
-        companies.add(new Company("GSHA", "GSH", R.drawable.gsha));
-        companies.add(new Company("GSHA", "GSH", R.drawable.gsha));
-        companies.add(new Company("GSHA", "GSH", R.drawable.gsha));
-        companies.add(new Company("GSHA", "GSH", R.drawable.gsha));
-        companies.add(new Company("GSHA", "GSH", R.drawable.gsha));
-        companies.add(new Company("GSHA", "GSH", R.drawable.gsha));
-        companies.add(new Company("GSHA", "GSH", R.drawable.gsha));
-        companies.add(new Company("GSHA", "GSH", R.drawable.gsha));
-        companies.add(new Company("GSHA", "GSH", R.drawable.gsha));
-        companies.add(new Company("GSHA", "GSH", R.drawable.gsha));
-        companies.add(new Company("GSHA", "GSH", R.drawable.gsha));
-        companies.add(new Company("GSHA", "GSH", R.drawable.gsha));
-        companies.add(new Company("GSHA", "GSH", R.drawable.gsha));
-       GridViewAdapter myAdapter = new GridViewAdapter(HomeActivity.this,companies);
-        myrv.setLayoutManager(new GridLayoutManager(HomeActivity.this,4));
-      myrv.setAdapter(myAdapter);
-
-
-    }
 
     public void populateFromAd(){
        // companies = new ArrayList<>();
@@ -295,7 +313,7 @@ public class HomeActivity extends AppCompatActivity {
         requestQueue.add(jsonArrayRequest);
     }
 
-    public class HandlerHome extends Handler{
+    /*public class HandlerHome extends Handler{
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what){
@@ -334,7 +352,36 @@ public class HomeActivity extends AppCompatActivity {
             }
         }
     }
+*/
 
+    public class HandlerHome extends Handler {
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case Constant.COMPANY:
+                    API_Manager.Syncro(getApplicationContext(), handler, Constant.CONTACT);
+                    break;
+                case Constant.CONTACT:
+                    API_Manager.getAllContacts(getApplicationContext(), handler, Constant.CITY);
+                    break;
+
+                case Constant.CITY:
+                    new RealmManager().PopulateCityIntoCompany(handler, Constant.DEPARTMENT);
+                    break;
+
+                case Constant.DEPARTMENT:
+                    new RealmManager().populateDepartmentIntoCity(handler, Constant.DELETE_CONTACT);
+                    break;
+
+                case Constant.DELETE_CONTACT:
+                    API_Manager.deleteContact(getApplicationContext(), handler, Constant.CONTACT_FETCH);
+                    populateFromAd();
+                    if(progressDialog.isShowing())
+                    progressDialog.dismiss();
+                    break;
+            }
+        }
+    }
     private void populateImageHome(){
         picsHome = new ArrayList<>();
         picsHome.add("home_alpostone");
@@ -392,4 +439,22 @@ public class HomeActivity extends AppCompatActivity {
         super.onBackPressed();}
         else search.setText("");
     }
+
+    private Toolbar createToolbar() {
+        Toolbar toolbar = new Toolbar(this);
+        Toolbar.LayoutParams toolBarParams = new Toolbar.LayoutParams(
+                Toolbar.LayoutParams.MATCH_PARENT,
+                R.attr.actionBarSize
+        );
+        toolbar.setLayoutParams(toolBarParams);
+        // toolbar.setBackgroundColor(Color.BLUE);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            toolbar.setBackground(getDrawable(R.drawable.degrade));
+        }
+        //   toolbar.setPopupTheme(R.style.AppTheme_PopupOverlay);
+        toolbar.setVisibility(View.VISIBLE);
+        return toolbar;
+    }
+
+
 }

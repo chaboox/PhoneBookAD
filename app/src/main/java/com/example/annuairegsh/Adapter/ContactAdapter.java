@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
+import android.os.Handler;
+import android.os.Message;
 import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -15,12 +17,15 @@ import android.widget.TextView;
 
 import com.example.annuairegsh.Activity.ContactDetailActivity;
 import com.example.annuairegsh.Manager.API_Manager;
+import com.example.annuairegsh.Manager.RealmManager;
+import com.example.annuairegsh.Model.Constant;
 import com.example.annuairegsh.Model.Contact;
 import com.example.annuairegsh.R;
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import androidx.annotation.NonNull;
@@ -34,11 +39,37 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ViewHold
     private Context mContext ;
     private List<Contact> mData ;
     private ArrayList<Contact> saveData ;
+    private HashMap<String, ViewHolder> holderHashMap;
+    private Handler handler;
 
-    public ContactAdapter(Context mContext, List<Contact> mData) {
+    public ContactAdapter(Context mContext, List<Contact> mData) throws UnsupportedEncodingException {
+        handler = new HandlerContact();
+        holderHashMap = new HashMap<>();
         this.mContext = mContext;
         this.mData = mData;
         this.saveData = new ArrayList<>(mData);
+        ArrayList<String> ids = new ArrayList<>();
+        for( Contact c : mData){
+            String pic =  c.getPictureC();
+            if (pic == null) pic = "null";
+            if(pic .equals("none")){
+              //  holder.imageView.setImageResource(R.drawable.user);
+               // Log.d("NONE", "onBindViewHolder: " + mData.get(position).getName() );
+            }
+            else {
+
+
+                if (!pic.equals("null")) {
+                    //Bitmap bitmap = decodeSampleBitmap(Base64.decode(pic, Base64.DEFAULT), 60, 60);
+                  //  holder.imageView.setImageBitmap(bitmap);
+                } else {
+                    ids.add(c.getId());
+                }
+            }
+        }
+       // API_Manager.getPicsByIds(ids, mContext, handler, Constant.CONTACT);
+
+
     }
 
     @Override
@@ -53,9 +84,12 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ViewHold
 
     @Override
     public void onBindViewHolder(ViewHolder holder, final int position) {
-
+        holderHashMap.put( holder.toString().substring(11, 18), holder);
         holder.name.setText(mData.get(position).getName());
         holder.job.setText(mData.get(position).getDescription());
+        holder.id = mData.get(position).getId();
+
+        Log.d("HOLDER", "onBindViewHolder: " + holder.toString().substring(11, 18) + holder.toString());
         //holder.imageView.setImageResource(R.drawable.user);
 
         // byte[] b = s.getBytes();
@@ -76,8 +110,9 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ViewHold
             } else {
                 Log.d("DKHALE", "onBindViewHolder: " + pic);
                 holder.imageView.setImageResource(R.drawable.user);
+                holderHashMap.put( holder.toString().substring(11, 18), holder);
                 try {
-                    API_Manager.getPicById(mData.get(position).getId(), mContext, holder.imageView, (mData.get(position)));
+                    API_Manager.getPicById(mData.get(position).getId(), mContext, holder.imageView, (mData.get(position)), holder.toString().substring(11, 18));
                 } catch (UnsupportedEncodingException e) {
                     e.printStackTrace();
                 }
@@ -116,6 +151,7 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ViewHold
         public TextView name, job;
         public ImageView imageView;
         public CardView cardView;
+        public String id;
 
         ViewHolder(View itemView) {
             super(itemView);
@@ -142,5 +178,42 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ViewHold
         }
         notifyDataSetChanged();
     }
+
+    public class HandlerContact extends Handler {
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case Constant.CONTACT:
+                    for(ViewHolder viewHolder: holderHashMap.values()) {
+
+                        String pic = RealmManager.getContactbyId(viewHolder.id).getPictureC();
+                        if (pic == null) pic = "null";
+                        if(pic .equals("none")){
+                            viewHolder.imageView.setImageResource(R.drawable.user);
+                        //    Log.d("NONE", "onBindViewHolder: " + mData.get(position).getName() );
+                        }
+                        else {
+
+
+                            if (!pic.equals("null")) {
+                                Bitmap bitmap = decodeSampleBitmap(Base64.decode(pic, Base64.DEFAULT), 60, 60);
+                                viewHolder.imageView.setImageBitmap(bitmap);
+                            } else {
+
+                /*try {
+                    API_Manager.getPicById(mData.get(position).getId(), mContext, holder.imageView, (mData.get(position)), holder.toString().substring(11, 18));
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }*/
+                            }
+                        }
+
+                    }
+                    break;
+                case Constant.DEPARTMENT:
+
+                    break;
+            }
+        }}
 
 }

@@ -21,6 +21,8 @@ import com.example.annuairegsh.R;
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView;
 
 
+import java.io.UnsupportedEncodingException;
+
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import io.realm.RealmList;
@@ -59,7 +61,11 @@ public class ListContactActivity extends AppCompatActivity {
         FastScrollRecyclerView recyclerView = findViewById(R.id.recycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getApplicationContext());
-        adapter = new ContactAdapter(getApplicationContext(), contacts);
+        try {
+            adapter = new ContactAdapter(getApplicationContext(), contacts);
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
         recyclerView.setAdapter(adapter);
         DividerItemDecoration itemDecoration = new DividerItemDecoration(getApplicationContext(), DividerItemDecoration.VERTICAL);
         itemDecoration.setDrawable(getResources().getDrawable(R.drawable.list_divider));

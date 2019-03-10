@@ -10,6 +10,7 @@ import android.util.Log;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -29,6 +30,7 @@ import com.example.annuairegsh.Model.Contact;
 import com.example.annuairegsh.Model.Department;
 import com.example.annuairegsh.Model.KeyValuePair;
 import com.example.annuairegsh.R;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 import org.json.JSONArray;
@@ -53,6 +55,7 @@ public class API_Manager {
     public static HashMap<String, String> directionDescription;
     public static ArrayList<Company> companies;
     private static Context context;
+    private static HashMap<String, String> turn;
 
 
     public static void SyncBdd(Context contextP){
@@ -408,6 +411,11 @@ public class API_Manager {
                 Log.d("ERROR API", "onErrorResponse: " + error.toString()  );
             }
         });
+        jsonArrayRequest.setRetryPolicy(new DefaultRetryPolicy(
+                60000,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+
         requestQueue.add(jsonArrayRequest);
     }
 
@@ -494,7 +502,26 @@ public class API_Manager {
         requestQueue.add(jsonArrayRequest);
     }
 
-    public static void getPicById(final String id, final Context context, final ImageView imageView, final Contact contact) throws UnsupportedEncodingException {
+    public static void getPicById(final String id, final Context context, final ImageView imageView, final Contact contact, final String holderId) throws UnsupportedEncodingException {
+        imageView.setImageResource(R.drawable.user);
+        //substring
+        if(turn == null)
+            turn = new HashMap<>();
+        final String ticket ;
+        Log.d("TURN1", "getPicById: " + turn.toString());
+        if(!turn.containsKey(holderId)){
+            ticket = "1";
+            turn.put(holderId, ticket);
+
+        }
+        else {
+          //  Log.d("TURN", "getPicById: " + turn.get(imageView));
+
+            ticket = (Integer.valueOf(turn.get(holderId)) + 1) + "";
+            turn.put(holderId, ticket);
+
+        }
+
         RequestQueue requestQueue = Volley.newRequestQueue(context);
 
         List<KeyValuePair> params = new ArrayList<>();
@@ -509,7 +536,17 @@ public class API_Manager {
                     Log.d("RESPP", "onResponse: " + id + response.getString("picture"));
                     if( response.getString("picture") != null && response.getString("picture")!= "null"){
                         Bitmap bitmap = decodeSampleBitmap(Base64.decode(response.getString("picture"), Base64.DEFAULT), 60, 60);
-                    Glide.with(context).load(bitmap).into(imageView);
+                       // Log.d("YODA", "onResponse: " + ticket + "  HHH  " + turn.get(imageView + ""));
+                       if(ticket.equals(turn.get(holderId))) {
+                            Log.d("DKHAL", "onResponse: ");
+                            // Glide.with(context).load(bitmap).into(imageView);
+                            imageView.setImageBitmap(bitmap);}
+
+                            else {
+                           Log.d("DKHALBAR", "onResponse: ");
+                       }
+                        //}
+
                    // contact.setPictureC(response.getString("picture"));
                         RealmManager.savePic(contact, response.getString("picture"));
                     }
@@ -530,6 +567,75 @@ public class API_Manager {
             }
         });
         requestQueue.add(object);
+    }
+
+
+    public static void getPicsByIds(final ArrayList<String> id, final Context context, final Handler handler, final int what) throws UnsupportedEncodingException {
+       // imageView.setImageResource(R.drawable.user);
+        //substring
+
+        RequestQueue requestQueue = Volley.newRequestQueue(context);
+
+        List<KeyValuePair> params = new ArrayList<>();
+        Log.d("LOGD", "getPicsByIds: " + getFilterListIds(id)  + " KKK " + URLEncoder.encode(getFilterListIds(id), "UTF-8"));
+        params.add(new KeyValuePair("id", URLEncoder.encode(getFilterListIds(id), "UTF-8")));
+        String url = Constant.API_URL + "/getPicByIds";
+
+        JsonArrayRequest object = new JsonArrayRequest(Request.Method.POST, UrlGenerator.generateUrl(url, params), null, new Response.Listener<JSONArray>() {
+            @Override
+            public void onResponse(JSONArray jsonArray) {
+                try {
+                    for(int i = 0; i < jsonArray.length(); i++){
+                        JSONObject response = (JSONObject) jsonArray.get(i);
+                    Log.d("RESPP", "onResponse: " + id + response.getString("picture"));
+                    if( response.getString("picture") != null && response.getString("picture")!= "null"){
+                        Bitmap bitmap = decodeSampleBitmap(Base64.decode(response.getString("picture"), Base64.DEFAULT), 60, 60);
+                        // Log.d("YODA", "onResponse: " + ticket + "  HHH  " + turn.get(imageView + ""));
+                        Log.d("LOGID", "onResponse: " + response.getString("id"));                        //}
+
+                        // contact.setPictureC(response.getString("picture"));
+                        RealmManager.savePicById(response.getString("id"), response.getString("picture"));
+                    }
+
+                    else {
+                        Log.d("DKHALE2", "onResponse: ");
+
+                        RealmManager.savePicById(response.getString("id"), "none");
+                    }
+                }
+
+                handler.sendEmptyMessage(what);
+
+
+            } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+            , new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.d("RESPPERROR", "onResponse: " + error.toString());
+            }
+        });
+
+        object.setRetryPolicy(new DefaultRetryPolicy(
+                60000,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+
+
+        requestQueue.add(object);
+    }
+
+    private static String getFilterListIds(ArrayList<String> id) {
+        String result = "(|";
+        for(int i = 0; i < id.size(); i++) {
+            result = result + "(distinguishedName=" + id.get(i)+ ")";
+        }
+        result = result + ")";
+        return result;
     }
 
 

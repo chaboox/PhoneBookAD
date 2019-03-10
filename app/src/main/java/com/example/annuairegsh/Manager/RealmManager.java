@@ -31,6 +31,12 @@ import io.realm.RealmResults;
 public class RealmManager {
     public static Realm realM;
     private  HandlerRealm handlerRealm;
+
+    public static boolean areContactsInCache() {
+        Realm realm = Realm.getDefaultInstance();
+        Log.d("POPP", "areContactsInCache: " +  realm.where(Contact.class).count());
+        return realm.where(Contact.class).count() > 1000;
+    }
     //private ArrayList<Contact> cts;
 
 
@@ -119,6 +125,17 @@ public class RealmManager {
         realm.close();
     }
 
+    public static void savePicById( String id,   String pic ) {
+        Realm realm = Realm.getDefaultInstance();
+        realm.beginTransaction();
+        // Persist unmanaged objects
+//        Company company = realm.createObject(Company.class); // Create managed objects directly
+        getContactbyId(id).setPictureC(pic);
+        // realm.insertOrUpdate(cities);
+        realm.commitTransaction();
+        realm.close();
+    }
+
     public  void saveCity(final ArrayList<City> cities, final Company cp){
 
         /*Realm realm = Realm.getDefaultInstance();
@@ -202,16 +219,16 @@ public class RealmManager {
         Realm realm = Realm.getDefaultInstance();
 
         ArrayList<Contact> contactArray = new ArrayList<>();
-        RealmResults<Contact> conta = realm.where(Contact.class).beginsWith("name", search, Case.INSENSITIVE).sort("name").limit(20).findAll();
+        RealmResults<Contact> conta = realm.where(Contact.class).beginsWith("name", search, Case.INSENSITIVE).sort("name").limit(10).findAll();
 
         for(Contact c : conta){
             contactArray.add(c);
         }
         //Object[] contacts = conta.toArray();
-        if(conta.size() < 20) {
+        if(conta.size() < 10) {
           conta = realm.where(Contact.class).contains("name", search, Case.INSENSITIVE).not().beginGroup()
             .beginsWith("name", search, Case.INSENSITIVE)
-                    .endGroup().sort("name").limit(20 - conta.size()).findAll();
+                    .endGroup().sort("name").limit(10 - conta.size()).findAll();
 
             for(Contact c : conta){
                 contactArray.add(c);
@@ -220,11 +237,18 @@ public class RealmManager {
 
         }
 
-        if(contactArray.size() < 20){
+        if(contactArray.size() < 10){
             conta = realm.where(Contact.class).contains("description", search, Case.INSENSITIVE).not().beginGroup()
                     .beginsWith("name", search, Case.INSENSITIVE).or()
                     .contains("name", search, Case.INSENSITIVE)
-                    .endGroup().sort("name").limit(20 - conta.size()).findAll();
+                    .endGroup().sort("name").limit(10 - conta.size()).findAll();
+            for(Contact c : conta){
+                contactArray.add(c);
+            }
+        }
+
+        if(contactArray.size() < 10){
+            conta = realm.where(Contact.class).beginsWith("number", search, Case.INSENSITIVE).sort("name").limit(10 - conta.size()).findAll();
             for(Contact c : conta){
                 contactArray.add(c);
             }
@@ -350,6 +374,7 @@ public class RealmManager {
         directionDescription.put("DRH", "Direction Ressources Humaines");//
         directionDescription.put("DSD", "Direction Stratégie et Développement");//
         directionDescription.put("DSI", "Direction/Département Systèmes d'Information");//
+        directionDescription.put("Dsi", "Direction/Département Systèmes d'Information");//
         directionDescription.put("DTQ", "Direction/Département Technique");//
         directionDescription.put("GDS", "Gestion des Stocks");//
         directionDescription.put("GRH", "Gestion des Ressources Humaines");//

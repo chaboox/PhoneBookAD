@@ -46,10 +46,10 @@
 
     <string name="pref_title_sync_frequency">Fréquence de synchronisation</string>
     <string-array name="pref_sync_frequency_titles">
-        <item>1 jours</item>
+        <item>1 jour</item>
         <item>2 jours</item>
         <item>3 jours</item>
-        <item>7 hours</item>
+        <item>7 jours</item>
         <item>Jamais</item>
     </string-array>
     <string-array name="pref_sync_frequency_values">
@@ -84,5 +84,5 @@
     <string name="pref_title_ringtone">Ringtone</string>
     <string name="pref_ringtone_silent">Silent</string>
 
-    <string name="pref_title_vibrate">Vibrate</string>
+    <string name="pref_title_vibrate">Affichage par pôle</string>
 </resources>

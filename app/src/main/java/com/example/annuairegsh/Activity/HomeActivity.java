@@ -17,6 +17,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 
 import androidx.appcompat.widget.Toolbar;
+import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
@@ -34,6 +35,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -45,6 +47,7 @@ import com.example.annuairegsh.Adapter.ContactAdapter;
 import com.example.annuairegsh.Adapter.GridViewAdapter;
 import com.example.annuairegsh.Manager.API_Manager;
 import com.example.annuairegsh.Manager.AnimationManager;
+import com.example.annuairegsh.Manager.MyPreferences;
 import com.example.annuairegsh.Manager.RealmManager;
 import com.example.annuairegsh.Model.Company;
 import com.example.annuairegsh.Model.Constant;
@@ -57,10 +60,12 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
+import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Random;
 
-public class HomeActivity extends AppCompatActivity {
+public class HomeActivity extends AppCompatActivity implements View.OnClickListener {
     RealmResults<Company> companies;
     ArrayList<Contact> contacts;
     private String TAG = "HOME";
@@ -72,37 +77,67 @@ public class HomeActivity extends AppCompatActivity {
     private EditText search;
     private ContactAdapter adapter;
     private ArrayList<String> picsHome ;
-    private ImageView picHome;
+    private ImageView picHome, backPole;
     private FastScrollRecyclerView recyclerView;
     private ImageView settingButton;
     private ProgressDialog progressDialog;
+    private CardView cardConst, cardPierre, cardIndustrie, cardService, cardAgro;
+    private  LinearLayout linearLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_home2);
-
+        boolean pole = MyPreferences.getMyBool(getApplicationContext(), "notifications_new_message_vibrate", false);
         Realm.init(getApplicationContext());
         initView();
+        setListener();
         populateImageHome();
-
-
+        if(pole)
+            populatePolePic();
+        else
+            populateFromAd();
         try {
             initContactAdapter();
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
         //populateCompany();
-        populateFromAd();
+
 
         if(!RealmManager.areContactsInCache()){
             progressDialog.show();
             handler.sendEmptyMessage(Constant.COMPANY);
         }
+
+        checkUpdate();
         //Intent intent = new Intent(HomeActivity.this, LoginActivity.class);
         //startActivity(intent);
         //populateContact();
+    }
+
+    private void checkUpdate() {
+        if((Integer.valueOf(MyPreferences.getMyString(getApplicationContext(), "sync_frequency", "3")) != -1)){
+        long lastUpdate = MyPreferences.getMyLong(getApplicationContext(), Constant.LAST_UPDATE_TIME, System.currentTimeMillis());
+       // long lastUpdate = 1551920483000L;
+        long frequence = Integer.valueOf(MyPreferences.getMyString(getApplicationContext(), "sync_frequency", "3")) * 86400000;
+        Log.d(TAG, "checkUpdate: " + frequence + "   :  " + System.currentTimeMillis() + " L   " + lastUpdate);
+        if((lastUpdate + frequence) <= System.currentTimeMillis()){
+            Log.d(TAG, "checkUpdate: WORKINGG !!!");
+            handler.sendEmptyMessage(Constant.COMPANY);
+        }
+        }
+    }
+
+    private void setListener() {
+        cardConst.setOnClickListener(this);
+        cardService.setOnClickListener(this);
+        cardPierre.setOnClickListener(this);
+        cardIndustrie.setOnClickListener(this);
+        cardAgro.setOnClickListener(this);
+        backPole.setOnClickListener(this);
+
     }
 
     private void initContactAdapter() throws UnsupportedEncodingException {
@@ -126,45 +161,20 @@ public class HomeActivity extends AppCompatActivity {
 
     }
 
-    private void NotifyUser(String title, String content, int idNotif) {
-        Uri uriSoundNotif = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-        Random random = new Random();
-        int ID_NOTIF = idNotif;
-        String CHANNEL_ID = "my_channel_01";// The id of the channel.
-        CharSequence name =CHANNEL_ID;// The user-visible name of the channel.
-        int importance = NotificationManager.IMPORTANCE_HIGH;
-        NotificationChannel mChannel = new NotificationChannel(CHANNEL_ID, name, importance);
-        NotificationManager mNotificationManager =
-                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            mNotificationManager.createNotificationChannel(mChannel);
-        }
-        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this,CHANNEL_ID)
-                .setSmallIcon(R.drawable.ic_close_black_24dp)
-                .setContentTitle(title)
-                .setChannelId(CHANNEL_ID)
-                .setContentText(content).setStyle(new NotificationCompat.BigTextStyle()
-                        .bigText(content))
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT);
 
-        //Vibration
-        mBuilder.setVibrate(new long[] { 0, 1000, 1000, 1000, 1000 });
-
-        //LED
-        mBuilder.setLights(Color.RED, 3000, 3000);
-
-        //Ton
-        mBuilder.setSound(uriSoundNotif);
-        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
-
-        notificationManager.notify(ID_NOTIF, mBuilder.build());
-    }
     private void initView(){
         //contacts = new ArrayList<>();
         contacts = RealmManager.getContactsByName("Adam2");
         myrv = findViewById(R.id.recyclerview_id);
         settingButton = findViewById(R.id.setting_ics);
         handler = new HandlerHome();
+        linearLayout = findViewById(R.id.pole_linear);
+        backPole = findViewById(R.id.back_pole);
+        cardConst = findViewById(R.id.cardConst);
+        cardIndustrie = findViewById(R.id.cardIndu);
+        cardPierre = findViewById(R.id.cardPierre);
+        cardService = findViewById(R.id.cardServ);
+        cardAgro = findViewById(R.id.cardAgro);
         search = findViewById(R.id.search);
         contactsView = findViewById(R.id.recycler);
         picHome = findViewById(R.id.up);
@@ -189,15 +199,26 @@ public class HomeActivity extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if(s.toString().length() == 0 && myrv.getVisibility() == View.GONE){
+                boolean pole = MyPreferences.getMyBool(getApplicationContext(), "notifications_new_message_vibrate", false);
+                if(s.toString().length() == 0){
 
                     AnimationManager.setToInvisibleRight(contactsView);
-                    AnimationManager.SetToVisibleLeft(myrv);
+
+                    if(pole)
+                       AnimationManager.SetToVisibleLeft(linearLayout);
+                    else
+                       AnimationManager.SetToVisibleLeft(myrv);
                 }
-                else if(s.toString().length() >  0 && myrv.getVisibility() == View.VISIBLE){
+                else if(s.toString().length() >  0 && (myrv.getVisibility() == View.VISIBLE || linearLayout.getVisibility() == View.VISIBLE)){
 
                     AnimationManager.SetToVisibleRight(contactsView);
-                    AnimationManager.setToInvisibleLeft(myrv);
+
+                    if(pole)
+                        AnimationManager.setToInvisibleLeft(linearLayout);
+                    else
+                        AnimationManager.setToInvisibleLeft(myrv);
+
+
                 }
 
                 if(s.toString().length() == 0) {
@@ -235,7 +256,9 @@ public class HomeActivity extends AppCompatActivity {
 
     public void populateFromAd(){
        // companies = new ArrayList<>();
-
+        LinearLayout linearLayout = findViewById(R.id.pole_linear);
+        myrv.setVisibility(View.VISIBLE);
+        linearLayout.setVisibility(View.GONE);
         companies = RealmManager.getCompanies();
         GridViewAdapter myAdapter = new GridViewAdapter(HomeActivity.this,companies);
         myrv.setLayoutManager(new GridLayoutManager(HomeActivity.this,4));
@@ -307,10 +330,54 @@ public class HomeActivity extends AppCompatActivity {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.d(TAG, "onErrorResponse: " + error.toString()  );
+                Log.d(TAG, "onErrorResponse: " + error.toString());
             }
         });
         requestQueue.add(jsonArrayRequest);
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.cardConst:
+                populateFiliale("1");
+                break;
+            case R.id.cardPierre:
+                populateFiliale("2");
+                break;
+            case R.id.cardIndu:
+                populateFiliale("3");
+                break;
+            case R.id.cardServ:
+                populateFiliale("4");
+                break;
+            case R.id.cardAgro:
+                populateFiliale("5");
+                break;
+
+            case R.id.back_pole:
+                populatePolePicWithAnimation();
+                break;
+
+        }
+    }
+
+    private void populateFiliale(String pole) {
+        LinearLayout linearLayout = findViewById(R.id.pole_linear);
+      //  myrv.setVisibility(View.VISIBLE);
+       // linearLayout.setVisibility(View.GONE);
+
+        AnimationManager.SetToVisibleRight(myrv);
+        AnimationManager.SetToVisibleRight(backPole);
+
+        AnimationManager.setToInvisibleLeft(linearLayout);
+
+        companies = RealmManager.getCompanies(pole);
+        GridViewAdapter myAdapter = new GridViewAdapter(HomeActivity.this,companies);
+        myrv.setLayoutManager(new GridLayoutManager(HomeActivity.this,4));
+        // myAdapter.setHasStableIds(true);
+        myrv.setAdapter(myAdapter);
+
     }
 
     /*public class HandlerHome extends Handler{
@@ -358,6 +425,11 @@ public class HomeActivity extends AppCompatActivity {
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
+                case Constant.SETTING_SYNC:
+                    progressDialog.show();
+                    handler.sendEmptyMessage(Constant.COMPANY);
+                    break;
+
                 case Constant.COMPANY:
                     API_Manager.Syncro(getApplicationContext(), handler, Constant.CONTACT);
                     break;
@@ -375,9 +447,15 @@ public class HomeActivity extends AppCompatActivity {
 
                 case Constant.DELETE_CONTACT:
                     API_Manager.deleteContact(getApplicationContext(), handler, Constant.CONTACT_FETCH);
-                    populateFromAd();
+                    boolean pole = MyPreferences.getMyBool(getApplicationContext(), "notifications_new_message_vibrate", false);
+                    if(pole)
+                        populatePolePic();
+                    else
+                        populateFromAd();
+
                     if(progressDialog.isShowing())
                     progressDialog.dismiss();
+                    MyPreferences.saveLong(Constant.LAST_UPDATE_TIME, System.currentTimeMillis());
                     break;
             }
         }
@@ -409,6 +487,16 @@ public class HomeActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+
+
+
+        boolean pole = MyPreferences.getMyBool(getApplicationContext(), "notifications_new_message_vibrate", false);
+        if(search.getText().toString().length() == 0)
+        if(pole)
+            populatePolePic();
+        else
+            populateFromAd();
+
         picsHome = new ArrayList<>();
         picsHome.add("home_alpostone");
         picsHome.add("home_btph");
@@ -436,7 +524,14 @@ public class HomeActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         if(search.getText().length() == 0){
-        super.onBackPressed();}
+            if(backPole.getVisibility() == View.VISIBLE)
+            {
+                populatePolePicWithAnimation();
+                backPole.setVisibility(View.GONE);
+            }
+            else
+          super.onBackPressed();
+        }
         else search.setText("");
     }
 
@@ -455,6 +550,51 @@ public class HomeActivity extends AppCompatActivity {
         toolbar.setVisibility(View.VISIBLE);
         return toolbar;
     }
+
+    private void populatePolePic(){
+
+        //backPole.setVisibility(View.GONE);
+        myrv.setVisibility(View.GONE);
+        backPole.setVisibility(View.GONE);
+        linearLayout.setVisibility(View.VISIBLE);
+        ImageView imgConst = findViewById(R.id.imageConst);
+        ImageView imgIndu = findViewById(R.id.imageIndustrie);
+        ImageView imgRock = findViewById(R.id.imagePierre);
+        ImageView imgAgri = findViewById(R.id.imageAgri);
+        ImageView imgServ = findViewById(R.id.imageService);
+
+        imgConst.setImageResource(R.drawable.construction);
+        imgIndu.setImageResource(R.drawable.industrie);
+        imgRock.setImageResource(R.drawable.pierre);
+        imgAgri.setImageResource(R.drawable.agri);
+        imgServ.setImageResource(R.drawable.service);
+    }
+
+    private void populatePolePicWithAnimation(){
+
+        AnimationManager.setToInvisibleRight(myrv);
+
+        AnimationManager.SetToVisibleLeft(linearLayout);
+        AnimationManager.setToInvisibleRight(backPole);
+        //backPole.setVisibility(View.GONE);
+       // myrv.setVisibility(View.GONE);
+
+       // linearLayout.setVisibility(View.VISIBLE);
+        ImageView imgConst = findViewById(R.id.imageConst);
+        ImageView imgIndu = findViewById(R.id.imageIndustrie);
+        ImageView imgRock = findViewById(R.id.imagePierre);
+        ImageView imgAgri = findViewById(R.id.imageAgri);
+        ImageView imgServ = findViewById(R.id.imageService);
+
+        imgConst.setImageResource(R.drawable.construction);
+        imgIndu.setImageResource(R.drawable.industrie);
+        imgRock.setImageResource(R.drawable.pierre);
+        imgAgri.setImageResource(R.drawable.agri);
+        imgServ.setImageResource(R.drawable.service);
+    }
+
+
+
 
 
 }

@@ -15,4 +15,6 @@ public class Constant {
     public static final int DISMISS_LOADING = 108;
     public static final String SECRET =  "SECRET";
     public static final int FINISH = 109;
+    public static final int SETTING_SYNC = 110;
+    public static final String LAST_UPDATE_TIME= "SYNC_TIME";
 }

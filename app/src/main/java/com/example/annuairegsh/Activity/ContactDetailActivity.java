@@ -5,6 +5,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import webphone.webphone;
 
 import android.Manifest;
 import android.content.ContentProviderOperation;
@@ -126,6 +127,21 @@ public class ContactDetailActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 call();
+            }
+        });
+
+        voipLayout.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                MyClipboardManager.copyToClipboard(getApplicationContext(), contact.getVoip(), "Voip");
+                return true;
+            }
+        });
+
+        voipLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //callVoip();
             }
         });
 
@@ -335,4 +351,16 @@ public class ContactDetailActivity extends AppCompatActivity {
    /* public void showMessageOKCancel(String message, DialogInterface.OnClickListener okListener) {
         new AlertDialog.Builder(this).setMessage((CharSequence) message).setPositiveButton((CharSequence) "OK", okListener).setNegativeButton((CharSequence) "Cancel", null).create().show();
     }*/
+
+   private void callVoip(){
+      /* webphone wobj = new webphone();
+       wobj.API_SetParameter("serveraddress", "VOIP_SERVER_IP_OR_DOMAIN");
+       wobj.API_SetParameter("username", "SIP_USERNAME");
+       wobj.API_SetParameter("password", "SIP_PASSWORD");
+       wobj.API_SetParameter("loglevel", "5");
+       wobj.API_Start();
+       wobj.API_Call(-1, "DESTINATION");*/
+
+
+   }
 }

@@ -1,7 +1,9 @@
 package com.example.annuairegsh.Activity;
 
 import android.annotation.TargetApi;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Color;
@@ -50,7 +52,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
      * A preference value change listener that updates the preference's summary
      * to reflect its new value.
      */
-    private  static ActionBar actionBar;
+    private static ActionBar actionBar;
     private static Context context;
     private static Preference.OnPreferenceChangeListener sBindPreferenceSummaryToValueListener = new Preference.OnPreferenceChangeListener() {
         @Override
@@ -130,6 +132,17 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
                         .getString(preference.getKey(), ""));
     }
 
+    private static void bindPreferenceSummaryToValueBool(Preference preference) {
+        // Set the listener to watch for value changes.
+        preference.setOnPreferenceChangeListener(sBindPreferenceSummaryToValueListener);
+
+        // Trigger the listener immediately with the preference's
+        // current value.
+        sBindPreferenceSummaryToValueListener.onPreferenceChange(preference,
+                PreferenceManager
+                        .getDefaultSharedPreferences(preference.getContext())
+                        .getBoolean(preference.getKey(), false));
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -261,7 +274,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             // to their values. When their values change, their summaries are
             // updated to reflect the new value, per the Android Design
             // guidelines.
-            bindPreferenceSummaryToValue(findPreference("notifications_new_message_ringtone"));
+            bindPreferenceSummaryToValueBool(findPreference("notifications_new_message_vibrate"));
         }
 
         @Override
@@ -289,11 +302,16 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             addPreferencesFromResource(R.xml.pref_data_sync);
             createActionBar("Synchronisation");
             setHasOptionsMenu(true);
+            Preference myPref = (Preference) findPreference("sync");
+            myPref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                public boolean onPreferenceClick(Preference preference) {
+                    //open browser or intent here
+                   HomeActivity.handler.sendEmptyMessage(Constant.SETTING_SYNC);
+                   getActivity().finish();
+                    return true;
+                }
+            });
 
-            // Bind the summaries of EditText/List/Dialog/Ringtone preferences
-            // to their values. When their values change, their summaries are
-            // updated to reflect the new value, per the Android Design
-            // guidelines.
             bindPreferenceSummaryToValue(findPreference("sync_frequency"));
         }
 
@@ -315,11 +333,36 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
-            MyPreferences.deletePreference(Constant.SECRET);
-            getActivity().startActivity(new Intent(getActivity(), LoginActivity.class));
-            getActivity().finish();
+           // Log.d("LOGOUT", "onCreate: " + MyPreferences.getMyBool(context, "notifications_new_message_vibrate", false));
+
+            DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    switch (which){
+                        case DialogInterface.BUTTON_POSITIVE:
+                            MyPreferences.deletePreference(Constant.SECRET);
+                            getActivity().startActivity(new Intent(getActivity(), LoginActivity.class));
+                            getActivity().finish();
+                            break;
+
+                        case DialogInterface.BUTTON_NEGATIVE:
+                            startActivity(new Intent(getActivity(), SettingsActivity.class));
+                            getActivity().finish();
+                            break;
+                    }
+                }
+            };
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setMessage("Vous allez être déconnecté").setPositiveButton("OK", dialogClickListener)
+                    .setNegativeButton("Annuler", dialogClickListener).show();
+
+
+
+
            // addPreferencesFromResource(R.xml.pref_data_sync);
             setHasOptionsMenu(true);
+
 
             // Bind the summaries of EditText/List/Dialog/Ringtone preferences
             // to their values. When their values change, their summaries are
@@ -359,8 +402,9 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
 
     @Override
     public void onBackPressed() {
+        super.onBackPressed();
         Log.d("BACKIN", "onBackPressed: ");
         createActionBar("Paramètres");
-        super.onBackPressed();
+
     }
 }

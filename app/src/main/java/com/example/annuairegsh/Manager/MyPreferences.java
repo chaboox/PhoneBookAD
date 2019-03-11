@@ -25,6 +25,12 @@ public class MyPreferences {
         editor.commit(); // Very important
     }
 
+    public static void saveLong(String key, long value){
+        SharedPreferences.Editor editor = app_preferences.edit();
+        editor.putLong(key, value);
+        editor.commit(); // Very important
+    }
+
     public static String getMyString(Context context, String key, String defValue){
         app_preferences = PreferenceManager.getDefaultSharedPreferences(context);
         // Get the value for the run counter
@@ -39,6 +45,21 @@ public class MyPreferences {
         int value = app_preferences.getInt(key, defValue);
         return value;
     }
+
+    public static long getMyLong(Context context, String key, long defValue){
+        app_preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        // Get the value for the run counter
+        long value = app_preferences.getLong(key, defValue);
+        return value;
+    }
+
+    public static boolean getMyBool(Context context, String key, boolean defValue){
+        app_preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        // Get the value for the run counter
+        boolean value = app_preferences.getBoolean(key, defValue);
+        return value;
+    }
+
 
 
 

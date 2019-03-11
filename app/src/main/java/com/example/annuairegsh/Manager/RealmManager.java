@@ -308,6 +308,15 @@ public class RealmManager {
         return companies;
     }
 
+    public static RealmResults<Company> getCompanies(String pole) {
+        Realm realm = Realm.getDefaultInstance();
+        //CHABOOX is too avoid company with no contact
+        // RealmResults<Company> companies = realm.where(Company.class).notEqualTo("cities.code", "CHABOOX").findAll();
+        RealmResults<Company> companies = realm.where(Company.class).equalTo("pole", pole).findAll();
+        realm.close();
+        return companies;
+    }
+
     public static Company getCompanyByCode(String code) {
         Realm realm = Realm.getDefaultInstance();
         Company company = realm.where(Company.class).equalTo("nameAD", code).findFirst();

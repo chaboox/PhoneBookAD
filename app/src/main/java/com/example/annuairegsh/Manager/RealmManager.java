@@ -39,6 +39,17 @@ public class RealmManager {
     }
     //private ArrayList<Contact> cts;
 
+    public static long getCountContacts(){
+        Realm realm = Realm.getDefaultInstance();
+        return realm.where(Contact.class).count();
+
+    }
+
+    public static RealmResults<Contact> getAllContacts(){
+        Realm realm = Realm.getDefaultInstance();
+        return realm.where(Contact.class).findAll();
+
+    }
 
     public void initHandler(){
          handlerRealm = new HandlerRealm();
@@ -269,6 +280,8 @@ public class RealmManager {
         return conta;
 
     }
+
+
 
     public static Contact getContactByNumber(String number){
      //   Realm.init(getApplicationContext());

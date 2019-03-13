@@ -17,4 +17,7 @@
     <Preference android:title="@string/pref_title_system_sync_settings" android:key="sync">
     </Preference>
 
+    <Preference android:title="Exporter tous les contacts vers le telephone" android:key="export_contact">
+    </Preference>
+
 </PreferenceScreen>

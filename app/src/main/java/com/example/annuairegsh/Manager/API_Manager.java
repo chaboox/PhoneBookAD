@@ -569,7 +569,55 @@ public class API_Manager {
         requestQueue.add(object);
     }
 
+    public static void getPicByIdForDetailActivity(final String id, final Context context, final ImageView imageView, final Contact contact) throws UnsupportedEncodingException {
+        imageView.setImageResource(R.drawable.user);
+        //substring
 
+
+        RequestQueue requestQueue = Volley.newRequestQueue(context);
+
+        List<KeyValuePair> params = new ArrayList<>();
+
+        params.add(new KeyValuePair("id", URLEncoder.encode(id, "UTF-8")));
+        String url = Constant.API_URL + "/getPicById";
+
+        JsonObjectRequest object = new JsonObjectRequest(Request.Method.POST, UrlGenerator.generateUrl(url, params), null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                try {
+                    Log.d("RESPP", "onResponse: " + id + response.getString("picture"));
+                    if( response.getString("picture") != null && response.getString("picture")!= "null"){
+                        Bitmap bitmap = decodeSampleBitmap(Base64.decode(response.getString("picture"), Base64.DEFAULT), 60, 60);
+                        // Log.d("YODA", "onResponse: " + ticket + "  HHH  " + turn.get(imageView + ""));
+
+                            Log.d("DKHAL", "onResponse: ");
+                            // Glide.with(context).load(bitmap).into(imageView);
+                            imageView.setImageBitmap(bitmap);
+
+
+                        //}
+
+                        // contact.setPictureC(response.getString("picture"));
+                        RealmManager.savePic(contact, response.getString("picture"));
+                    }
+
+                    else {
+                        Log.d("DKHALE2", "onResponse: ");
+                        imageView.setImageResource(R.drawable.user);
+                        RealmManager.savePic(contact, "none");
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.d("RESPPERROR", "onResponse: " + error.toString());
+            }
+        });
+        requestQueue.add(object);
+    }
     public static void getPicsByIds(final ArrayList<String> id, final Context context, final Handler handler, final int what) throws UnsupportedEncodingException {
        // imageView.setImageResource(R.drawable.user);
         //substring

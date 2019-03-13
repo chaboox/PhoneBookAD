@@ -1,13 +1,13 @@
 package com.example.annuairegsh.Activity;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import webphone.webphone;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.content.ContentProviderOperation;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -25,11 +25,16 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.annuairegsh.Manager.API_Manager;
 import com.example.annuairegsh.Manager.MyClipboardManager;
+import com.example.annuairegsh.Manager.MyPreferences;
 import com.example.annuairegsh.Manager.RealmManager;
+import com.example.annuairegsh.Model.Constant;
 import com.example.annuairegsh.Model.Contact;
 import com.example.annuairegsh.R;
 
+import java.io.ByteArrayOutputStream;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 
 import static com.example.annuairegsh.Manager.PictureDecodeManager.decodeSampleBitmap;
@@ -40,6 +45,7 @@ public class ContactDetailActivity extends AppCompatActivity {
     private TextView name, job, mail, number, location, voip, department, company;
     private ImageView image, close, export;
     private RelativeLayout mailLayout, numberLayout, locationLayout, voipLayout, departmentLayout, companyLayout;
+    private Bitmap bitmap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -158,6 +164,7 @@ public class ContactDetailActivity extends AppCompatActivity {
         String emailID = contact.getMail();
         String company = contact.getCompany();
         String jobTitle = contact.getDescription();
+        String picture = contact.getPictureC();
         ArrayList <ContentProviderOperation> ops = new ArrayList< ContentProviderOperation >();
 
         ops.add(ContentProviderOperation.newInsert(
@@ -191,7 +198,7 @@ public class ContactDetailActivity extends AppCompatActivity {
                     .build());
         }
 
-        //------------------------------------------------------ Home Numbers
+
      
 
         //------------------------------------------------------ Work Numbers
@@ -228,8 +235,24 @@ public class ContactDetailActivity extends AppCompatActivity {
                     .withValue(ContactsContract.CommonDataKinds.Organization.TITLE, jobTitle)
                     .withValue(ContactsContract.CommonDataKinds.Organization.TYPE, ContactsContract.CommonDataKinds.Organization.TYPE_WORK)
                     .build());
-        }
 
+            //------------------------------------------------------ Pic
+            if (bitmap != null) {
+
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 80, baos);
+                byte[] b = baos.toByteArray();
+
+
+
+                ops.add(ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI)
+                        .withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, 0)
+                        .withValue(ContactsContract.Data.MIMETYPE,
+                                ContactsContract.CommonDataKinds.Photo.CONTENT_ITEM_TYPE)
+                        .withValue(ContactsContract.CommonDataKinds.Photo.DATA15,b)
+                        .build());
+            }
+        }
         // Asking the Contact provider to create a new contact
         try {
             getContentResolver().applyBatch(ContactsContract.AUTHORITY, ops);
@@ -266,7 +289,25 @@ public class ContactDetailActivity extends AppCompatActivity {
                 // result of the request.
             }
         } else {
-            exportContact();
+            DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    switch (which){
+                        case DialogInterface.BUTTON_POSITIVE:
+                            exportContact();
+                            break;
+
+                        case DialogInterface.BUTTON_NEGATIVE:
+
+                            break;
+                    }
+                }
+            };
+
+            android.app.AlertDialog.Builder builder = new AlertDialog.Builder(ContactDetailActivity.this);
+            builder.setMessage("Exporter cette personne dans votre liste de contact?").setPositiveButton("Oui", dialogClickListener)
+                    .setNegativeButton("Non", dialogClickListener).show();
+            //exportContact();
         }
     }
 
@@ -316,10 +357,20 @@ public class ContactDetailActivity extends AppCompatActivity {
 
 
         String pic =  contact.getPictureC();
+        bitmap = null;
         if(pic != null)
         if(!pic.equals("null")) {
-            Bitmap bitmap = decodeSampleBitmap(Base64.decode(pic, Base64.DEFAULT), 60, 60);
+             bitmap = decodeSampleBitmap(Base64.decode(pic, Base64.DEFAULT), 60, 60);
             image.setImageBitmap(bitmap);
+        }
+        else {
+            Log.d("DKHALE", "onBindViewHolder: " + pic);
+
+            try {
+                API_Manager.getPicByIdForDetailActivity(contact.getId(), getApplicationContext(), image, contact);
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
         }
     }
 

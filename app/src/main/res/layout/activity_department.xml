@@ -16,8 +16,8 @@
         android:layout_width="50dp"
         android:layout_height="50dp"
 
-        android:padding="15dp"
-        android:src="@drawable/left"
+        android:padding="12dp"
+        android:src="@drawable/left_shadow"
         android:layout_marginLeft="3dp"
         android:id="@+id/back"
         android:layout_alignParentStart="true"/>

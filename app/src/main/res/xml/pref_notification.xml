@@ -9,7 +9,7 @@
     <!-- NOTE: RingtonePreference's summary should be set to its value by the activity code. -->
 
     <SwitchPreference
-        android:defaultValue="true"
+        android:defaultValue="false"
         android:key="notifications_new_message_vibrate"
         android:title="@string/pref_title_vibrate"
         />

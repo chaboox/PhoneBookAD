@@ -1,10 +1,14 @@
 package com.example.annuairegsh.Activity;
 
+import android.Manifest;
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.media.Ringtone;
@@ -12,12 +16,17 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import io.realm.RealmResults;
 
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
@@ -28,9 +37,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.example.annuairegsh.Manager.ContactManager;
 import com.example.annuairegsh.Manager.MyPreferences;
+import com.example.annuairegsh.Manager.RealmManager;
 import com.example.annuairegsh.Model.Constant;
+import com.example.annuairegsh.Model.Contact;
 import com.example.annuairegsh.R;
 
 import java.util.List;
@@ -52,8 +65,12 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
      * A preference value change listener that updates the preference's summary
      * to reflect its new value.
      */
+    private static Handler handler;
     private static ActionBar actionBar;
     private static Context context;
+    private static Activity activity;
+    private static long count;
+    private static ProgressDialog progressDialog;
     private static Preference.OnPreferenceChangeListener sBindPreferenceSummaryToValueListener = new Preference.OnPreferenceChangeListener() {
         @Override
         public boolean onPreferenceChange(Preference preference, Object value) {
@@ -147,6 +164,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         context = getApplicationContext();
+        activity = SettingsActivity.this;
         setupActionBar();
     }
 
@@ -312,6 +330,15 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
                 }
             });
 
+            Preference exportPref =  findPreference("export_contact");
+            exportPref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                public boolean onPreferenceClick(Preference preference) {
+                    //open browser or intent here
+                    askForPermissionOrExportContact(getActivity());
+                    return true;
+                }
+            });
+
             bindPreferenceSummaryToValue(findPreference("sync_frequency"));
         }
 
@@ -406,5 +433,96 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
         Log.d("BACKIN", "onBackPressed: ");
         createActionBar("Paramètres");
 
+    }
+    public static void askForPermissionOrExportContact(final Activity activity) {
+        if (ContextCompat.checkSelfPermission(context,
+                Manifest.permission.WRITE_CONTACTS)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            // Permission is not granted
+            // Should we show an explanation?
+            if (ActivityCompat.shouldShowRequestPermissionRationale(activity,
+                    Manifest.permission.WRITE_CONTACTS)) {
+                // Show an explanation to the user *asynchronously* -- don't block
+                // this thread waiting for the user's response! After the user
+                // sees the explanation, try again to request the permission.
+                ActivityCompat.requestPermissions(activity,
+                        new String[]{Manifest.permission.WRITE_CONTACTS},
+                        12);
+            } else {
+                // No explanation needed; request the permission
+                ActivityCompat.requestPermissions(activity,
+                        new String[]{Manifest.permission.WRITE_CONTACTS},
+                        12);
+
+                // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
+                // app-defined int constant. The callback method gets the
+                // result of the request.
+            }
+        } else {
+            DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    switch (which){
+                        case DialogInterface.BUTTON_POSITIVE:
+                             handler = new HandlerSetting();
+                             handler.sendEmptyMessage(Constant.CONTACT);
+
+                            break;
+
+                        case DialogInterface.BUTTON_NEGATIVE:
+
+                            break;
+                    }
+                }
+            };
+
+            android.app.AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+            builder.setMessage("Exporter  departement dans votre liste de contact?").setPositiveButton("Oui", dialogClickListener)
+                    .setNegativeButton("Non", dialogClickListener).show();
+            // exportContact(contact, context);
+        }
+    }
+
+    public static class HandlerSetting extends Handler{
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what){
+                case Constant.CONTACT:
+                    count = RealmManager.getCountContacts();
+                     progressDialog = new ProgressDialog(activity);
+                    progressDialog.setTitle("Importation des contacts");
+                    progressDialog.setMessage("Patientez un instant...");
+                    progressDialog.show();
+
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            int cpt = 0;
+                            for(Contact contact: RealmManager.getAllContacts()){
+                                cpt++;
+                                ContactManager.exportContact(contact, context);
+                                Log.d("EXPOR", "onClick: " + contact.getName());
+                                Message message = new Message();
+                                message.obj = cpt;
+                                message.what = Constant.SHOW_LOADING;
+
+                                handler.sendMessage(message);
+                                // progressDialog.setMessage(cpt + " sur " + 1000 + " importés");
+                            }
+                        }
+                    }).start();
+
+                    /*if(progressDialog.isShowing())
+                        progressDialog.dismiss();*/
+                    Toast.makeText(context , "contacts enregistrés", Toast.LENGTH_SHORT).show();
+
+                    break;
+                case Constant.SHOW_LOADING:
+                    progressDialog.setMessage(msg.obj + " sur " + count + " importés");
+                    break;
+
+            }
+        }
     }
 }

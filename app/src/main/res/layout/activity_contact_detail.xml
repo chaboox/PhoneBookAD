@@ -30,8 +30,8 @@
                     <ImageView
                         android:layout_width="50dp"
                         android:layout_height="50dp"
-                        android:src="@drawable/close"
-                        android:padding="13dp"
+                        android:src="@drawable/close_shadow"
+                        android:padding="11dp"
                         android:layout_marginStart="20dp"
                         android:layout_marginTop="7dp"
                         android:id="@+id/close"
@@ -39,8 +39,8 @@
                     <ImageView
                         android:layout_width="50dp"
                         android:layout_height="50dp"
-                        android:src="@drawable/export"
-                        android:padding="9dp"
+                        android:src="@drawable/export_shadow"
+                        android:padding="7dp"
                         android:layout_marginEnd="20dp"
                         android:layout_marginTop="7dp"
                         android:id="@+id/export"

@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.KeyguardManager;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -39,36 +40,37 @@ import static com.example.annuairegsh.Manager.PictureDecodeManager.decodeSampleB
 public class MyCustomDialog extends Activity
 {
     TextView tv_client, code;
-    String phone_no, codes, id;
+    String phone_no, codes, id, company, city, departement;
     RelativeLayout layout;
     Button dialog_ok;
     ImageView image, close;
     String picturec;
+    private Bitmap bitmap = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
-    {  // NotifyUser("YO", "Message Bla bla bla", 32);
-        KeyguardManager kgm = (KeyguardManager)getSystemService(Context.KEYGUARD_SERVICE);
+    {
+      /*  KeyguardManager kgm = (KeyguardManager)getSystemService(Context.KEYGUARD_SERVICE);
         boolean isKeyguardUp = kgm.inKeyguardRestrictedInputMode();
         KeyguardManager.KeyguardLock kgl = kgm.newKeyguardLock("MyCustomDialog");
 
         if(isKeyguardUp){
             kgl.disableKeyguard();
             isKeyguardUp = false;
-        }
+        }*/
 
      //   wl.acquire();
         Log.d("WORKING", "onCreate: ");
-        try
-        {
+        /*try
+        {*/
 
-            requestWindowFeature(Window.FEATURE_NO_TITLE);
-            this.setFinishOnTouchOutside(false);
+        /*    requestWindowFeature(Window.FEATURE_NO_TITLE);
+            this.setFinishOnTouchOutside(false);*/
             super.onCreate(savedInstanceState);
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
+          /*  getWindow().addFlags(WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-            setContentView(R.layout.dialog);
+            setContentView(R.layout.dialog);*
             initializeContent();
 
          /*   WindowManager.LayoutParams params = getWindow().getAttributes();
@@ -84,38 +86,42 @@ public class MyCustomDialog extends Activity
             phone_no    =   getIntent().getExtras().getString("phone_no");
             codes    =   getIntent().getExtras().getString("name");
             id    =   getIntent().getExtras().getString("id");
-            tv_client.setText(""+phone_no );
-            code.setText(codes);
+            company    =   getIntent().getExtras().getString("company");
+            city    =   getIntent().getExtras().getString("city");
+            departement    =   getIntent().getExtras().getString("departement");
+            //tv_client.setText(""+phone_no);
+            //code.setText(codes);
 
             String pic = getIntent().getExtras().getString("picture");
             if (pic == null) pic = "null";
             if(pic .equals("none")){
-                image.setImageResource(R.drawable.user);
+               // image.setImageResource(R.drawable.user);
             }
             else {
 
 
                 if (!pic.equals("null")) {
-                    Bitmap bitmap = decodeSampleBitmap(Base64.decode(pic, Base64.DEFAULT), 60, 60);
-                   image.setImageBitmap(bitmap);
+                     bitmap = decodeSampleBitmap(Base64.decode(pic, Base64.DEFAULT), 60, 60);
+                   //image.setImageBitmap(bitmap);
                 } else {
                     Log.d("DKHALE", "onBindViewHolder: " + pic);
-                    try {
-                        API_Manager.getPicById(id, getApplicationContext(), image);
+                   /* try {
+                      //  API_Manager.getPicById(id, getApplicationContext(), image);
                     } catch (UnsupportedEncodingException e) {
                         e.printStackTrace();
-                    }
+                    }*/
                 }
             }
+            NotifyUser("Appel de "+ codes, phone_no + "\n" + company + " - " + city + " - " + departement, id);
 
-            close.setOnClickListener(new View.OnClickListener() {
+           /* close.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     MyCustomDialog.this.finish();
                 }
-            });
+            });*/
 
-            layout.setOnClickListener(new View.OnClickListener()
+           /* layout.setOnClickListener(new View.OnClickListener()
             {
                 @Override
                 public void onClick(View v)
@@ -124,24 +130,33 @@ public class MyCustomDialog extends Activity
 //                    this.setFinishOnTouchOutside(false);
                     System.exit(0);*/
 
-                    Intent intent = new Intent(MyCustomDialog.this, ContactDetailActivity.class);
+              /*      Intent intent = new Intent(MyCustomDialog.this, ContactDetailActivity.class);
                     intent.putExtra("id", id);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(intent);
                 }
-            });
-        }
+            });*/
+       /* }
         catch (Exception e)
         {
             Log.d("Exception", e.toString());
             e.printStackTrace();
-        }
+        }*/
     }
 
-    private void NotifyUser(String title, String content, int idNotif) {
+    private void NotifyUser(String title, String content, String id) {
+        Random r = new Random();
+        int idNotif = r.nextInt(5000) ;
+        Intent intent = new Intent(this, ContactDetailActivity.class);
+        intent.putExtra("id", id);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this,  idNotif/* Request code */, intent,
+                PendingIntent.FLAG_UPDATE_CURRENT);
+
+
         Uri uriSoundNotif = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-        Random random = new Random();
-        int ID_NOTIF = idNotif;
+
+       // int ID_NOTIF = idNotif;
         String CHANNEL_ID = "my_channel_01";// The id of the channel.
         CharSequence name =CHANNEL_ID;// The user-visible name of the channel.
         int importance = NotificationManager.IMPORTANCE_HIGH;
@@ -152,13 +167,30 @@ public class MyCustomDialog extends Activity
             NotificationChannel mChannel = new NotificationChannel(CHANNEL_ID, name, importance);
             mNotificationManager.createNotificationChannel(mChannel);
         }
-        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this,CHANNEL_ID)
-                .setSmallIcon(R.drawable.ic_close_black_24dp)
+        NotificationCompat.Builder mBuilder;
+        if(bitmap != null) {
+           mBuilder = new NotificationCompat.Builder(this,CHANNEL_ID)
+                .setSmallIcon(R.drawable.call)
                 .setContentTitle(title)
                 .setChannelId(CHANNEL_ID)
+                .setLargeIcon(bitmap)
+                   .setAutoCancel(true)
+                   .setContentIntent(pendingIntent)
                 .setContentText(content).setStyle(new NotificationCompat.BigTextStyle()
                         .bigText(content))
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+        }
+                else {
+          mBuilder = new NotificationCompat.Builder(this,CHANNEL_ID)
+                    .setSmallIcon(R.drawable.call)
+                    .setContentTitle(title)
+                  .setAutoCancel(true)
+                    .setChannelId(CHANNEL_ID)
+                  .setContentIntent(pendingIntent)
+                    .setContentText(content).setStyle(new NotificationCompat.BigTextStyle()
+                            .bigText(content))
+                    .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+        }
 
         //Vibration
         mBuilder.setVibrate(new long[] { 0, 1000, 1000, 1000, 1000 });
@@ -170,7 +202,7 @@ public class MyCustomDialog extends Activity
         mBuilder.setSound(uriSoundNotif);
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
 
-        notificationManager.notify(ID_NOTIF, mBuilder.build());
+        notificationManager.notify(idNotif, mBuilder.build());
     }
 
     private void initializeContent()

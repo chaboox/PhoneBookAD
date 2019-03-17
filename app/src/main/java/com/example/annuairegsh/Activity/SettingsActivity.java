@@ -250,7 +250,9 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
            // addPreferencesFromResource(R.xml.pref_general);
-            context.startActivity(new Intent(context, AboutActivity.class));
+            Intent intent = new Intent(context, AboutActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            context.startActivity(intent);
             getActivity().finish();
             // createActionBar("A propos");
             // setHasOptionsMenu(true);
@@ -320,7 +322,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             addPreferencesFromResource(R.xml.pref_data_sync);
             createActionBar("Synchronisation");
             setHasOptionsMenu(true);
-            Preference myPref = (Preference) findPreference("sync");
+            Preference myPref = findPreference("sync");
             myPref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 public boolean onPreferenceClick(Preference preference) {
                     //open browser or intent here
@@ -478,8 +480,8 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             };
 
             android.app.AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-            builder.setMessage("Exporter  departement dans votre liste de contact?").setPositiveButton("Oui", dialogClickListener)
-                    .setNegativeButton("Non", dialogClickListener).show();
+            builder.setMessage("Vous êtes sur le point d'exporter TOUT les contacts du groupe sur votre telephone?").setPositiveButton("Continuer", dialogClickListener)
+                    .setNegativeButton("Annuler", dialogClickListener).show();
             // exportContact(contact, context);
         }
     }
@@ -490,7 +492,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             switch (msg.what){
                 case Constant.CONTACT:
                     count = RealmManager.getCountContacts();
-                     progressDialog = new ProgressDialog(activity);
+                    progressDialog = new ProgressDialog(activity);
                     progressDialog.setTitle("Importation des contacts");
                     progressDialog.setMessage("Patientez un instant...");
                     progressDialog.show();
@@ -510,12 +512,14 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
                                 handler.sendMessage(message);
                                 // progressDialog.setMessage(cpt + " sur " + 1000 + " importés");
                             }
+                            if(progressDialog.isShowing())
+                                progressDialog.dismiss();
                         }
                     }).start();
 
                     /*if(progressDialog.isShowing())
                         progressDialog.dismiss();*/
-                    Toast.makeText(context , "contacts enregistrés", Toast.LENGTH_SHORT).show();
+                 //   Toast.makeText(context , "contacts enregistrés", Toast.LENGTH_SHORT).show();
 
                     break;
                 case Constant.SHOW_LOADING:
@@ -524,5 +528,15 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
 
             }
         }
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == android.R.id.home) {
+           // Log.d("HOMEBUT", "onOptionsItemSelected: ");
+            finish();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

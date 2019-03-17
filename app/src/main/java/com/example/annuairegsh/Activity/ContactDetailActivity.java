@@ -7,11 +7,15 @@ import androidx.core.content.ContextCompat;
 import webphone.webphone;
 
 import android.Manifest;
+import android.accounts.Account;
+import android.accounts.AccountManager;
 import android.app.AlertDialog;
 import android.content.ContentProviderOperation;
+import android.content.ContentResolver;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
@@ -59,6 +63,23 @@ public class ContactDetailActivity extends AppCompatActivity {
         populateView();
 
         initListener();
+
+        AccountManager acoutManager = AccountManager.get(getApplicationContext()); ;
+        Account[] accounts = acoutManager.getAccounts();
+        for(int i = 0; i < accounts.length; i++) {
+            Log.d("ACOUNT", "onCreate: " + accounts[i].name);
+            Log.d("ACOUNT", "onCreate: " + accounts[i].type);
+        }
+
+       /* Cursor cursor = ContentResolver.query(
+                ContactsContract.RawContacts.CONTENT_URI,
+                new String[]{ContactsContract.RawContacts._ID, ContactsContract.RawContacts.ACCOUNT_TYPE},
+                ContactsContract.RawContacts.ACCOUNT_TYPE + " <> 'com.anddroid.contacts.sim' "
+                        + " AND " + ContactsContract.RawContacts.ACCOUNT_TYPE + " <> 'com.google' " //if you don't want to google contacts also
+                ,
+                null,
+                null);*/
+
 
     }
 
@@ -167,10 +188,11 @@ public class ContactDetailActivity extends AppCompatActivity {
         String picture = contact.getPictureC();
         ArrayList <ContentProviderOperation> ops = new ArrayList< ContentProviderOperation >();
 
+
         ops.add(ContentProviderOperation.newInsert(
                 ContactsContract.RawContacts.CONTENT_URI)
-                .withValue(ContactsContract.RawContacts.ACCOUNT_TYPE, null)
-                .withValue(ContactsContract.RawContacts.ACCOUNT_NAME, null)
+                .withValue(ContactsContract.RawContacts.ACCOUNT_TYPE, "com.android.contacts.sim")
+                .withValue(ContactsContract.RawContacts.ACCOUNT_NAME, "SIM")
                 .build());
 
         //------------------------------------------------------ Names
@@ -371,6 +393,11 @@ public class ContactDetailActivity extends AppCompatActivity {
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
             }
+        }
+        else  try {
+            API_Manager.getPicByIdForDetailActivity(contact.getId(), getApplicationContext(), image, contact);
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
         }
     }
 

@@ -1,6 +1,7 @@
 package com.example.annuairegsh.Activity;
 
 import android.Manifest;
+import android.accounts.AccountManager;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.ProgressDialog;
@@ -83,13 +84,15 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     private ProgressDialog progressDialog;
     private CardView cardConst, cardPierre, cardIndustrie, cardService, cardAgro;
     private  LinearLayout linearLayout;
+    private boolean pole;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_home2);
-        boolean pole = MyPreferences.getMyBool(getApplicationContext(), "notifications_new_message_vibrate", false);
+
+         pole = MyPreferences.getMyBool(getApplicationContext(), "notifications_new_message_vibrate", false);
         Realm.init(getApplicationContext());
         initView();
         setListener();
@@ -115,6 +118,12 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         //Intent intent = new Intent(HomeActivity.this, LoginActivity.class);
         //startActivity(intent);
         //populateContact();
+    }
+
+    @Override
+    protected void onPause() {
+        pole = MyPreferences.getMyBool(getApplicationContext(), "notifications_new_message_vibrate", false);
+        super.onPause();
     }
 
     private void checkUpdate() {
@@ -255,6 +264,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
 
     public void populateFromAd(){
+        backPole.setVisibility(View.GONE);
        // companies = new ArrayList<>();
         LinearLayout linearLayout = findViewById(R.id.pole_linear);
         myrv.setVisibility(View.VISIBLE);
@@ -487,10 +497,8 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onResume() {
         super.onResume();
-
-
-
         boolean pole = MyPreferences.getMyBool(getApplicationContext(), "notifications_new_message_vibrate", false);
+        if(pole != this.pole)
         if(search.getText().toString().length() == 0)
         if(pole)
             populatePolePic();
@@ -515,7 +523,6 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         if (picId != 0) {
             picHome.setImageResource(picId);
             //Glide.with(mContext).load(picId).into(holder.imageC);
-
         }
 
 

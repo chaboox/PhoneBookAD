@@ -10,7 +10,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:src="@drawable/manwhite_resized"
+        android:src="@drawable/manwhite_shadow2"
         android:scaleType="fitEnd"/>
 <LinearLayout
     android:layout_marginTop="40dp"
@@ -31,7 +31,7 @@
     android:layout_marginTop="30dp"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:text="Version 2.1.1"
+    android:text="Version 3.1.2"
     android:textColor="@color/colorAccent"
     android:textSize="18sp"
     android:gravity="center"
@@ -39,17 +39,20 @@
 <LinearLayout
     android:layout_width="match_parent"
     android:layout_height="100dp"
+    android:padding="3dp"
     android:orientation="horizontal"
     android:weightSum="3"
     android:layout_margin="30dp">
     <ImageView
-        android:padding="5dp"
+        android:id="@+id/web"
+        android:padding="6dp"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:layout_margin="10dp"
         android:src="@drawable/url"/>
     <ImageView
+        android:id="@+id/twitter"
         android:padding="5dp"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -57,6 +60,7 @@
         android:layout_margin="10dp"
         android:src="@drawable/twitter"/>
     <ImageView
+        android:id="@+id/facebook"
         android:padding="5dp"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -71,10 +75,11 @@
         android:textColor="@color/white"
         android:gravity="center"
         android:textAlignment="center"
-        android:text="© 2019 GSH Inc."
+        android:text="Développé par\nAdam DEBOOSÈRE\n© 2019 GSH Inc."
         android:shadowColor="@color/text_shadow"
         android:shadowDx="1"
         android:shadowDy="1"
         android:shadowRadius="2"
-        android:layout_marginBottom="8dp"/>
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"/>
 </RelativeLayout>

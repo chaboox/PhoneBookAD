@@ -213,8 +213,12 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
                     AnimationManager.setToInvisibleRight(contactsView);
 
-                    if(pole)
-                       AnimationManager.SetToVisibleLeft(linearLayout);
+                    if(pole) {
+                        if(backPole.getVisibility()  == View.VISIBLE)
+                            AnimationManager.SetToVisibleLeft(myrv);
+                        else
+                            AnimationManager.SetToVisibleLeft(linearLayout);
+                    }
                     else
                        AnimationManager.SetToVisibleLeft(myrv);
                 }
@@ -222,12 +226,15 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
                     AnimationManager.SetToVisibleRight(contactsView);
 
-                    if(pole)
-                        AnimationManager.setToInvisibleLeft(linearLayout);
+                    if(pole) {
+
+                        if(backPole.getVisibility()  == View.VISIBLE)
+                            AnimationManager.setToInvisibleLeft(myrv);
+                        else
+                            AnimationManager.setToInvisibleLeft(linearLayout);
+                    }
                     else
                         AnimationManager.setToInvisibleLeft(myrv);
-
-
                 }
 
                 if(s.toString().length() == 0) {

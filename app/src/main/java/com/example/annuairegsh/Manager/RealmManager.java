@@ -230,16 +230,16 @@ public class RealmManager {
         Realm realm = Realm.getDefaultInstance();
 
         ArrayList<Contact> contactArray = new ArrayList<>();
-        RealmResults<Contact> conta = realm.where(Contact.class).beginsWith("name", search, Case.INSENSITIVE).sort("name").limit(10).findAll();
+        RealmResults<Contact> conta = realm.where(Contact.class).beginsWith("name", search, Case.INSENSITIVE).sort("name").limit(13).findAll();
 
         for(Contact c : conta){
             contactArray.add(c);
         }
         //Object[] contacts = conta.toArray();
-        if(conta.size() < 10) {
+        if(conta.size() < 13) {
           conta = realm.where(Contact.class).contains("name", search, Case.INSENSITIVE).not().beginGroup()
             .beginsWith("name", search, Case.INSENSITIVE)
-                    .endGroup().sort("name").limit(10 - conta.size()).findAll();
+                    .endGroup().sort("name").limit(13 - conta.size()).findAll();
 
             for(Contact c : conta){
                 contactArray.add(c);
@@ -248,18 +248,18 @@ public class RealmManager {
 
         }
 
-        if(contactArray.size() < 10){
+        if(contactArray.size() < 13){
             conta = realm.where(Contact.class).contains("description", search, Case.INSENSITIVE).not().beginGroup()
                     .beginsWith("name", search, Case.INSENSITIVE).or()
                     .contains("name", search, Case.INSENSITIVE)
-                    .endGroup().sort("name").limit(10 - conta.size()).findAll();
+                    .endGroup().sort("name").limit(13 - conta.size()).findAll();
             for(Contact c : conta){
                 contactArray.add(c);
             }
         }
 
-        if(contactArray.size() < 10){
-            conta = realm.where(Contact.class).beginsWith("number", search, Case.INSENSITIVE).sort("name").limit(10 - conta.size()).findAll();
+        if(contactArray.size() < 13){
+            conta = realm.where(Contact.class).beginsWith("number", search, Case.INSENSITIVE).sort("name").limit(13 - conta.size()).findAll();
             for(Contact c : conta){
                 contactArray.add(c);
             }

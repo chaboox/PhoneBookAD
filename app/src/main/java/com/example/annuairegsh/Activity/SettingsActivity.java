@@ -61,6 +61,7 @@ import java.util.List;
  */
 public class SettingsActivity extends AppCompatPreferenceActivity {
 
+
     /**
      * A preference value change listener that updates the preference's summary
      * to reflect its new value.
@@ -70,6 +71,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
     private static Context context;
     private static Activity activity;
     private static long count;
+    private static int  activityCount =0;
     private static ProgressDialog progressDialog;
     private static Preference.OnPreferenceChangeListener sBindPreferenceSummaryToValueListener = new Preference.OnPreferenceChangeListener() {
         @Override
@@ -162,6 +164,8 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
     }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.d("TAGOU", "onCreate: ");
+        activityCount++;
         super.onCreate(savedInstanceState);
         context = getApplicationContext();
         activity = SettingsActivity.this;
@@ -346,11 +350,13 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
 
         @Override
         public boolean onOptionsItemSelected(MenuItem item) {
+            Log.d("SYNCOU", "onOptionsItemSelected: ");
             int id = item.getItemId();
             //createActionBar("Paramètres");
             if (id == android.R.id.home) {
-                createActionBar("Paramètres");
-                startActivity(new Intent(getActivity(), SettingsActivity.class));
+              //  createActionBar("Paramètres");
+                //startActivity(new Intent(getActivity(), SettingsActivity.class));
+                getActivity().finish();
                 return true;
             }
             return super.onOptionsItemSelected(item);
@@ -404,7 +410,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
         public boolean onOptionsItemSelected(MenuItem item) {
             int id = item.getItemId();
             if (id == android.R.id.home) {
-                startActivity(new Intent(getActivity(), LoginActivity.class));
+                startActivity(new Intent(getActivity(), SettingsActivity.class));
                 return true;
             }
             return super.onOptionsItemSelected(item);
@@ -529,14 +535,22 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             }
         }
     }
-    @Override
+
+   @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
+    /*    int id = item.getItemId();
         if (id == android.R.id.home) {
            // Log.d("HOMEBUT", "onOptionsItemSelected: ");
-            finish();
+           if(activityCount == 2) finish();
             return true;
-        }
+        }*/
+      /* if(activityCount == 2){
+           activityCount--;
+           finish();
+       }*/
+       Log.d("SYNCOU2", "onOptionsItemSelected: ");
+       if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O)
+           finish();
         return super.onOptionsItemSelected(item);
     }
 }

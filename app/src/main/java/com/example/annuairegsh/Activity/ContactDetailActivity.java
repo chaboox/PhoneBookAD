@@ -441,4 +441,5 @@ public class ContactDetailActivity extends AppCompatActivity {
 
 
    }
+
 }

@@ -70,8 +70,9 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
     private static ActionBar actionBar;
     private static Context context;
     private static Activity activity;
+    private static Activity activitySet;
     private static long count;
-    private static int  activityCount =0;
+   // private static int  activityCount =0;
     private static ProgressDialog progressDialog;
     private static Preference.OnPreferenceChangeListener sBindPreferenceSummaryToValueListener = new Preference.OnPreferenceChangeListener() {
         @Override
@@ -164,8 +165,9 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
     }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         Log.d("TAGOU", "onCreate: ");
-        activityCount++;
+        //activityCount++;
         super.onCreate(savedInstanceState);
         context = getApplicationContext();
         activity = SettingsActivity.this;
@@ -229,6 +231,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
     @Override
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     public void onBuildHeaders(List<Header> target) {
+        activitySet = this;
         loadHeadersFromResource(R.xml.pref_headers, target);
     }
 
@@ -273,8 +276,8 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
         public boolean onOptionsItemSelected(MenuItem item) {
             int id = item.getItemId();
             if (id == android.R.id.home) {
-                createActionBar("Paramètres");
-                startActivity(new Intent(getActivity(), SettingsActivity.class));
+             //   createActionBar("Paramètres");
+              //  startActivity(new Intent(getActivity(), SettingsActivity.class));
                 return true;
             }
             return super.onOptionsItemSelected(item);
@@ -306,8 +309,8 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             Log.d("OPTION", "onOptionsItemSelected: ARE YOU HERE");
             int id = item.getItemId();
             if (id == android.R.id.home) {
-                createActionBar("Paramètres");
-                startActivity(new Intent(getActivity(), SettingsActivity.class));
+             //   createActionBar("Paramètres");
+               // startActivity(new Intent(getActivity(), SettingsActivity.class));
                 return true;
             }
             return super.onOptionsItemSelected(item);
@@ -331,6 +334,10 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
                 public boolean onPreferenceClick(Preference preference) {
                     //open browser or intent here
                    HomeActivity.handler.sendEmptyMessage(Constant.SETTING_SYNC);
+                  //  Log.d("SYNCOUT", "onPreferenceClick: " + activityCount);
+                    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O){
+                       activitySet.finish();
+                   }
                    getActivity().finish();
                     return true;
                 }
@@ -356,7 +363,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             if (id == android.R.id.home) {
               //  createActionBar("Paramètres");
                 //startActivity(new Intent(getActivity(), SettingsActivity.class));
-                getActivity().finish();
+               // getActivity().finish();
                 return true;
             }
             return super.onOptionsItemSelected(item);
@@ -548,6 +555,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
            activityCount--;
            finish();
        }*/
+
        Log.d("SYNCOU2", "onOptionsItemSelected: ");
        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O)
            finish();

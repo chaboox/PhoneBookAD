@@ -188,7 +188,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         contactsView = findViewById(R.id.recycler);
         picHome = findViewById(R.id.up);
         progressDialog = new ProgressDialog(this);
-        progressDialog.setTitle("Importation des contacts");
+        progressDialog.setTitle("Synchronisation des contacts");
         progressDialog.setMessage("Patientez un instant...");
         settingButton.setOnClickListener(new View.OnClickListener() {
             @Override

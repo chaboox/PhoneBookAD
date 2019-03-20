@@ -367,7 +367,9 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             myPref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 public boolean onPreferenceClick(Preference preference) {
                     //open browser or intent here
+                    if(HomeActivity.handler != null)
                    HomeActivity.handler.sendEmptyMessage(Constant.SETTING_SYNC);
+                    else Toast.makeText(context, "erreur 400 veuillez réessayer", Toast.LENGTH_LONG).show();
                   //  Log.d("SYNCOUT", "onPreferenceClick: " + activityCount);
                     if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O){
                        activitySet.finish();

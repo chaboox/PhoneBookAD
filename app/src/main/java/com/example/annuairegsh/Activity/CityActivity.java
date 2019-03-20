@@ -42,7 +42,7 @@ public class CityActivity extends AppCompatActivity {
         companyName = getIntent().getStringExtra("company");
         company = RealmManager.getCompanyByCode(companyName);
 
-        companyT.setText(companyName);
+        companyT.setText(company.getName());
 
         if(company.getCities().size()==1) {
             Intent intent = new Intent(CityActivity.this, DepartmentActivity.class);

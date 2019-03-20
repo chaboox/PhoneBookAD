@@ -86,7 +86,10 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ViewHold
     public void onBindViewHolder(ViewHolder holder, final int position) {
         holderHashMap.put( holder.toString().substring(11, 18), holder);
         holder.name.setText(mData.get(position).getName());
-        holder.job.setText(mData.get(position).getDescription());
+        String job = mData.get(position).getDescription();
+        if(job.equals("null"))
+            job ="";
+        holder.job.setText(job);
         holder.id = mData.get(position).getId();
 
         Log.d("HOLDER", "onBindViewHolder: " + holder.toString().substring(11, 18) + holder.toString());

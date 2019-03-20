@@ -416,6 +416,10 @@ public class RealmManager {
         directionDescription.put("ARBO", "Département Arboricole");
         directionDescription.put("DMK", "Direction Marketing");
         directionDescription.put("NR", "Non renseigné");
+        directionDescription.put("GAR", "Gardiennage");
+        directionDescription.put("EXP", "Expédition");
+        directionDescription.put("DPJ", "Direction des projets");
+        directionDescription.put("DAT", "Direction assistance technique");
 
         return directionDescription;
     }

@@ -11,16 +11,25 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
-        <ImageView
-            xmlns:app="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/image"
-            android:scaleType="centerCrop"
-            android:padding="13dp"
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+        <de.hdodenhof.circleimageview.CircleImageView
             android:layout_width="80dp"
             android:layout_height="80dp"
-            android:src="@drawable/defaultpic"
-         />
-
+            android:padding="13dp"
+            android:src="@drawable/degrade"
+            />
+            <ImageView
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/image"
+                android:scaleType="centerCrop"
+                android:padding="22dp"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                />
+        </RelativeLayout>
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
@@ -31,7 +40,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:cardCornerRadius="5dp"
-            app:cardBackgroundColor="@color/colorAccent"
+            app:cardBackgroundColor="@color/department_tag"
             >
             <TextView
                 android:layout_width="wrap_content"

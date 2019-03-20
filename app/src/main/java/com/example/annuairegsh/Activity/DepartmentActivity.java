@@ -14,6 +14,7 @@ import com.example.annuairegsh.Adapter.DepartmentAdapter;
 import com.example.annuairegsh.Manager.API_Manager;
 import com.example.annuairegsh.Manager.RealmManager;
 import com.example.annuairegsh.Model.City;
+import com.example.annuairegsh.Model.Company;
 import com.example.annuairegsh.Model.Constant;
 import com.example.annuairegsh.Model.Contact;
 import com.example.annuairegsh.Model.ListContact;
@@ -25,6 +26,7 @@ import java.util.ArrayList;
 public class DepartmentActivity extends AppCompatActivity {
     private ListView listView;
     public static String company;
+    public static Company companyR;
     public static City city;
     private String idCity;
     public static Handler handler;
@@ -41,7 +43,9 @@ public class DepartmentActivity extends AppCompatActivity {
         //city = getIntent().getStringExtra("city");
         // ListDepartment departments = (ListDepartment) getIntent().getSerializableExtra("departments");
         DepartmentAdapter adapter = new DepartmentAdapter(city.getDepartments(), getApplicationContext());
-        companyT.setText(company + ", " + city.getCode());
+        companyR = RealmManager.getCompanyByCode(company);
+
+        companyT.setText(companyR.getName()+ ", " + city.getCode());
 
         listView.setAdapter(adapter);
         //  listView.setFastScrollEnabled(true);

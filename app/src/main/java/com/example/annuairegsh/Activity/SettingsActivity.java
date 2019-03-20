@@ -244,7 +244,8 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
                 || GeneralPreferenceFragment.class.getName().equals(fragmentName)
                 || DataSyncPreferenceFragment.class.getName().equals(fragmentName)
                 || LogOutFragment.class.getName().equals(fragmentName)
-                || NotificationPreferenceFragment.class.getName().equals(fragmentName);
+                || NotificationPreferenceFragment.class.getName().equals(fragmentName)
+                || RNotificationPreferenceFragment.class.getName().equals(fragmentName);
     }
 
     /**
@@ -301,7 +302,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             // to their values. When their values change, their summaries are
             // updated to reflect the new value, per the Android Design
             // guidelines.
-            bindPreferenceSummaryToValueBool(findPreference("notifications_new_message_vibrate"));
+            //bindPreferenceSummaryToValueBool(findPreference("notifications_new_message_vibrate"));
         }
 
         @Override
@@ -311,6 +312,39 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             if (id == android.R.id.home) {
              //   createActionBar("Paramètres");
                // startActivity(new Intent(getActivity(), SettingsActivity.class));
+                return true;
+            }
+            return super.onOptionsItemSelected(item);
+        }
+    }
+
+    /**
+     * This fragment shows notification preferences only. It is used when the
+     * activity is showing a two-pane settings UI.
+     */
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
+    public static class RNotificationPreferenceFragment extends PreferenceFragment {
+        @Override
+        public void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+            addPreferencesFromResource(R.xml.pref_rnotification);
+            createActionBar("Notification");
+            setHasOptionsMenu(true);
+
+            // Bind the summaries of EditText/List/Dialog/Ringtone preferences
+            // to their values. When their values change, their summaries are
+            // updated to reflect the new value, per the Android Design
+            // guidelines.
+            //bindPreferenceSummaryToValueBool(findPreference("notifications_new_message_vibrate"));
+        }
+
+        @Override
+        public boolean onOptionsItemSelected(MenuItem item) {
+            Log.d("OPTION", "onOptionsItemSelected: ARE YOU HERE");
+            int id = item.getItemId();
+            if (id == android.R.id.home) {
+                //   createActionBar("Paramètres");
+                // startActivity(new Intent(getActivity(), SettingsActivity.class));
                 return true;
             }
             return super.onOptionsItemSelected(item);

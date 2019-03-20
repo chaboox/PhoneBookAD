@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.annuairegsh.Adapter.CityAdapter;
@@ -31,6 +32,7 @@ public class CityActivity extends AppCompatActivity {
     //public static   ListCity cities;
     public static Handler handler;
     private ImageView back;
+    private TextView companyT;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,6 +41,8 @@ public class CityActivity extends AppCompatActivity {
         //cities = (ListCity) getIntent().getSerializableExtra("cities");
         companyName = getIntent().getStringExtra("company");
         company = RealmManager.getCompanyByCode(companyName);
+
+        companyT.setText(companyName);
 
         if(company.getCities().size()==1) {
             Intent intent = new Intent(CityActivity.this, DepartmentActivity.class);
@@ -61,9 +65,9 @@ public class CityActivity extends AppCompatActivity {
     }
 
     private void initView(){
+        companyT = findViewById(R.id.company_title);
         listView = findViewById(R.id.listview);
         back = findViewById(R.id.back);
-
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

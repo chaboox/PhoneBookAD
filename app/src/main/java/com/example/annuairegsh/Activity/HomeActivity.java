@@ -92,7 +92,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
         setContentView(R.layout.activity_home2);
 
-         pole = MyPreferences.getMyBool(getApplicationContext(), "notifications_new_message_vibrate", false);
+        pole = MyPreferences.getMyBool(getApplicationContext(), "notifications_new_message_vibrate", false);
         Realm.init(getApplicationContext());
         initView();
         setListener();
@@ -122,8 +122,21 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     protected void onPause() {
+        Log.d(TAG, "onPause:KLK ");
         pole = MyPreferences.getMyBool(getApplicationContext(), "notifications_new_message_vibrate", false);
         super.onPause();
+    }
+
+    @Override
+    protected void onStop() {
+        Log.d(TAG, "onStop:KLK");
+        super.onStop();
+    }
+
+    @Override
+    protected void onDestroy() {
+        Log.d(TAG, "onDestroy: KLK");
+        super.onDestroy();
     }
 
     private void checkUpdate() {
@@ -165,6 +178,11 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
                 != PackageManager.PERMISSION_GRANTED){
             ActivityCompat.requestPermissions(this,
                     new String[]{Manifest.permission.READ_PHONE_STATE},1);
+        }
+        if(ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CALL_LOG)
+                != PackageManager.PERMISSION_GRANTED){
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.READ_CALL_LOG},2);
         }
 
 

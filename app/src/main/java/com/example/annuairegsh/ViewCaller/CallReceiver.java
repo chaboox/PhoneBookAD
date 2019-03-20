@@ -22,6 +22,7 @@ import android.view.Gravity;
 import android.widget.Toast;
 
 import com.example.annuairegsh.Activity.ContactDetailActivity;
+import com.example.annuairegsh.Manager.MyPreferences;
 import com.example.annuairegsh.Manager.RealmManager;
 import com.example.annuairegsh.Model.Contact;
 import com.example.annuairegsh.R;
@@ -39,6 +40,10 @@ public class CallReceiver extends BroadcastReceiver {
     private static String ACTION_1 = "YO";
     @Override
     public void onReceive(final Context context, Intent intent) {
+        boolean mybool = MyPreferences.getMyBool(context, "notif", true);
+        Log.d("MYBOOL", "onReceive: " + mybool);
+        if(mybool){
+
         Log.d("MON_ISTART", "onReceive: " + i);
         this.context = context;
         if(intent.getStringExtra(TelephonyManager.EXTRA_STATE).equals(TelephonyManager.EXTRA_STATE_OFFHOOK)){
@@ -47,20 +52,24 @@ public class CallReceiver extends BroadcastReceiver {
         else if(intent.getStringExtra(TelephonyManager.EXTRA_STATE).equals(TelephonyManager.EXTRA_STATE_IDLE)){
            // showToast(context,"Call ended...");
         }
-        else if(intent.getStringExtra(TelephonyManager.EXTRA_STATE).equals(TelephonyManager.EXTRA_STATE_RINGING ) ){
+        else if(intent.getStringExtra(TelephonyManager.EXTRA_STATE).equals(TelephonyManager.EXTRA_STATE_RINGING)){
             i++;
             Log.d("MON_I", "onReceive: " + i);
             TelephonyManager telephony = (TelephonyManager)context.getSystemService(Context.TELEPHONY_SERVICE);
             telephony.listen(new PhoneStateListener(){
                 @Override
                 public void onCallStateChanged(int state, String incomingNumber) {
+                    boolean mybool = MyPreferences.getMyBool(context, "notif", true);
+                    if(mybool)
+                    {
+                    Log.d("MON_I_STATE", "onReceive: " + state + i + "#"+ incomingNumber + "#");
                     super.onCallStateChanged(state, incomingNumber);
                     Log.d("MON_I_STATE", "onReceive: " + state + i);
                     if(state == 1){
                     Bitmap bitmap = null;
-                    Log.d("MON_I_STATE", "onReceive: " + state + i);
+                    Log.d("MON_I_STATE", "onReceive: " + state + i + "#"+ incomingNumber + "#");
                     Contact contact = RealmManager.getContactByNumber(incomingNumber);
-
+                        Log.d("IAD", "onCallStateChanged: " + contact);
                     if(contact != null){
                         String pic = contact.getPictureC();
                         if (pic == null) pic = "null";
@@ -102,11 +111,11 @@ public class CallReceiver extends BroadcastReceiver {
                             }
                         },0);*/}}
 
-                }
+                }}
             }, PhoneStateListener.LISTEN_CALL_STATE);
 
             //showToast(context,"Incoming call...");
-        }
+        }}
     }
 
     void showToast(Context context,String message){
@@ -116,7 +125,7 @@ public class CallReceiver extends BroadcastReceiver {
     }
 
     private void NotifyUser(String title, String content, String id, Bitmap bitmap, String incomingNumber) {
-
+        Log.d("NOTIFYME", "NotifyUser: ");
        /* Intent action1Intent = new Intent(context, NotificationActionService.class)
                 .setAction(ACTION_1);
 
@@ -146,10 +155,7 @@ public class CallReceiver extends BroadcastReceiver {
         }
         NotificationCompat.Builder mBuilder;
         if(bitmap != null) {
-            Intent callIntent = new Intent(Intent.ACTION_CALL);
-            callIntent.setData(Uri.parse("tel:0377778888"));
-              PendingIntent snoozePendingIntent =
-                    PendingIntent.getBroadcast(context, 0, intent, 0);
+
             mBuilder = new NotificationCompat.Builder(context,CHANNEL_ID)
                     .setSmallIcon(R.drawable.call)
                     .setContentTitle(title)

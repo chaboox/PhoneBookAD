@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.example.annuairegsh.Adapter.DepartmentAdapter;
 import com.example.annuairegsh.Manager.API_Manager;
@@ -28,6 +29,7 @@ public class DepartmentActivity extends AppCompatActivity {
     private String idCity;
     public static Handler handler;
     private ImageView back;
+    private TextView companyT;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,12 +41,14 @@ public class DepartmentActivity extends AppCompatActivity {
         //city = getIntent().getStringExtra("city");
         // ListDepartment departments = (ListDepartment) getIntent().getSerializableExtra("departments");
         DepartmentAdapter adapter = new DepartmentAdapter(city.getDepartments(), getApplicationContext());
+        companyT.setText(company + ", " + city.getCode());
 
         listView.setAdapter(adapter);
         //  listView.setFastScrollEnabled(true);
     }
 
     private void initView(){
+        companyT = findViewById(R.id.company_title);
         listView = findViewById(R.id.listview);
         back = findViewById(R.id.back);
 

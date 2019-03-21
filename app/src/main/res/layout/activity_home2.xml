@@ -54,6 +54,7 @@
                 android:padding="10dp"
                 android:drawableStart="@drawable/ic_search_gray_24dp"
                 android:singleLine="true"
+                android:imeOptions="actionDone"
                 android:hint="Rechercher un contact"
                 android:drawablePadding="13dp"
 

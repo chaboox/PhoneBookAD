@@ -3,6 +3,7 @@ package com.example.annuairegsh.Activity;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 
@@ -24,6 +25,8 @@ import android.app.LoaderManager.LoaderCallbacks;
 import android.content.CursorLoader;
 import android.content.Loader;
 import android.database.Cursor;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
 
@@ -111,8 +114,11 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         log.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                mProgressView.setVisibility(View.VISIBLE);
-                API_Manager.login(mEmailView.getText().toString(), mPasswordView.getText().toString(), getApplicationContext(), handler, Constant.DISMISS_LOADING);
+                if(isConnectedToInternet()) {
+                    mProgressView.setVisibility(View.VISIBLE);
+                    API_Manager.login(mEmailView.getText().toString(), mPasswordView.getText().toString(), getApplicationContext(), handler, Constant.DISMISS_LOADING);
+                }
+                else  Toast.makeText(getApplicationContext(), "Vérifiez votre connexion internet", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -373,6 +379,15 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         }
     }
 
+    private boolean isConnectedToInternet() {
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connectivityManager
+                .getActiveNetworkInfo();
+        if (networkInfo != null && networkInfo.isConnected())
+            return true;
+        else
+            return false;
+    }
 
     public class LoginHandler extends Handler {
         @Override

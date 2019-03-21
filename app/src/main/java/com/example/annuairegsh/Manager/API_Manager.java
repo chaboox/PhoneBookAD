@@ -355,7 +355,7 @@ public class API_Manager {
                 }
                 else {
                     handler.sendEmptyMessage(what);
-                    Toast.makeText(context, "Identifiant ou mot de passe invalide", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, "Email ou mot de passe invalide", Toast.LENGTH_SHORT).show();
                 }
 
             }

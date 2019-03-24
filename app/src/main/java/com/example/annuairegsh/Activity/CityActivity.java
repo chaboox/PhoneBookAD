@@ -24,7 +24,7 @@ import com.example.annuairegsh.R;
 
 import java.util.ArrayList;
 
-public class CityActivity extends AppCompatActivity {
+public class CityActivity extends BaseSwipeBackActivity {
     public static ListView listView;
     private Company company;
     public static String companyName;
@@ -34,9 +34,13 @@ public class CityActivity extends AppCompatActivity {
     private ImageView back;
     private TextView companyT;
     @Override
+    protected int getLayoutId() {
+        return R.layout.activity_city;
+    }
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_city);
+       // setContentView(R.layout.activity_city);
         initView();
         //cities = (ListCity) getIntent().getSerializableExtra("cities");
         companyName = getIntent().getStringExtra("company");

@@ -62,8 +62,6 @@
                 android:maxLines="1"
                 android:text="Departements"
                 android:drawablePadding="13dp"
-
-
                 android:background="@null"
                 android:textCursorDrawable="@drawable/cursor"
                 android:id="@+id/search"/>

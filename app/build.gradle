@@ -5,7 +5,7 @@ android {
     compileSdkVersion 28
     defaultConfig {
         applicationId "com.example.annuairegsh"
-        minSdkVersion 17
+        minSdkVersion 19
         targetSdkVersion 28
         versionCode 1
         versionName "1.0"
@@ -41,4 +41,6 @@ dependencies {
     implementation 'de.hdodenhof:circleimageview:2.2.0'
     implementation 'com.simplecityapps:recyclerview-fastscroll:2.0.0'
     implementation files('src/JVoIP.jar')
+    implementation 'moe.feng:BreadcrumbsView:0.2.1'
+    implementation 'com.gongwen:swipeback:1.0.2'
 }

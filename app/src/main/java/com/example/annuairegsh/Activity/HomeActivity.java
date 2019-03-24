@@ -483,11 +483,15 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
                 case Constant.DELETE_CONTACT:
                     API_Manager.deleteContact(getApplicationContext(), handler, Constant.CONTACT_FETCH);
                     boolean pole = MyPreferences.getMyBool(getApplicationContext(), "notifications_new_message_vibrate", false);
-                    if(pole)
+                    if(pole) {
+                        search.setText("");
                         populatePolePic();
-                    else
+                    }
+                    else {
+                        search.setText("");
                         populateFromAd();
-
+                    }
+                    Log.d(TAG, "handleMessagePROG: "+ progressDialog.isShowing());
                     if(progressDialog.isShowing())
                     progressDialog.dismiss();
                     MyPreferences.saveLong(Constant.LAST_UPDATE_TIME, System.currentTimeMillis());

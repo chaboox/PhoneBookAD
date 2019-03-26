@@ -1,30 +1,30 @@
 <preference-headers xmlns:android="http://schemas.android.com/apk/res/android">
 
     <header
-        android:fragment="com.example.annuairegsh.Activity.SettingsActivity$GeneralPreferenceFragment"
+        android:fragment="com.gsha.annuairegsh.Activity.SettingsActivity$GeneralPreferenceFragment"
         android:icon="@drawable/ic_info_black_24dp"
         android:title="A propos"
         />
 
     <header
-        android:fragment="com.example.annuairegsh.Activity.SettingsActivity$NotificationPreferenceFragment"
+        android:fragment="com.gsha.annuairegsh.Activity.SettingsActivity$NotificationPreferenceFragment"
         android:icon="@drawable/ic_phone_iphone_black_24dp"
         android:title="Affichage" />
 
     <header
-        android:fragment="com.example.annuairegsh.Activity.SettingsActivity$RNotificationPreferenceFragment"
+        android:fragment="com.gsha.annuairegsh.Activity.SettingsActivity$RNotificationPreferenceFragment"
         android:icon="@drawable/ic_notifications_black_24dp"
         android:title="Notification" />
 
 
     <header
-        android:fragment="com.example.annuairegsh.Activity.SettingsActivity$DataSyncPreferenceFragment"
+        android:fragment="com.gsha.annuairegsh.Activity.SettingsActivity$DataSyncPreferenceFragment"
         android:icon="@drawable/ic_sync_black_24dp"
         android:title="Synchronisation des contacts"
         />
 
     <header
-        android:fragment="com.example.annuairegsh.Activity.SettingsActivity$LogOutFragment"
+        android:fragment="com.gsha.annuairegsh.Activity.SettingsActivity$LogOutFragment"
         android:icon="@drawable/ic_exit_to_app_black_24dp"
         android:title="Se déconnecter" />
 

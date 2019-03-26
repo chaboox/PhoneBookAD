@@ -1,5 +1,6 @@
 package com.example.annuairegsh.Adapter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Message;
@@ -27,6 +28,7 @@ public class CityAdapter extends ArrayAdapter<City> implements View.OnClickListe
 
     private RealmList<City> dataSet;
     private Context mContext;
+    private Activity activity;
 
     // View lookup cache
     private static class ViewHolder {
@@ -38,10 +40,11 @@ public class CityAdapter extends ArrayAdapter<City> implements View.OnClickListe
 
 
 
-    public CityAdapter(RealmList<City> data, Context context) {
+    public CityAdapter(RealmList<City> data, Context context, Activity activity) {
         super(context, R.layout.item_department, data);
         this.dataSet = data;
         this.mContext=context;
+        this.activity = activity;
 
     }
 
@@ -162,7 +165,9 @@ public class CityAdapter extends ArrayAdapter<City> implements View.OnClickListe
                 intent.putExtra("id", userModel.getId());
                 intent.putExtra("company", CityActivity.companyName);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                mContext.startActivity(intent);
+                //Activity activity = (Activity) mContext;
+                activity.startActivity(intent);
+                activity.overridePendingTransition(R.anim.fade_in_left, R.anim.fade_out_left);
             }
         });
 

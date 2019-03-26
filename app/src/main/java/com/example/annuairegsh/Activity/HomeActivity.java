@@ -2,6 +2,7 @@ package com.example.annuairegsh.Activity;
 
 import android.Manifest;
 import android.accounts.AccountManager;
+import android.app.Activity;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.ProgressDialog;
@@ -29,6 +30,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import io.realm.Realm;
 import io.realm.RealmResults;
+import uk.co.samuelwall.materialtaptargetprompt.MaterialTapTargetPrompt;
+import uk.co.samuelwall.materialtaptargetprompt.extras.backgrounds.RectanglePromptBackground;
+import uk.co.samuelwall.materialtaptargetprompt.extras.focals.RectanglePromptFocal;
 
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -84,12 +88,13 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     private ProgressDialog progressDialog;
     private CardView cardConst, cardPierre, cardIndustrie, cardService, cardAgro;
     private  LinearLayout linearLayout;
+    private Activity activity;
     private boolean pole;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        activity = this;
         setContentView(R.layout.activity_home2);
 
         pole = MyPreferences.getMyBool(getApplicationContext(), "notifications_new_message_vibrate", false);
@@ -97,6 +102,8 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         initView();
         setListener();
         populateImageHome();
+       // search.setText("");
+        contactsView.setVisibility(View.GONE);
         if(pole)
             populatePolePic();
         else
@@ -165,11 +172,17 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     private void initContactAdapter() throws UnsupportedEncodingException {
 
         EditText editText = findViewById(R.id.search);
+        try {
+            editText.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_search_gray_24dp, 0, 0, 0);
+        }
+        catch (Exception e){
+            Log.d(TAG, "initContactAdapter: ");
+        }
        // ListContact listContact = (ListContact) getIntent().getSerializableExtra("contacts");
          recyclerView = findViewById(R.id.recycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getApplicationContext());
-        adapter = new ContactAdapter(getApplicationContext(), contacts);
+        adapter = new ContactAdapter(getApplicationContext(), contacts, this);
         recyclerView.setAdapter(adapter);
         DividerItemDecoration itemDecoration = new DividerItemDecoration(getApplicationContext(), DividerItemDecoration.VERTICAL);
         itemDecoration.setDrawable(getResources().getDrawable(R.drawable.list_divider));
@@ -208,6 +221,23 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         progressDialog = new ProgressDialog(this);
         progressDialog.setTitle("Synchronisation des contacts");
         progressDialog.setMessage("Patientez un instant...");
+        if(!MyPreferences.getMyBool(getApplicationContext(),"HOMESEEN", false))
+        new java.util.Timer().schedule(
+                new java.util.TimerTask() {
+                    @Override
+                    public void run() {
+
+                            handler.sendEmptyMessage(Constant.SEARCH_EXPLAIN);
+                            MyPreferences.saveMyBool(getApplicationContext(), "HOMESEEN", true);
+
+
+                    }
+                },
+                1000
+        );
+
+
+
         settingButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -258,7 +288,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
                 if(s.toString().length() == 0) {
                     contacts = null;
                     try {
-                        adapter = new ContactAdapter(getApplicationContext(), new ArrayList<Contact>());
+                        adapter = new ContactAdapter(getApplicationContext(), new ArrayList<Contact>(), activity);
                     } catch (UnsupportedEncodingException e) {
                         e.printStackTrace();
                     }
@@ -269,7 +299,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
                     contacts = RealmManager.getContactsByName(s.toString());
                     //API_Manager.getPicById(contacts.get(0).getId(), getApplicationContext());
                     try {
-                        adapter = new ContactAdapter(getApplicationContext(), contacts);
+                        adapter = new ContactAdapter(getApplicationContext(), contacts, activity);
                     } catch (UnsupportedEncodingException e) {
                         e.printStackTrace();
                     }
@@ -295,7 +325,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         myrv.setVisibility(View.VISIBLE);
         linearLayout.setVisibility(View.GONE);
         companies = RealmManager.getCompanies();
-        GridViewAdapter myAdapter = new GridViewAdapter(HomeActivity.this,companies);
+        GridViewAdapter myAdapter = new GridViewAdapter(HomeActivity.this,companies, activity);
         myrv.setLayoutManager(new GridLayoutManager(HomeActivity.this,4));
         // myAdapter.setHasStableIds(true);
         myrv.setAdapter(myAdapter);
@@ -408,7 +438,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         AnimationManager.setToInvisibleLeft(linearLayout);
 
         companies = RealmManager.getCompanies(pole);
-        GridViewAdapter myAdapter = new GridViewAdapter(HomeActivity.this,companies);
+        GridViewAdapter myAdapter = new GridViewAdapter(HomeActivity.this,companies, activity);
         myrv.setLayoutManager(new GridLayoutManager(HomeActivity.this,4));
         // myAdapter.setHasStableIds(true);
         myrv.setAdapter(myAdapter);
@@ -460,6 +490,93 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
+                case Constant.SEARCH_EXPLAIN:
+                    new MaterialTapTargetPrompt.Builder(HomeActivity.this)
+                            .setTarget(R.id.search)
+                            .setPrimaryText("Rechercher un collaborateur")
+                            .setSecondaryText("Possibilité de rechercher par nom, numéro et poste")
+                            .setPromptBackground(new RectanglePromptBackground())
+                            .setPromptFocal(new RectanglePromptFocal())
+                            .setPromptStateChangeListener(new MaterialTapTargetPrompt.PromptStateChangeListener()
+                            {
+                                @Override
+                                public void onPromptStateChanged(MaterialTapTargetPrompt prompt, int state)
+                                {
+                                    if (state == MaterialTapTargetPrompt.STATE_BACK_BUTTON_PRESSED)
+                                    {
+                                        Log.d(TAG, "onPromptStateChanged: OLOL");
+                                    }
+                                    else if(state == MaterialTapTargetPrompt.STATE_DISMISSED){
+                                        new MaterialTapTargetPrompt.Builder(HomeActivity.this)
+                                                .setTarget(R.id.setting_ics)
+                                                .setPrimaryText("Paramètre")
+                                                .setSecondaryText("Choix de l'affichage\nSynchronisation des contacts\nNotification\nDéconnexion")
+                                                .setPromptStateChangeListener(new MaterialTapTargetPrompt.PromptStateChangeListener()
+                                                {
+                                                    @Override
+                                                    public void onPromptStateChanged(MaterialTapTargetPrompt prompt, int state)
+                                                    {
+                                                        if (state == MaterialTapTargetPrompt.STATE_BACK_BUTTON_PRESSED)
+                                                        {
+                                                            Log.d(TAG, "onPromptStateChanged: OLOL");
+                                                        }
+                                                        else if(state == MaterialTapTargetPrompt.STATE_DISMISSED){
+                                                            Log.d(TAG, "onPromptStateChanged: OLOL2");
+                                                        }
+                                                        else if(state == MaterialTapTargetPrompt.STATE_FINISHED){
+                                                            Log.d(TAG, "onPromptStateChanged: OLOL3");
+                                                        }
+                                                        else if(state == MaterialTapTargetPrompt.STATE_FOCAL_PRESSED){
+                                                            Log.d(TAG, "onPromptStateChanged: OLOL4");
+                                                        }
+                                                        else {
+                                                            Log.d(TAG, "onPromptStateChanged: OLOL5");
+                                                        }
+                                                    }
+                                                })
+                                                .show();
+                                        Log.d(TAG, "onPromptStateChanged: OLOL2");
+                                    }
+                                    else if(state == MaterialTapTargetPrompt.STATE_FINISHED){
+                                        Log.d(TAG, "onPromptStateChanged: OLOL3");
+                                    }
+                                    else if(state == MaterialTapTargetPrompt.STATE_FOCAL_PRESSED){
+                                        new MaterialTapTargetPrompt.Builder(HomeActivity.this)
+                                                .setTarget(R.id.setting_ics)
+                                                .setPrimaryText("Paramètre")
+                                                .setSecondaryText("Choix de l'affichage\nSynchronisation des contacts\nNotification\nDéconnexion")
+                                                .setPromptStateChangeListener(new MaterialTapTargetPrompt.PromptStateChangeListener()
+                                                {
+                                                    @Override
+                                                    public void onPromptStateChanged(MaterialTapTargetPrompt prompt, int state)
+                                                    {
+                                                        if (state == MaterialTapTargetPrompt.STATE_BACK_BUTTON_PRESSED)
+                                                        {
+                                                            Log.d(TAG, "onPromptStateChanged: OLOL");
+                                                        }
+                                                        else if(state == MaterialTapTargetPrompt.STATE_DISMISSED){
+                                                            Log.d(TAG, "onPromptStateChanged: OLOL2");
+                                                        }
+                                                        else if(state == MaterialTapTargetPrompt.STATE_FINISHED){
+                                                            Log.d(TAG, "onPromptStateChanged: OLOL3");
+                                                        }
+                                                        else if(state == MaterialTapTargetPrompt.STATE_FOCAL_PRESSED){
+                                                            Log.d(TAG, "onPromptStateChanged: OLOL4");
+                                                        }
+                                                        else {
+                                                            Log.d(TAG, "onPromptStateChanged: OLOL5");
+                                                        }
+                                                    }
+                                                })
+                                                .show();
+                                    }
+                                    else {
+                                        Log.d(TAG, "onPromptStateChanged: OLOL5");
+                                    }
+                                }
+                            })
+                            .show();
+                    break;
                 case Constant.SETTING_SYNC:
                     progressDialog.show();
                     handler.sendEmptyMessage(Constant.COMPANY);
@@ -526,6 +643,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onResume() {
         super.onResume();
+        activity = this;
         boolean pole = MyPreferences.getMyBool(getApplicationContext(), "notifications_new_message_vibrate", false);
         if(pole != this.pole)
         if(search.getText().toString().length() == 0)

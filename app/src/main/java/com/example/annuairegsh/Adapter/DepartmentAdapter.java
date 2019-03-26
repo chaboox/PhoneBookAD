@@ -1,5 +1,6 @@
 package com.example.annuairegsh.Adapter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Message;
@@ -24,7 +25,8 @@ import java.util.ArrayList;
 public class DepartmentAdapter extends ArrayAdapter<Department> implements View.OnClickListener{
 
     private RealmList<Department> dataSet;
-    Context mContext;
+    private Context mContext;
+    private Activity activity;
 
     // View lookup cache
     private static class ViewHolder {
@@ -35,10 +37,11 @@ public class DepartmentAdapter extends ArrayAdapter<Department> implements View.
 
 
 
-    public DepartmentAdapter(RealmList<Department> data, Context context) {
+    public DepartmentAdapter(RealmList<Department> data, Context context, Activity activity) {
         super(context, R.layout.item_department, data);
         this.dataSet = data;
         this.mContext=context;
+        this.activity = activity;
 
     }
 
@@ -46,7 +49,7 @@ public class DepartmentAdapter extends ArrayAdapter<Department> implements View.
     @Override
     public void onClick(View v) {
 
-        int position=(Integer) v.getTag();
+       /* int position=(Integer) v.getTag();
         Object object= getItem(position);
         Department dataModelBarcode =(Department)object;
 
@@ -55,7 +58,7 @@ public class DepartmentAdapter extends ArrayAdapter<Department> implements View.
 
         switch (v.getId()) {
 
-         /*   case R.id.item_info:
+            case R.id.item_info:
                 /*               MainActivity.barcodeDisplay.remove(MainActivity.barcodeDisplay.indexOf(dataModelBarcode.code));*/
             /*   Snackbar.make(v, " " + dataModelBarcode.code+ " deleted ", Snackbar.LENGTH_LONG)
                         .setAction("No action", null).show();
@@ -63,8 +66,8 @@ public class DepartmentAdapter extends ArrayAdapter<Department> implements View.
                 break;
 
 
-        }*/
         }
+        }*/
 
     }
 
@@ -153,7 +156,9 @@ public class DepartmentAdapter extends ArrayAdapter<Department> implements View.
                 intent.putExtra("company", DepartmentActivity.company);
                 intent.putExtra("city", DepartmentActivity.city.getCode());
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                mContext.startActivity(intent);
+                //mContext.startActivity(intent);
+                activity.startActivity(intent);
+                activity.overridePendingTransition(R.anim.fade_in_left, R.anim.fade_out_left);
             }
         });
 

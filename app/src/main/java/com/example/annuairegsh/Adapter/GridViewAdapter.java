@@ -1,5 +1,6 @@
 package com.example.annuairegsh.Adapter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Message;
@@ -24,13 +25,15 @@ import java.util.List;
 public class GridViewAdapter extends RecyclerView.Adapter<GridViewAdapter.MyViewHolder> {
 
     private Context mContext ;
+    private Activity activity;
     private List<Company> mData ;
     public static int cpt =0;
 
 
-    public GridViewAdapter(Context mContext, List<Company> mData) {
+    public GridViewAdapter(Context mContext, List<Company> mData, Activity activity) {
         this.mContext = mContext;
         this.mData = mData;
+        this.activity = activity;
     }
 
     @Override
@@ -70,7 +73,9 @@ public class GridViewAdapter extends RecyclerView.Adapter<GridViewAdapter.MyView
 
                 Intent intent = new Intent(mContext, CityActivity.class);
                 intent.putExtra("company",mData.get(position).getNameAD());
-                mContext.startActivity(intent);
+               // mContext.startActivity(intent);
+                activity.startActivity(intent);
+                activity.overridePendingTransition(R.anim.fade_in_left, R.anim.fade_out_left);
 
                // HomeActivity.handler.sendMessage(message);
 

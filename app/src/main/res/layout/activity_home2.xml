@@ -39,7 +39,6 @@
         app:cardBackgroundColor="@color/white"
         android:layout_height="70dp"
         app:cardCornerRadius="24dp"
-
         android:layout_marginTop="76dp"
         app:cardUseCompatPadding="true">
         <RelativeLayout
@@ -52,13 +51,10 @@
                 android:shadowColor="@color/white"
                 android:textColor="@color/gray2"
                 android:padding="10dp"
-                android:drawableStart="@drawable/ic_search_gray_24dp"
                 android:singleLine="true"
                 android:imeOptions="actionDone"
                 android:hint="Rechercher un contact"
                 android:drawablePadding="13dp"
-
-
                 android:background="@null"
                 android:textCursorDrawable="@drawable/cursor"
                 android:id="@+id/search"/>

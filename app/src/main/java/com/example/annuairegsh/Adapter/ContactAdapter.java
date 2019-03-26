@@ -1,5 +1,6 @@
 package com.example.annuairegsh.Adapter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -38,14 +39,16 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ViewHold
         implements FastScrollRecyclerView.SectionedAdapter {
     private Context mContext ;
     private List<Contact> mData ;
+    private Activity activity;
     private ArrayList<Contact> saveData ;
     private HashMap<String, ViewHolder> holderHashMap;
     private Handler handler;
 
-    public ContactAdapter(Context mContext, List<Contact> mData) throws UnsupportedEncodingException {
+    public ContactAdapter(Context mContext, List<Contact> mData, Activity activity) throws UnsupportedEncodingException {
         handler = new HandlerContact();
         holderHashMap = new HashMap<>();
         this.mContext = mContext;
+        this.activity = activity;
         this.mData = mData;
         this.saveData = new ArrayList<>(mData);
         ArrayList<String> ids = new ArrayList<>();
@@ -129,7 +132,9 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ViewHold
                 //intent.putExtra("contact", mData.get(position));
                 intent.putExtra("id", mData.get(position).getId());
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                mContext.startActivity(intent);
+                //mContext.startActivity(intent);
+                activity.startActivity(intent);
+                activity.overridePendingTransition(R.anim.fade_in_left, R.anim.fade_out_left);
             }
         });
         //holder.job.setImageResource(mData.get(position).getImage());

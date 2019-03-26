@@ -9,6 +9,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -22,7 +24,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.annuairegsh.Adapter.ContactAdapter;
 import com.example.annuairegsh.Manager.ContactManager;
+import com.example.annuairegsh.Manager.MyPreferences;
 import com.example.annuairegsh.Manager.RealmManager;
+import com.example.annuairegsh.Model.Constant;
 import com.example.annuairegsh.Model.Contact;
 import com.example.annuairegsh.Model.ListContact;
 import com.example.annuairegsh.R;
@@ -38,21 +42,35 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import io.realm.RealmList;
 import io.realm.RealmResults;
+import uk.co.samuelwall.materialtaptargetprompt.MaterialTapTargetPrompt;
 
 
-public class ListContactActivity extends AppCompatActivity {
+public class ListContactActivity extends BaseSwipeBackActivity {
     private ContactAdapter adapter;
     private RealmResults<Contact> contacts;
     private ImageView back, export ;
 
     private TextView dep;
+    private  Handler handler;
+
+    @Override
+    protected int getLayoutId() {
+        return R.layout.activity_test_alpha;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_test_alpha);
+        handler = new DepartementHandler();
+        //setContentView(R.layout.activity_test_alpha);
        // ListContact listContact = (ListContact) getIntent().getSerializableExtra("contacts");
         EditText editText = findViewById(R.id.search);
+        try {
+            editText.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_search_gray_24dp, 0, 0, 0);
+        }
+        catch (Exception e){
+            Log.d(TAG, "initContactAdapter: ");
+        }
         dep= findViewById(R.id.dep);
         back = findViewById(R.id.back);
         export = findViewById(R.id.export);
@@ -61,6 +79,7 @@ public class ListContactActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 finish();
+                overridePendingTransition(R.anim.fade_out_right, R.anim.fade_right_finish);
             }
         });
         export.setOnClickListener(new View.OnClickListener() {
@@ -84,7 +103,7 @@ public class ListContactActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getApplicationContext());
         try {
-            adapter = new ContactAdapter(getApplicationContext(), contacts);
+            adapter = new ContactAdapter(getApplicationContext(), contacts, this);
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
@@ -109,6 +128,20 @@ public class ListContactActivity extends AppCompatActivity {
             }
         });
 
+        if(!MyPreferences.getMyBool(getApplicationContext(),"CONTACTSSEEN", false))
+        new java.util.Timer().schedule(
+                new java.util.TimerTask() {
+                    @Override
+                    public void run() {
+
+                     handler.sendEmptyMessage(Constant.EXPORT);
+                        MyPreferences.saveMyBool(getApplicationContext(), "CONTACTSSEEN", true);
+
+
+                    }
+                },
+                750
+        );
 
 
     }
@@ -162,6 +195,49 @@ public class ListContactActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void onBackPressed() {
+        Log.d(TAG, "onBackPressed: BACKK");
+        super.onBackPressed();
+        overridePendingTransition(R.anim.fade_out_right, R.anim.fade_right_finish);
+    }
+    public class DepartementHandler extends Handler {
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case Constant.EXPORT:
+                    new MaterialTapTargetPrompt.Builder(ListContactActivity.this)
+                            .setTarget(R.id.export)
+                            .setPrimaryText("Exporter")
+                            .setSecondaryText("Exporter tous les collaborateurs du departement vers votre téléphone")
+                            .setPromptStateChangeListener(new MaterialTapTargetPrompt.PromptStateChangeListener()
+                            {
+                                @Override
+                                public void onPromptStateChanged(MaterialTapTargetPrompt prompt, int state)
+                                {
+                                    if (state == MaterialTapTargetPrompt.STATE_BACK_BUTTON_PRESSED)
+                                    {
+                                        Log.d(TAG, "onPromptStateChanged: OLOL");
+                                    }
+                                    else if(state == MaterialTapTargetPrompt.STATE_DISMISSED){
+                                        Log.d(TAG, "onPromptStateChanged: OLOL2");
+                                    }
+                                    else if(state == MaterialTapTargetPrompt.STATE_FINISHED){
+                                        Log.d(TAG, "onPromptStateChanged: OLOL3");
+                                    }
+                                    else if(state == MaterialTapTargetPrompt.STATE_FOCAL_PRESSED){
+                                        Log.d(TAG, "onPromptStateChanged: OLOL4");
+                                    }
+                                    else {
+                                        Log.d(TAG, "onPromptStateChanged: OLOL5");
+                                    }
+                                }
+                            })
+                            .show();
+                    break;
+            }
+        }
+    }
 }
 
 

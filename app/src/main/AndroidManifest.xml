@@ -36,13 +36,16 @@
         <activity
             android:name=".Activity.LoginActivity"
             android:label="@string/title_activity_login" />
-        <activity android:name=".Activity.ContactDetailActivity" />
+        <activity android:name=".Activity.ContactDetailActivity"
+            android:theme="@style/Theme.Swipe.Back.NoActionBar"/>
         <activity
             android:name=".ViewCaller.MyCustomDialog"
             android:noHistory="true"
             android:theme="@android:style/Theme.Dialog" />
-        <activity android:name=".Activity.ListContactActivity" />
-        <activity android:name=".Activity.DepartmentActivity" />
+        <activity android:name=".Activity.ListContactActivity"
+            android:theme="@style/Theme.Swipe.Back.NoActionBar"/>
+        <activity android:name=".Activity.DepartmentActivity"
+            android:theme="@style/Theme.Swipe.Back.NoActionBar" />
         <activity android:name=".Activity.CityActivity"
             android:theme="@style/Theme.Swipe.Back.NoActionBar"/>
         <activity android:name=".Activity.HomeActivity" />

@@ -60,7 +60,13 @@ public class MyPreferences {
         return value;
     }
 
+    public static void saveMyBool(Context context, String key, boolean value){
+        app_preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        SharedPreferences.Editor editor = app_preferences.edit();
+        editor.putBoolean(key, value);
+        editor.commit(); //
 
+    }
 
 
     public static void deletePreference(String key){

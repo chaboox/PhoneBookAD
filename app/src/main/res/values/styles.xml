@@ -30,7 +30,22 @@
     <style name="Theme.Swipe.Back" parent="Theme.AppCompat.Light.DarkActionBar">
         <item name="android:windowIsTranslucent">true</item>
         <item name="android:windowBackground">@android:color/transparent</item>
+
         <item name="windowActionBar">false</item>
         <item name="android:windowNoTitle">true</item>
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+    <style name="newTextLabel">
+        <!-- Hint color and label color in FALSE state -->
+        <item name="android:textColorHint">@color/gray3</item>
+        <item name="android:textColorHighlight">@color/white</item>
+        <item name="android:textColorLink">@color/gray3</item>
+        <item name="android:textSize">20sp</item>
+        <!-- Label color in TRUE state and bar color FALSE and TRUE State -->
+        <item name="colorAccent">@color/gray3</item>
+        <item name="colorControlNormal">@color/gray3</item>
+        <item name="colorControlActivated">@color/gray3</item>
     </style>
 </resources>

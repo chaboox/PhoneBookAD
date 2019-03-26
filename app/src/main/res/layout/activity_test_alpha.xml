@@ -1,10 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
+<com.gw.swipeback.SwipeBackLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/swipeBackLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:directionMode="left"
+    >
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".Activity.ListContactActivity"
+    android:background="@color/white"
     android:focusable="true" android:focusableInTouchMode="true">
     <ImageView
             android:id="@+id/up"
@@ -68,7 +76,6 @@
                 android:shadowColor="@color/white"
                 android:textColor="@color/gray2"
                 android:padding="10dp"
-                android:drawableStart="@drawable/ic_search_gray_24dp"
                 android:maxLines="1"
                 android:hint="Rechercher un contact"
                 android:drawablePadding="13dp"
@@ -99,3 +106,4 @@
         android:paddingTop="35dp"
        />
 </RelativeLayout>
+</com.gw.swipeback.SwipeBackLayout>

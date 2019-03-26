@@ -61,7 +61,7 @@ public class CityActivity extends BaseSwipeBackActivity {
         }else {
 
             Log.d("CITYY", "onCreate: " + company.getCities().size() + company.getCities());
-            CityAdapter adapter = new CityAdapter(company.getCities(), getApplicationContext());
+            CityAdapter adapter = new CityAdapter(company.getCities(), getApplicationContext(), this);
             listView.setAdapter(adapter);
         }
         //ItemHeighManger.setListViewHeightBasedOnChildren(listView);
@@ -76,6 +76,7 @@ public class CityActivity extends BaseSwipeBackActivity {
             @Override
             public void onClick(View v) {
                 finish();
+                overridePendingTransition(R.anim.fade_out_right, R.anim.fade_right_finish);
                //overridePendingTransition(0, 0);
             }
         });
@@ -102,4 +103,10 @@ public class CityActivity extends BaseSwipeBackActivity {
                     break;
             }
         }}*/
+    @Override
+    public void onBackPressed() {
+        Log.d(TAG, "onBackPressed: BACKK");
+        super.onBackPressed();
+        overridePendingTransition(R.anim.fade_out_right, R.anim.fade_right_finish);
+    }
     }

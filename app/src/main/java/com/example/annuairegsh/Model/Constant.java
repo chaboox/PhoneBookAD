@@ -17,4 +17,7 @@ public class Constant {
     public static final int FINISH = 109;
     public static final int SETTING_SYNC = 110;
     public static final String LAST_UPDATE_TIME= "SYNC_TIME";
+    public static final int EXPORT =111;
+    public static final int MAIL = 112;
+    public static final int SEARCH_EXPLAIN = 113 ;
 }

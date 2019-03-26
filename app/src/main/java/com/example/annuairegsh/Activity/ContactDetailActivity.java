@@ -4,6 +4,9 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import uk.co.samuelwall.materialtaptargetprompt.MaterialTapTargetPrompt;
+import uk.co.samuelwall.materialtaptargetprompt.extras.backgrounds.RectanglePromptBackground;
+import uk.co.samuelwall.materialtaptargetprompt.extras.focals.RectanglePromptFocal;
 import webphone.webphone;
 
 import android.Manifest;
@@ -20,6 +23,8 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.provider.ContactsContract;
 import android.util.Base64;
 import android.util.Log;
@@ -44,17 +49,23 @@ import java.util.ArrayList;
 import static com.example.annuairegsh.Manager.PictureDecodeManager.decodeSampleBitmap;
 
 
-public class ContactDetailActivity extends AppCompatActivity {
+public class ContactDetailActivity extends BaseSwipeBackActivity {
     private Contact contact;
     private TextView name, job, mail, number, location, voip, department, company;
     private ImageView image, close, export;
     private RelativeLayout mailLayout, numberLayout, locationLayout, voipLayout, departmentLayout, companyLayout;
     private Bitmap bitmap;
+    private Handler handler;
+
+    @Override
+    protected int getLayoutId() {
+        return R.layout.activity_contact_detail;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_contact_detail);
+        //setContentView(R.layout.activity_contact_detail);
         initView();
         Intent intent = getIntent();
         String contactId = intent.getStringExtra("id");
@@ -79,8 +90,21 @@ public class ContactDetailActivity extends AppCompatActivity {
                 ,
                 null,
                 null);*/
-
-
+        if(!MyPreferences.getMyBool(getApplicationContext(),"CONTACTSEEN", false)){
+    handler = new ContactHandler();
+        new java.util.Timer().schedule(
+                new java.util.TimerTask() {
+                    @Override
+                    public void run() {
+                        if(numberLayout.getVisibility() == View.VISIBLE)
+                        handler.sendEmptyMessage(Constant.CONTACT);
+                        else if(mailLayout.getVisibility() == View.VISIBLE)
+                            handler.sendEmptyMessage(Constant.MAIL);
+                        MyPreferences.saveMyBool(getApplicationContext(), "CONTACTSEEN", true);
+                    }
+                },
+                750
+        );}
     }
 
     private void initView() {
@@ -111,6 +135,7 @@ public class ContactDetailActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 finish();
+                overridePendingTransition(R.anim.fade_out_right, R.anim.fade_right_finish);
             }
         });
 
@@ -442,4 +467,63 @@ public class ContactDetailActivity extends AppCompatActivity {
 
    }
 
+    @Override
+    public void onBackPressed() {
+        Log.d(TAG, "onBackPressed: BACKK");
+        super.onBackPressed();
+        overridePendingTransition(R.anim.fade_out_right, R.anim.fade_right_finish);
+    }
+
+    public class ContactHandler extends Handler {
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case Constant.CONTACT:
+                    new MaterialTapTargetPrompt.Builder(ContactDetailActivity.this)
+                            .setTarget(R.id.number_layout)
+                            .setPrimaryText("Appeler")
+                            .setSecondaryText("Appuyez sur le numéro pour appeler le collaborateur")
+                            .setPromptBackground(new RectanglePromptBackground())
+                            .setPromptFocal(new RectanglePromptFocal())
+                            .setPromptStateChangeListener(new MaterialTapTargetPrompt.PromptStateChangeListener()
+                            {
+                                @Override
+                                public void onPromptStateChanged(MaterialTapTargetPrompt prompt, int state)
+                                {
+                                    if (state == MaterialTapTargetPrompt.STATE_BACK_BUTTON_PRESSED)
+                                    {
+                                        Log.d(TAG, "onPromptStateChanged: OLOL");
+                                    }
+                                    else if(state == MaterialTapTargetPrompt.STATE_DISMISSED){
+                                        if(mailLayout.getVisibility() == View.VISIBLE)
+                                        handler.sendEmptyMessage(Constant.MAIL);
+                                        Log.d(TAG, "onPromptStateChanged: OLOL2");
+                                    }
+                                    else if(state == MaterialTapTargetPrompt.STATE_FINISHED){
+                                        Log.d(TAG, "onPromptStateChanged: OLOL3");
+                                    }
+                                    else if(state == MaterialTapTargetPrompt.STATE_FOCAL_PRESSED){
+                                        if(mailLayout.getVisibility() == View.VISIBLE)
+                                        handler.sendEmptyMessage(Constant.MAIL);
+                                        Log.d(TAG, "onPromptStateChanged: OLOL4");
+                                    }
+                                    else {
+                                        Log.d(TAG, "onPromptStateChanged: OLOL5");
+                                    }
+                                }
+                            })
+                            .show();
+                    break;
+                case Constant.MAIL:
+                    new MaterialTapTargetPrompt.Builder(ContactDetailActivity.this)
+                            .setTarget(R.id.mail_layout)
+                            .setPrimaryText("Envoyer un mail")
+                            .setSecondaryText("Appuyez sur l'email du collaborateur afin de lui envoyer un mail")
+                            .setPromptBackground(new RectanglePromptBackground())
+                            .setPromptFocal(new RectanglePromptFocal())
+                            .show();
+                    break;
+            }
+        }
+    }
 }

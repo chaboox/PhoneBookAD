@@ -420,7 +420,8 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
                         case DialogInterface.BUTTON_POSITIVE:
                             MyPreferences.deletePreference(Constant.SECRET);
                             getActivity().startActivity(new Intent(getActivity(), LoginActivity.class));
-                            getActivity().finish();
+                           // getActivity().finish();
+                            ActivityCompat.finishAffinity(activity);
                             break;
 
                         case DialogInterface.BUTTON_NEGATIVE:

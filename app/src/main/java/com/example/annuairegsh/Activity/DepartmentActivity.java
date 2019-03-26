@@ -4,10 +4,16 @@ import android.content.Intent;
 import android.os.Handler;
 import android.os.Message;
 import androidx.appcompat.app.AppCompatActivity;
+import uk.co.samuelwall.materialtaptargetprompt.MaterialTapTargetPrompt;
+import uk.co.samuelwall.materialtaptargetprompt.extras.backgrounds.RectanglePromptBackground;
+import uk.co.samuelwall.materialtaptargetprompt.extras.focals.RectanglePromptFocal;
+
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.example.annuairegsh.Adapter.DepartmentAdapter;
@@ -23,7 +29,7 @@ import com.example.annuairegsh.R;
 
 import java.util.ArrayList;
 
-public class DepartmentActivity extends AppCompatActivity {
+public class DepartmentActivity extends BaseSwipeBackActivity {
     private ListView listView;
     public static String company;
     public static Company companyR;
@@ -32,17 +38,24 @@ public class DepartmentActivity extends AppCompatActivity {
     public static Handler handler;
     private ImageView back;
     private TextView companyT;
+    private RelativeLayout relativeLayout;
+
+    @Override
+    protected int getLayoutId() {
+        return R.layout.activity_department;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_department);
+       //setContentView(R.layout.activity_department);
         initView();
         company = getIntent().getStringExtra("company");
         idCity = getIntent().getStringExtra("id");
         city = RealmManager.getCityById(idCity);
         //city = getIntent().getStringExtra("city");
         // ListDepartment departments = (ListDepartment) getIntent().getSerializableExtra("departments");
-        DepartmentAdapter adapter = new DepartmentAdapter(city.getDepartments(), getApplicationContext());
+        DepartmentAdapter adapter = new DepartmentAdapter(city.getDepartments(), getApplicationContext(), this);
         companyR = RealmManager.getCompanyByCode(company);
 
         companyT.setText(companyR.getName()+ ", " + city.getCode());
@@ -54,14 +67,17 @@ public class DepartmentActivity extends AppCompatActivity {
     private void initView(){
         companyT = findViewById(R.id.company_title);
         listView = findViewById(R.id.listview);
+
         back = findViewById(R.id.back);
 
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 finish();
+                overridePendingTransition(R.anim.fade_out_right, R.anim.fade_right_finish);
             }
         });
+
        // handler = new HandlerDepartment();
     }
 
@@ -83,4 +99,11 @@ public class DepartmentActivity extends AppCompatActivity {
                     break;
             }
         }}*/
+
+    @Override
+    public void onBackPressed() {
+        Log.d(TAG, "onBackPressed: BACKK");
+        super.onBackPressed();
+        overridePendingTransition(R.anim.fade_out_right, R.anim.fade_right_finish);
+    }
 }

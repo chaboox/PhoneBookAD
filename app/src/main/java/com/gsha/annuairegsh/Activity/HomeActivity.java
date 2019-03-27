@@ -109,6 +109,20 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
             progressDialog.show();
             handler.sendEmptyMessage(Constant.COMPANY);
         }
+        else  if(!MyPreferences.getMyBool(getApplicationContext(),"HOMESEEN", false))
+            new java.util.Timer().schedule(
+                    new java.util.TimerTask() {
+                        @Override
+                        public void run() {
+
+                            handler.sendEmptyMessage(Constant.SEARCH_EXPLAIN);
+                            MyPreferences.saveMyBool(getApplicationContext(), "HOMESEEN", true);
+
+
+                        }
+                    },
+                    1000
+            );
 
         checkUpdate();
         //Intent intent = new Intent(HomeActivity.this, LoginActivity.class);
@@ -210,20 +224,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         progressDialog = new ProgressDialog(this);
         progressDialog.setTitle("Synchronisation des contacts");
         progressDialog.setMessage("Patientez un instant...");
-        if(!MyPreferences.getMyBool(getApplicationContext(),"HOMESEEN", false))
-        new java.util.Timer().schedule(
-                new java.util.TimerTask() {
-                    @Override
-                    public void run() {
 
-                            handler.sendEmptyMessage(Constant.SEARCH_EXPLAIN);
-                            MyPreferences.saveMyBool(getApplicationContext(), "HOMESEEN", true);
-
-
-                    }
-                },
-                1000
-        );
 
 
 
@@ -600,6 +601,20 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
                     Log.d(TAG, "handleMessagePROG: "+ progressDialog.isShowing());
                     if(progressDialog.isShowing())
                     progressDialog.dismiss();
+                    if(!MyPreferences.getMyBool(getApplicationContext(),"HOMESEEN", false))
+                        new java.util.Timer().schedule(
+                                new java.util.TimerTask() {
+                                    @Override
+                                    public void run() {
+
+                                        handler.sendEmptyMessage(Constant.SEARCH_EXPLAIN);
+                                        MyPreferences.saveMyBool(getApplicationContext(), "HOMESEEN", true);
+
+
+                                    }
+                                },
+                                1000
+                        );
                     MyPreferences.saveLong(Constant.LAST_UPDATE_TIME, System.currentTimeMillis());
                     break;
             }

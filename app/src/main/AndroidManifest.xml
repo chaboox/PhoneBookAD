@@ -3,7 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.gsha.annuairegsh">
     <!-- To auto-complete the email text field in the login form with the user's emails -->
-    <uses-permission android:name="android.permission.DISABLE_KEYGUARD" />
    <!-- <uses-permission android:name="android.permission.GET_ACCOUNTS" />-->
     <!--<uses-permission android:name="android.permission.READ_PROFILE" />-->
     <uses-permission android:name="android.permission.READ_CONTACTS" />
@@ -38,10 +37,7 @@
             android:label="@string/title_activity_login" />
         <activity android:name="com.gsha.annuairegsh.Activity.ContactDetailActivity"
             android:theme="@style/Theme.Swipe.Back.NoActionBar"/>
-        <activity
-            android:name="com.gsha.annuairegsh.ViewCaller.MyCustomDialog"
-            android:noHistory="true"
-            android:theme="@android:style/Theme.Dialog" />
+
         <activity android:name="com.gsha.annuairegsh.Activity.ListContactActivity"
             android:theme="@style/Theme.Swipe.Back.NoActionBar"/>
         <activity android:name="com.gsha.annuairegsh.Activity.DepartmentActivity"

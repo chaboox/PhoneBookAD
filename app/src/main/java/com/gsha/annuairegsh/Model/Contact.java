@@ -15,6 +15,8 @@ Contact extends RealmObject implements Serializable {
     private String name;
             private String  company, description, city, number, voip, department, mail, pictureC;
     private byte[]  picture;
+    private boolean boss;
+    private boolean test;
 
     public Contact(String name) {
         this.name = name;
@@ -66,6 +68,7 @@ Contact extends RealmObject implements Serializable {
             this.voip = jsonObject.getString("voip");
             this.department = jsonObject.getString("department");
             this.mail = jsonObject.getString("mail");
+            this.boss = jsonObject.getBoolean("boss");
             //this.pictureC = "null";
            //this.pictureC = jsonObject.getString("pictureC");
         }catch (JSONException e){
@@ -222,5 +225,13 @@ Contact extends RealmObject implements Serializable {
     public String toString() {
         return "Contact [name=" + name + ", company=" + company + ", description=" + description + ", city=" + city
                 + ", number=" + number + ", voip=" + voip + ", department=" + department + ", mail=" + mail + "]";
+    }
+
+    public boolean isBoss() {
+        return boss;
+    }
+
+    public void setBoss(boolean boss) {
+        this.boss = boss;
     }
 }

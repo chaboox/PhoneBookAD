@@ -4,7 +4,7 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     app:cardCornerRadius="1dp"
-    android:id="@+id/cardview2"
+    android:id="    @+id/cardview2"
     app:cardUseCompatPadding="true"
     app:cardBackgroundColor="@color/white">
     <LinearLayout

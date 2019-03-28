@@ -92,6 +92,17 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ViewHold
         if(job.equals("null"))
             job ="";
         holder.job.setText(job);
+        if(mData.get(position).isBoss()) {
+            holder.star.setVisibility(View.VISIBLE);
+           // holder.name.setTextColor(mContext.getResources().getColor(R.color.white));
+           // holder.job.setTextColor(mContext.getResources().getColor(R.color.white));
+        }else {
+
+            holder.star.setVisibility(View.GONE);
+          //  holder.cardView.setCardBackgroundColor(mContext.getResources().getColor(R.color.white));
+            //holder.name.setTextColor(mContext.getResources().getColor(R.color.colorAccent));
+            //holder.job.setTextColor(mContext.getResources().getColor(R.color.gray3));
+        }
         holder.id = mData.get(position).getId();
 
         Log.d("HOLDER", "onBindViewHolder: " + holder.toString().substring(11, 18) + holder.toString());
@@ -159,6 +170,7 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ViewHold
         public ImageView imageView;
         public CardView cardView;
         public String id;
+        public ImageView star;
 
         ViewHolder(View itemView) {
             super(itemView);
@@ -166,6 +178,7 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ViewHold
             job = itemView.findViewById(R.id.job);
             imageView = itemView.findViewById(R.id.image);
             cardView = itemView.findViewById(R.id.cardview2);
+            star = itemView.findViewById(R.id.star);
         }
     }
     public void filter(String charText) {

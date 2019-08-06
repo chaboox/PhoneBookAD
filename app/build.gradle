@@ -7,8 +7,8 @@ android {
         applicationId "com.gsha.annuairegsh"
         minSdkVersion 19
         targetSdkVersion 28
-        versionCode 12
-        versionName "3.2.3"
+        versionCode 13
+        versionName "3.2.4"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
     }
@@ -44,5 +44,5 @@ dependencies {
     implementation 'com.gongwen:swipeback:1.0.2'
     //implementation 'com.google.android.material:material:1.0.0-beta01'
     implementation 'uk.co.samuelwall:material-tap-target-prompt:2.14.0'
-    implementation files('src/commons-lang3-3.0.jar')
+    //implementation files('src/commons-lang3-3.0.jar')
 }

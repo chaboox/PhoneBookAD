@@ -13,7 +13,7 @@ import com.gsha.annuairegsh.Model.Department;
 import com.gsha.annuairegsh.Model.ListCity;
 import com.gsha.annuairegsh.Model.ListDepartment;
 
-import org.apache.commons.lang3.StringUtils;
+//import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -274,7 +274,7 @@ public class RealmManager {
             }
         }
 
-        Log.d("SEMA", "getContactsByName: " + compareStrings(search, "ouazzani")   + " First : " + firstWord + "   secondeword" + secondWord );
+       // Log.d("SEMA", "getContactsByName: " + compareStrings(search, "ouazzani")   + " First : " + firstWord + "   secondeword" + secondWord );
 
       /*  RealmResults<Contact> conta = realm.where(Contact.class).beginsWith("name", search  , Case.INSENSITIVE).sort("name").limit(13).findAll();
 
@@ -565,9 +565,9 @@ public class RealmManager {
        handler.sendEmptyMessage(what);
     }
 
-    public static int compareStrings(String stringA, String stringB) {
-        return StringUtils.getLevenshteinDistance(stringA, stringB);
-    }
+   // public static int compareStrings(String stringA, String stringB) {
+   //     return StringUtils.getLevenshteinDistance(stringA, stringB);
+   // }
 
     public class HandlerRealm extends Handler {
         @Override

@@ -76,6 +76,8 @@
 
     <string name="pref_title_system_sync_settings">Synchroniser maintenant</string>
 
+    <string name="pref_title_system_hardsync_settings">Réinitialisation</string>
+
     <!-- Example settings for Notifications -->
     <string name="pref_header_notifications">Notifications</string>
 

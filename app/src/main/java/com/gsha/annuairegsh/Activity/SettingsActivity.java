@@ -26,6 +26,7 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import io.realm.Realm;
 
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
@@ -45,6 +46,7 @@ import com.gsha.annuairegsh.Model.Constant;
 import com.gsha.annuairegsh.Model.Contact;
 import com.gsha.annuairegsh.R;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -374,6 +376,29 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
                        activitySet.finish();
                    }
                    getActivity().finish();
+                    return true;
+                }
+            });
+
+            Preference Reipref = findPreference("hardsync");
+            Reipref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                public boolean onPreferenceClick(Preference preference) {
+                    //open browser or intent here
+                    if(HomeActivity.handler != null) {
+                        Realm realM;
+                        realM = Realm.getDefaultInstance();
+                        realM.beginTransaction();
+                        realM.deleteAll();
+                        realM.commitTransaction();
+                        realM.close();
+                        HomeActivity.handler.sendEmptyMessage(Constant.SETTING_SYNC);
+                    }
+                    else Toast.makeText(context, "erreur 400 veuillez réessayer", Toast.LENGTH_LONG).show();
+                    //  Log.d("SYNCOUT", "onPreferenceClick: " + activityCount);
+                    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O){
+                        activitySet.finish();
+                    }
+                    getActivity().finish();
                     return true;
                 }
             });

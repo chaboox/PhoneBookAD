@@ -2,6 +2,8 @@ package com.gsha.annuairegsh.Manager;
 
 import android.util.Log;
 
+import java.util.concurrent.ExecutionException;
+
 import io.realm.DynamicRealm;
 import io.realm.FieldAttribute;
 import io.realm.RealmMigration;
@@ -22,9 +24,14 @@ public class MyMigration implements RealmMigration {
         //     // getters and setters left out for brevity
         // }
         if (oldVersion == 0) {
+            try {
             schema.get("Contact")
                     .addField("boss", boolean.class);
             oldVersion++;
+            }
+            catch (Exception e){
+                e.printStackTrace();
+            }
         }
 
         // Migrate to version 2: Add a primary key + object references

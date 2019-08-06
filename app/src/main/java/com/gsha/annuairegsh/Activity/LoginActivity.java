@@ -92,9 +92,13 @@ public class LoginActivity extends AppCompatActivity  {
         log.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(mEmailView.getText().toString().length() == 0 || mPasswordView.getText().toString().length() == 0){
+                    Toast.makeText(getApplicationContext(), "Email ou mot de passe invalide", Toast.LENGTH_SHORT).show();
+                }
+                else
                 if(isConnectedToInternet()) {
                     mProgressView.setVisibility(View.VISIBLE);
-                    API_Manager.login(mEmailView.getText().toString(), mPasswordView.getText().toString(), getApplicationContext(), handler, Constant.DISMISS_LOADING);
+                    API_Manager.login(mEmailView.getText().toString().replaceAll("\\s",""), mPasswordView.getText().toString(), getApplicationContext(), handler, Constant.DISMISS_LOADING);
                 }
                 else  Toast.makeText(getApplicationContext(), "Vérifiez votre connexion internet", Toast.LENGTH_SHORT).show();
             }

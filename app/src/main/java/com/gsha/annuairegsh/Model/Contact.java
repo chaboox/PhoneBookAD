@@ -16,7 +16,6 @@ Contact extends RealmObject implements Serializable {
             private String  company, description, city, number, voip, department, mail, pictureC;
     private byte[]  picture;
     private boolean boss;
-    private boolean test;
 
     public Contact(String name) {
         this.name = name;

@@ -93,6 +93,7 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ViewHold
             job ="";
         holder.job.setText(job);
         if(mData.get(position).isBoss()) {
+            holder.star.setImageResource(R.drawable.star3);
             holder.star.setVisibility(View.VISIBLE);
            // holder.name.setTextColor(mContext.getResources().getColor(R.color.white));
            // holder.job.setTextColor(mContext.getResources().getColor(R.color.white));

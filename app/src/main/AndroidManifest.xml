@@ -14,7 +14,7 @@
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
    <!-- <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />-->
     <uses-permission android:name="android.permission.VIBRATE" />
-    <uses-permission android:name="android.permission.READ_CALL_LOG"/>
+  <!-- stufcallLog <uses-permission android:name="android.permission.READ_CALL_LOG"/> -->
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
@@ -54,14 +54,14 @@
             </intent-filter>
         </activity>
 
-        <receiver
+   <!-- StufCallLog <receiver
             android:name="com.gsha.annuairegsh.ViewCaller.CallReceiver"
             android:enabled="true"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.PHONE_STATE" />
             </intent-filter>
-        </receiver>
+        </receiver> -->
     </application>
 
 </manifest>

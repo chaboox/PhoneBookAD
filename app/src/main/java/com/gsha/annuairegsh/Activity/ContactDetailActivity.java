@@ -12,6 +12,7 @@ import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.app.AlertDialog;
 import android.content.ContentProviderOperation;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -41,6 +42,8 @@ import com.gsha.annuairegsh.R;
 import java.io.ByteArrayOutputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 
 import static com.gsha.annuairegsh.Manager.PictureDecodeManager.decodeSampleBitmap;
 
@@ -71,12 +74,12 @@ public class ContactDetailActivity extends BaseSwipeBackActivity {
 
         initListener();
 
-        AccountManager acoutManager = AccountManager.get(getApplicationContext()); ;
-        Account[] accounts = acoutManager.getAccounts();
-        for(int i = 0; i < accounts.length; i++) {
-            Log.d("ACOUNT", "onCreate: " + accounts[i].name);
-            Log.d("ACOUNT", "onCreate: " + accounts[i].type);
-        }
+      //  AccountManager acoutManager = AccountManager.get(getApplicationContext()); ;
+       // Account[] accounts = acoutManager.getAccounts();
+        //for(int i = 0; i < accounts.length; i++) {
+          //  Log.d("ACOUNT", "onCreate: " + accounts[i].name);
+            //Log.d("ACOUNT", "onCreate: " + accounts[i].type);
+        //}
 
        /* Cursor cursor = ContentResolver.query(
                 ContactsContract.RawContacts.CONTENT_URI,
@@ -87,7 +90,7 @@ public class ContactDetailActivity extends BaseSwipeBackActivity {
                 null,
                 null);*/
         if(!MyPreferences.getMyBool(getApplicationContext(),"CONTACTSEEN", false)){
-    handler = new ContactHandler();
+        handler = new ContactHandler();
         new java.util.Timer().schedule(
                 new java.util.TimerTask() {
                     @Override
@@ -209,11 +212,13 @@ public class ContactDetailActivity extends BaseSwipeBackActivity {
         String picture = contact.getPictureC();
         ArrayList <ContentProviderOperation> ops = new ArrayList< ContentProviderOperation >();
 
-
+        String account = getUsernameLong(getApplicationContext());
         ops.add(ContentProviderOperation.newInsert(
                 ContactsContract.RawContacts.CONTENT_URI)
                 .withValue(ContactsContract.RawContacts.ACCOUNT_TYPE, "com.android.contacts.sim")
-                .withValue(ContactsContract.RawContacts.ACCOUNT_NAME, "SIM")
+              .withValue(ContactsContract.RawContacts.ACCOUNT_NAME, "SIM")
+                //.withValue(ContactsContract.RawContacts.ACCOUNT_TYPE, "com.google")
+               // .withValue(ContactsContract.RawContacts.ACCOUNT_NAME, "medbouchenak.bk@gmail.com")
                 .build());
 
         //------------------------------------------------------ Names
@@ -521,5 +526,25 @@ public class ContactDetailActivity extends BaseSwipeBackActivity {
                     break;
             }
         }
+    }
+
+    public static String getUsernameLong(Context context) {
+        AccountManager manager = AccountManager.get(context);
+        Account[] accounts = manager.getAccountsByType("com.google");
+        List<String> possibleEmails = new LinkedList<String>();
+
+        for (Account account : accounts) {
+
+            // account.name as an email address only for certain account.type values.
+            possibleEmails.add(account.name);
+            Log.i("DGEN ACCOUNT","CALENDAR LIST ACCOUNT/"+account.name);
+        }
+
+        if (!possibleEmails.isEmpty() && possibleEmails.get(0) != null) {
+            String email = possibleEmails.get(0);
+            return email;
+
+        }
+        return null;
     }
 }

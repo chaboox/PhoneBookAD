@@ -44,5 +44,6 @@ dependencies {
     implementation 'com.gongwen:swipeback:1.0.2'
     //implementation 'com.google.android.material:material:1.0.0-beta01'
     implementation 'uk.co.samuelwall:material-tap-target-prompt:2.14.0'
+    implementation 'com.google.android.gms:play-services-auth:16.0.+'
     //implementation files('src/commons-lang3-3.0.jar')
 }

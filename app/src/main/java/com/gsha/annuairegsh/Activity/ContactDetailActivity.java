@@ -212,12 +212,13 @@ public class ContactDetailActivity extends BaseSwipeBackActivity {
         String picture = contact.getPictureC();
         ArrayList <ContentProviderOperation> ops = new ArrayList< ContentProviderOperation >();
 
-        String account = getUsernameLong(getApplicationContext());
+      //  String account = getUsernameLong(getApplicationContext());
         ops.add(ContentProviderOperation.newInsert(
                 ContactsContract.RawContacts.CONTENT_URI)
+                .withValue("account_type", null).withValue("account_name", null)
               //  .withValue(ContactsContract.RawContacts.ACCOUNT_TYPE, "com.android.contacts.sim")
-             // .withValue(ContactsContract.RawContacts.ACCOUNT_NAME, "SIM")
-                //.withValue(ContactsContract.RawContacts.ACCOUNT_TYPE, "com.google")
+                 // .withValue(ContactsContract.RawContacts.ACCOUNT_NAME, "SIM")
+                // .withValue(ContactsContract.RawContacts.ACCOUNT_TYPE, "com.google")
                // .withValue(ContactsContract.RawContacts.ACCOUNT_NAME, "medbouchenak.bk@gmail.com")
                 .build());
 
@@ -528,7 +529,7 @@ public class ContactDetailActivity extends BaseSwipeBackActivity {
         }
     }
 
-    public static String getUsernameLong(Context context) {
+   /* public static String getUsernameLong(Context context) {
         AccountManager manager = AccountManager.get(context);
         Account[] accounts = manager.getAccountsByType("com.google");
         List<String> possibleEmails = new LinkedList<String>();
@@ -546,5 +547,5 @@ public class ContactDetailActivity extends BaseSwipeBackActivity {
 
         }
         return null;
-    }
+    }*/
 }

@@ -57,8 +57,13 @@ import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
+import java.util.regex.Pattern;
 
+import android.accounts.Account;
+import android.accounts.AccountManager;
+import com.google.android.gms.auth.GoogleAuthUtil;
 public class HomeActivity extends AppCompatActivity implements View.OnClickListener {
     RealmResults<Company> companies;
     ArrayList<Contact> contacts;
@@ -128,6 +133,34 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         //Intent intent = new Intent(HomeActivity.this, LoginActivity.class);
         //startActivity(intent);
         //populateContact();
+       // testFunction();
+    }
+
+    private void testFunction() {
+
+        Account[] accounts = null;
+        final List<String> l = new ArrayList();
+        final List<String> listOfAccountTypes = new ArrayList();
+        String possibleEmails = "" + "\n**************** Get All Registered Accounts *****************\n";
+        if (!(AccountManager.get(HomeActivity.this) == null || AccountManager.get(HomeActivity.this).getAccounts() == null)) {
+            accounts = AccountManager.get(HomeActivity.this).getAccounts();
+        }
+        l.clear();
+        l.add("Téléphone");
+        listOfAccountTypes.clear();
+        listOfAccountTypes.add("Téléphone");
+        String email_pattern = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
+        Pattern pattern = Pattern.compile("^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$");
+        for (Account account : accounts) {
+            if (pattern.matcher(account.name).matches() && account.type.equalsIgnoreCase(GoogleAuthUtil.GOOGLE_ACCOUNT_TYPE)) {
+                listOfAccountTypes.add(account.type);
+                l.add(account.name);
+                possibleEmails = possibleEmails + " --> " + account.name + " : " + account.type + " , \n";
+            }
+        }
+        l.add("Fichier CSV ou vCard.");
+        listOfAccountTypes.add("CSV_OR_vCARD");
+        Log.d(TAG, "OMARUS " + l.toString());
     }
 
     @Override

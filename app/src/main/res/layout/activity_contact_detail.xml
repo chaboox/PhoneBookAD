@@ -30,7 +30,7 @@
                 android:layout_height="250dp"
                 android:orientation="vertical"
                 android:layout_marginBottom="10dp"
-                android:background="@drawable/degrade"
+                android:background="@drawable/blue_100_600x600"
 
                 >
                 <RelativeLayout
@@ -114,7 +114,7 @@
                     android:layout_height="20dp"
                     android:id="@+id/icon_mail"
                     android:layout_centerVertical="true"
-                    android:src="@drawable/mail"/>
+                    android:src="@drawable/mail_100"/>
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -147,7 +147,7 @@
                     android:layout_width="20dp"
                     android:layout_height="20dp"
                     android:id="@+id/icon"
-                    android:src="@drawable/call"
+                    android:src="@drawable/call_100"
                     android:layout_centerVertical="true"/>
 
                 <TextView
@@ -181,7 +181,7 @@
                     android:layout_width="20dp"
                     android:layout_height="20dp"
                     android:id="@+id/voip"
-                    android:src="@drawable/homephone"
+                    android:src="@drawable/homephone_100"
                     android:layout_centerVertical="true"/>
 
                 <TextView
@@ -216,7 +216,7 @@
                     android:layout_width="20dp"
                     android:layout_height="20dp"
                     android:id="@+id/icon_location"
-                    android:src="@drawable/location"
+                    android:src="@drawable/location_100"
                     android:layout_centerVertical="true"/>
 
                 <TextView
@@ -251,7 +251,7 @@
                     android:layout_width="20dp"
                     android:layout_height="20dp"
                     android:id="@+id/icon_company"
-                    android:src="@drawable/company"
+                    android:src="@drawable/company_100"
                     android:layout_centerVertical="true"/>
 
                 <TextView
@@ -286,7 +286,7 @@
                     android:layout_width="20dp"
                     android:layout_height="20dp"
                     android:id="@+id/icon_department"
-                    android:src="@drawable/department"
+                    android:src="@drawable/department_100"
                     android:layout_centerVertical="true"/>
 
                 <TextView

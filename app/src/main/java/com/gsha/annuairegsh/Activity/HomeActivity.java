@@ -702,7 +702,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         toolbar.setLayoutParams(toolBarParams);
         // toolbar.setBackgroundColor(Color.BLUE);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            toolbar.setBackground(getDrawable(R.drawable.degrade));
+            toolbar.setBackground(getDrawable(R.drawable.blue_100_600x600));
         }
         //   toolbar.setPopupTheme(R.style.AppTheme_PopupOverlay);
         toolbar.setVisibility(View.VISIBLE);

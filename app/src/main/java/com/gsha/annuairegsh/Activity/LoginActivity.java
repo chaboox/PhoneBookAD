@@ -98,7 +98,11 @@ public class LoginActivity extends AppCompatActivity  {
                 else
                 if(isConnectedToInternet()) {
                     mProgressView.setVisibility(View.VISIBLE);
-                    API_Manager.login(mEmailView.getText().toString().replaceAll("\\s",""), mPasswordView.getText().toString(), getApplicationContext(), handler, Constant.DISMISS_LOADING);
+                    String email = mEmailView.getText().toString().replaceAll("\\s","");
+                    if(!email.contains("@")){
+                        email = email + "@groupe-hasnaoui.local";
+                    }
+                    API_Manager.login(email, mPasswordView.getText().toString(), getApplicationContext(), handler, Constant.DISMISS_LOADING);
                 }
                 else  Toast.makeText(getApplicationContext(), "Vérifiez votre connexion internet", Toast.LENGTH_SHORT).show();
             }

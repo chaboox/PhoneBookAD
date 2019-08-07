@@ -153,7 +153,7 @@ public class CallReceiver extends BroadcastReceiver {
         if(bitmap != null) {
 
             mBuilder = new NotificationCompat.Builder(context,CHANNEL_ID)
-                    .setSmallIcon(R.drawable.call)
+                    .setSmallIcon(R.drawable.call_100)
                     .setContentTitle(title)
                     .setChannelId(CHANNEL_ID)
                     .setLargeIcon(bitmap)
@@ -166,7 +166,7 @@ public class CallReceiver extends BroadcastReceiver {
         }
         else {
             mBuilder = new NotificationCompat.Builder(context,CHANNEL_ID)
-                    .setSmallIcon(R.drawable.call)
+                    .setSmallIcon(R.drawable.call_100)
                     .setContentTitle(title)
                     .setAutoCancel(true)
                     .setChannelId(CHANNEL_ID)

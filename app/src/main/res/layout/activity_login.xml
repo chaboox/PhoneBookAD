@@ -19,7 +19,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="33"
-            android:background="@drawable/degrade"
+            android:background="@drawable/blue_100_600x600"
             android:weightSum="100"
             android:gravity="center"
             >
@@ -35,7 +35,7 @@
                     android:layout_width="100dp"
                     android:layout_height="100dp"
                     android:padding="20dp"
-                    android:src="@drawable/logo"
+                    android:src="@drawable/logo_app_512"
                     />
             </androidx.cardview.widget.CardView>
         </LinearLayout>
@@ -47,7 +47,7 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
-                    android:background="@drawable/degrade"/>
+                    android:background="@drawable/blue_100_600x600"/>
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -119,7 +119,7 @@
                     android:layout_marginRight="60dp"
                     android:layout_marginTop="-40dp"
                     app:cardUseCompatPadding="false"
-                    android:background="@drawable/degrade"
+                    android:background="@drawable/blue_100_600x600"
 
                    >
                     <RelativeLayout

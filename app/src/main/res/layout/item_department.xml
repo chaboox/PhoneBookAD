@@ -4,7 +4,7 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     app:cardCornerRadius="1dp"
-    android:id="    @+id/cardview2"
+    android:id="@+id/cardview2"
     app:cardUseCompatPadding="true"
     app:cardBackgroundColor="@color/white">
     <LinearLayout
@@ -19,7 +19,7 @@
             android:layout_width="80dp"
             android:layout_height="80dp"
             android:padding="13dp"
-            android:src="@drawable/degrade_low2"
+            android:src="@drawable/blue_75_100x100"
             />
             <ImageView
                 xmlns:app="http://schemas.android.com/apk/res-auto"

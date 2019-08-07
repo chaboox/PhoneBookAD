@@ -182,7 +182,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
         //setSupportActionBar(createToolbar());
          actionBar = getSupportActionBar();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            actionBar.setBackgroundDrawable(getDrawable(R.drawable.degrade));
+            actionBar.setBackgroundDrawable(getDrawable(R.drawable.blue_100_600x600));
             actionBar.setIcon(R.drawable.ic_arrow_back_white_24dp);
             TextView textview = new TextView(SettingsActivity.this);
              RelativeLayout.LayoutParams layoutparams;
@@ -210,7 +210,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
         toolbar.setLayoutParams(toolBarParams);
         // toolbar.setBackgroundColor(Color.BLUE);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            toolbar.setBackground(getDrawable(R.drawable.degrade));
+            toolbar.setBackground(getDrawable(R.drawable.blue_100_600x600));
         }
         //   toolbar.setPopupTheme(R.style.AppTheme_PopupOverlay);
         toolbar.setVisibility(View.VISIBLE);

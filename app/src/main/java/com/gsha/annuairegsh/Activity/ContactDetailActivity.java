@@ -215,8 +215,8 @@ public class ContactDetailActivity extends BaseSwipeBackActivity {
         String account = getUsernameLong(getApplicationContext());
         ops.add(ContentProviderOperation.newInsert(
                 ContactsContract.RawContacts.CONTENT_URI)
-                .withValue(ContactsContract.RawContacts.ACCOUNT_TYPE, "com.android.contacts.sim")
-              .withValue(ContactsContract.RawContacts.ACCOUNT_NAME, "SIM")
+              //  .withValue(ContactsContract.RawContacts.ACCOUNT_TYPE, "com.android.contacts.sim")
+             // .withValue(ContactsContract.RawContacts.ACCOUNT_NAME, "SIM")
                 //.withValue(ContactsContract.RawContacts.ACCOUNT_TYPE, "com.google")
                // .withValue(ContactsContract.RawContacts.ACCOUNT_NAME, "medbouchenak.bk@gmail.com")
                 .build());
